@@ -1,51 +1,176 @@
-<!DOCTYPE html>
+                                                                                                                                                                                                                                                                     <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-            <title>StreamX Studio Pro</title>
-                
-                    <link rel="manifest" href="manifest.json">
-                        <meta name="theme-color" content="#e50914">
-                            <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StreamX Ultimate</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#e50914">
+    
+    <style>
+        :root { --accent: #e50914; --bg: #050505; --surf: #121212; --text: #ffffff; --brd: #282828; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
+        
+        /* Header & Search */
+        header { background: var(--bg); padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { color: var(--accent); font-size: 24px; font-weight: bold; letter-spacing: -1px; }
+        .search-container { padding: 0 15px 10px; }
+        #searchInput { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--surf); color: white; box-sizing: border-box; }
 
-                                <style>
-                                        :root { --accent: #e50914; transition: all 0.3s ease; }
-                                                [data-theme="dark"] { --bg: #0c0c0c; --surf: #1a1a1a; --text: #fff; --brd: #333; }
-                                                        [data-theme="light"] { --bg: #f5f5f5; --surf: #fff; --text: #1a1a1a; --brd: #ddd; }
+        /* Video Player Section */
+        .player-box { width: 100%; aspect-ratio: 16/9; background: #000; position: sticky; top: 0; z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        video { width: 100%; height: 100%; outline: none; }
+        
+        /* Navigation Tabs */
+        .content-section { display: none; padding: 10px; animation: fadeIn 0.4s; }
+        .active-section { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-                                                                body { background: var(--bg); color: var(--text); font-family: system-ui; margin: 0; overflow-x: hidden; }
-                                                                        
-                                                                                /* Layout */
-                                                                                        header { 
-                                                                                                    background: var(--surf); padding: 15px; display: flex; 
-                                                                                                                justify-content: space-between; align-items: center; border-bottom: 1px solid var(--brd);
-                                                                                                                            position: sticky; top: 0; z-index: 100;
-                                                                                                                                    }
+        /* Movie Grid Style */
+        .grid-title { margin: 20px 0 10px 5px; font-size: 18px; border-left: 4px solid var(--accent); padding-left: 10px; }
+        .movie-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .movie-card { background: var(--surf); border-radius: 8px; overflow: hidden; border: 1px solid var(--brd); transition: 0.3s; }
+        .poster-placeholder { width: 100%; aspect-ratio: 2/3; background: linear-gradient(45deg, #1a1a1a, #222); display: flex; align-items: center; justify-content: center; color: #444; font-size: 40px; }
+        .card-info { padding: 8px; font-size: 13px; font-weight: 500; }
 
-                                                                                                                                            #offlineBanner { background: #ffcc00; color: #000; text-align: center; padding: 5px; font-size: 10px; display: none; font-weight: bold; }
+        /* Admin Panel Drawer */
+        #adminPanel { display: none; background: var(--surf); padding: 20px; border-radius: 15px 15px 0 0; position: fixed; bottom: 0; width: 100%; z-index: 2000; box-sizing: border-box; border-top: 3px solid var(--accent); }
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid var(--brd); background: #000; color: #fff; box-sizing: border-box; }
+        
+        /* Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(18,18,18,0.95); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--brd); backdrop-filter: blur(10px); z-index: 1500; }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: #888; text-decoration: none; border: none; background: none; width: 100%; }
+        .nav-btn.active { color: var(--accent); }
+        .nav-btn i { font-size: 20px; margin-bottom: 4px; }
 
-                                                                                                                                                    /* Video System */
-                                                                                                                                                            .player-container { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; }
-                                                                                                                                                                    video { width: 100%; height: 100%; }
-                                                                                                                                                                            video::cue { background: rgba(0,0,0,0.8); color: #fff; font-size: 18px; }
+        /* Utilities */
+        #statsOverlay { position: absolute; top: 10px; left: 10px; font-family: monospace; font-size: 10px; color: #0f0; background: rgba(0,0,0,0.6); padding: 5px; display: none; }
+    </style>
+</head>
+<body>
 
-                                                                                                                                                                                    /* Performance Overlay */
-                                                                                                                                                                                            #statsBox {
-                                                                                                                                                                                                        position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7);
-                                                                                                                                                                                                                    color: #0f0; font-family: monospace; font-size: 10px; padding: 8px;
-                                                                                                                                                                                                                                border-radius: 4px; display: none; pointer-events: none; border: 1px solid #0f0;
-                                                                                                                                                                                                                                        }
+    <header>
+        <div class="logo">STREAMX</div>
+        <div>
+            <button onclick="toggleStats()" style="background:none; border:none; color:#555;">📊</button>
+            <button onclick="openAdmin()" style="background:none; border:none; color:white; font-size:20px;">⚙️</button>
+        </div>
+    </header>
 
-                                                                                                                                                                                                                                                /* Control Grid */
-                                                                                                                                                                                                                                                        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px; }
-                                                                                                                                                                                                                                                                button { 
-                                                                                                                                                                                                                                                                            background: var(--surf); color: var(--text); border: 1px solid var(--brd);
-                                                                                                                                                                                                                                                                                        padding: 12px 4px; border-radius: 8px; font-size: 10px; font-weight: bold;
-                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                        button:active { background: var(--accent); color: #fff; transform: scale(0.96); }
+    <div class="player-box">
+        <div id="statsOverlay">FPS: <span id="fps">0</span> | MEM: <span id="mem">0</span></div>
+        <video id="mainPlayer" controls playsinline>
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        </video>
+    </div>
 
-                                                                                                                                                                                                                                                                                                                /* Admin/Settings Drawer */
+    <div id="home" class="content-section active-section">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search movies, series..." onkeyup="search()">
+        </div>
+        <div class="grid-title">Trending Movies</div>
+        <div class="movie-grid" id="movieList">
+            </div>
+    </div>
+
+    <div id="series" class="content-section">
+        <div class="grid-title">Popular Series</div>
+        <div class="movie-grid" id="seriesList">
+            <div class="movie-card">
+                <div class="poster-placeholder">🎬</div>
+                <div class="card-info">Sample Series S1</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminPanel">
+        <h3 style="margin-top:0">Content Manager</h3>
+        <input type="text" id="newTitle" placeholder="Movie Title">
+        <input type="text" id="newUrl" placeholder="Video MP4 Link">
+        <button onclick="addContent()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; border-radius:8px; font-weight:bold;">PUBLISH TO APP</button>
+        <button onclick="closeAdmin()" style="width:100%; background:none; color:#888; border:none; margin-top:10px;">Cancel</button>
+    </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="switchTab('home', this)"><i>🏠</i><span>Home</span></button>
+        <button class="nav-btn" onclick="switchTab('series', this)"><i>📺</i><span>Series</span></button>
+        <button class="nav-btn" onclick="openAdmin()"><i>➕</i><span>Add</span></button>
+    </nav>
+
+    <script>
+        const player = document.getElementById('mainPlayer');
+        let library = JSON.parse(localStorage.getItem('myStreamLibrary')) || [];
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active-section');
+            btn.classList.add('active');
+        }
+
+        function openAdmin() {
+            if(prompt("Enter Admin PIN:") === "1234") {
+                document.getElementById('adminPanel').style.display = 'block';
+            }
+        }
+
+        function closeAdmin() { document.getElementById('adminPanel').style.display = 'none'; }
+
+        function addContent() {
+            const title = document.getElementById('newTitle').value;
+            const url = document.getElementById('newUrl').value;
+            if(title && url) {
+                library.push({title, url});
+                localStorage.setItem('myStreamLibrary', JSON.stringify(library));
+                renderLibrary();
+                closeAdmin();
+                alert("Success! Added to library.");
+            }
+        }
+
+        function renderLibrary() {
+            const container = document.getElementById('movieList');
+            container.innerHTML = library.map((item, index) => `
+                <div class="movie-card" onclick="playVideo('${item.url}')">
+                    <div class="poster-placeholder">🍿</div>
+                    <div class="card-info">${item.title}</div>
+                </div>
+            `).join('');
+        }
+
+        function playVideo(url) {
+            player.src = url;
+            player.play();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function toggleStats() {
+            const s = document.getElementById('statsOverlay');
+            s.style.display = s.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Search logic
+        function search() {
+            let filter = document.getElementById('searchInput').value.toUpperCase();
+            let cards = document.querySelectorAll('.movie-card');
+            cards.forEach(card => {
+                let text = card.innerText.toUpperCase();
+                card.style.display = text.includes(filter) ? "" : "none";
+            });
+        }
+
+        // Performance monitoring for 4GB RAM phones
+        setInterval(() => {
+            if(performance.memory) {
+                document.getElementById('mem').innerText = Math.round(performance.memory.usedJSHeapSize/1048576) + 'MB';
+            }
+        }, 2000);
+
+        renderLibrary();
+    </script>
+</body>
+</html>
+                                     /* Admin/Settings Drawer */
                                                                                                                                                                                                                                                                                                                         #adminPanel { display: none; padding: 15px; background: var(--surf); border-top: 2px solid var(--accent); }
                                                                                                                                                                                                                                                                                                                                 input { width: 92%; padding: 10px; margin: 5px 0; border-radius: 6px; border: 1px solid var(--brd); background: var(--bg); color: var(--text); }
 
@@ -64,29 +189,7 @@
                                                                                                                                                                                                                                                                                                                                                                                                         <span style="color:var(--accent); font-weight:bold;">STREAMX</span>
                                                                                                                                                                                                                                                                                                                                                                                                                 <div style="display:flex; gap:8px;">
                                                                                                                                                                                                                                                                                                                                                                                                                             <button onclick="toggleTheme()" style="padding:4px 8px;">🌓</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                        <button onclick="unlockAdmin()" style="padding:4px 8px;">⚙️</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    </header>
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="player-container">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div id="statsBox">FPS: <span id="fps">0</span> | MEM: <span id="mem">--</span></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <video id="mainVideo" controls crossorigin="anonymous">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <source id="videoSrc" src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </video>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div id="adminPanel">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <input type="text" id="mTitle" placeholder="Title">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="text" id="mUrl" placeholder="MP4 URL">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <button onclick="saveMovie()" style="width:100%; background:var(--accent); color:#fff;">ADD MOVIE</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="grid">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <button onclick="startVoice()">🎤 VOICE</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button onclick="setSleep()">🌙 SLEEP</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <button onclick="changeSpeed()">⚡ SPD: <span id="spd">1x</span></button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button onclick="togglePiP()">📺 POP-OUT</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <button onclick="shareLink()">🔗 SHARE</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <button onclick="shareLink()">🔗 SHARE</button>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <button onclick="toggleStats()">📊 DEBUG</button>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <button onclick="toggleDataSaver()" id="dsBtn">📶 HD MODE</button>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 </div>
