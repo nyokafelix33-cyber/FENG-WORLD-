@@ -3,170 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamX | Premium World Wide</title>
+    <title>StreamX | Premium Cinema</title>
     <style>
-        :root { --main: #ff0000; --accent: #d3f243; --bg: #080808; --card: #151515; }
-        body { background: var(--bg); color: #fff; font-family: 'Inter', 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+        :root { --main: #d3f243; --bg: #0a0c10; --card-bg: #161b22; --text: #ffffff; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
 
-        /* --- NAVIGATION --- */
+        /* --- GOOJARA STYLE HEADER --- */
         header { 
-            background: rgba(0,0,0,0.95); padding: 15px 5%; display: flex; 
+            background: #000; padding: 10px 5%; display: flex; 
             align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222;
+            position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--main);
         }
-        .logo { font-size: 24px; font-weight: 900; color: var(--main); letter-spacing: -1px; cursor: pointer; }
-        .nav-links span { margin-left: 20px; cursor: pointer; font-size: 13px; font-weight: 700; text-transform: uppercase; color: #ccc; }
-        .nav-links span:hover { color: var(--accent); }
+        .logo { font-size: 24px; font-weight: 900; color: #ff0000; text-decoration: none; }
+        .nav-links span { margin-left: 20px; cursor: pointer; font-weight: 600; font-size: 14px; color: #ccc; transition: 0.3s; }
+        .nav-links span:hover { color: var(--main); }
 
-        /* --- HERO HOME SECTION --- */
+        /* --- HERO BANNER --- */
         .hero { 
-            height: 45vh; background: linear-gradient(to top, #080808, transparent), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1200');
+            height: 35vh; background: linear-gradient(to top, var(--bg), transparent), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1200');
             background-size: cover; background-position: center;
-            display: flex; flex-direction: column; justify-content: flex-end; padding: 30px 5%;
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 20px 5%;
         }
-        .hero h1 { font-size: 38px; margin: 0; color: #fff; font-weight: 900; }
-        .hero p { color: var(--accent); font-weight: 600; margin: 5px 0; letter-spacing: 1px; }
+        .hero h1 { font-size: 32px; margin: 0; }
 
-        /* --- CONTENT ROWS --- */
-        .container { padding: 10px 5% 50px; }
-        .row-title { font-size: 18px; font-weight: 800; margin: 30px 0 15px; color: var(--main); border-left: 4px solid var(--main); padding-left: 12px; }
-        .row { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scrollbar-width: none; }
-        .row::-webkit-scrollbar { display: none; }
-
-        .card { min-width: 160px; max-width: 160px; background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; }
-        .card:hover { border-color: var(--accent); transform: scale(1.03); }
-        .card img { width: 100%; height: 230px; object-fit: cover; background: #111; }
-        .card p { padding: 10px; margin: 0; font-size: 12px; text-align: center; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* --- PROFESSIONAL SETTINGS OVERHAUL --- */
-        #settingsModal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .settings-box { background: #111; width: 100%; max-width: 400px; border-radius: 20px; border: 1px solid #333; padding: 30px; box-sizing: border-box; }
-        .settings-title { font-size: 22px; font-weight: 900; color: var(--main); text-align: center; margin-bottom: 25px; border-bottom: 1px solid #222; padding-bottom: 15px; }
+        /* --- CONTENT GRID (GOOJARA STYLE) --- */
+        .container { padding: 20px 5%; }
+        .section-header { font-size: 18px; font-weight: 800; margin: 20px 0; color: var(--main); display: flex; align-items: center; gap: 10px; }
         
-        .menu-item { width: 100%; padding: 16px; margin-bottom: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 10px; text-align: left; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; }
-        .menu-item:hover { background: #222; border-color: var(--accent); }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+            gap: 15px; 
+        }
 
-        .sub-content { display: none; padding: 15px; background: #000; border-radius: 8px; margin-bottom: 15px; border: 1px solid #222; font-size: 14px; line-height: 1.5; color: #aaa; }
-        .auth-input { width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: #fff; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; }
-        .auth-btn { width: 100%; padding: 12px; background: var(--main); border: none; color: #fff; border-radius: 6px; font-weight: 800; cursor: pointer; }
+        .movie-card { 
+            background: var(--card-bg); border-radius: 8px; overflow: hidden; 
+            transition: 0.3s; cursor: pointer; position: relative; border: 1px solid #222;
+        }
+        .movie-card:hover { transform: scale(1.05); border-color: var(--main); }
+        .movie-card img { width: 100%; height: 210px; object-fit: cover; }
+        .movie-card .info { padding: 8px; text-align: center; }
+        .movie-card p { margin: 0; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .quality-tag { position: absolute; top: 8px; right: 8px; background: var(--main); color: #000; font-size: 10px; font-weight: 900; padding: 2px 5px; border-radius: 3px; }
+
+        /* --- SETTINGS MENU (PER IMAGE) --- */
+        #settingsModal { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; padding: 20px; }
+        .settings-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+        .profile-box { background: #1c1f26; padding: 20px; border-radius: 12px; margin-bottom: 25px; border-left: 4px solid var(--main); }
+        .continue-btn { background: var(--main); color: #000; padding: 12px 25px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 15px; }
+        
+        .menu-item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 18px 0; border-bottom: 1px solid #222; cursor: pointer; color: #eee;
+        }
+        .social-link { display: flex; align-items: center; gap: 10px; color: var(--main); text-decoration: none; font-weight: 700; margin-top: 10px; }
 
         /* --- PLAYER --- */
         #player { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; }
-        .player-bar { padding: 15px 5%; background: #111; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+        .player-bar { padding: 15px; background: #111; display: flex; justify-content: space-between; align-items: center; }
         iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body onload="init()">
 
     <header>
-        <div class="logo" onclick="location.reload()">STREAMX</div>
+        <div class="logo">STREAMX</div>
         <div class="nav-links">
             <span onclick="loadData('movie')">Movies</span>
             <span onclick="loadData('tv')">Series</span>
-            <span onclick="openSettings()">⚙️ MENU</span>
+            <span onclick="openSettings()">⚙️ MORE</span>
         </div>
     </header>
 
     <div class="hero">
-        <p>PREMIUM WORLDWIDE STREAMING</p>
         <h1>Cinema in your pocket.</h1>
     </div>
 
     <div class="container">
-        <div class="row-title">📺 Live Global Channels</div>
-        <div class="row">
-            <div class="card" onclick="play('https://www.youtube.com/embed/9Auq9mYxvEE?autoplay=1')">
-                <img src="https://images.unsplash.com/photo-1585829365234-781fcd0d4301?w=400"><p>LBC News HD</p>
-            </div>
-            <div class="card" onclick="play('https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1')">
-                <img src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=400"><p>Sky News Live</p>
-            </div>
-            <div class="card" onclick="play('https://www.youtube.com/embed/S_mU8uR_P6s?autoplay=1')">
-                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400"><p>Global Music TV</p>
-            </div>
-        </div>
-
-        <div class="row-title" id="gridTitle">🔥 Popular Now</div>
-        <div id="status" style="font-size: 13px; color: #444; margin-left: 15px;">Initializing Secure Media Link...</div>
-        <div class="row" id="movieGrid"></div>
+        <div class="section-header">🔥 POPULAR CONTENT</div>
+        <div id="loading" style="color: #666; font-size: 14px;">Establishing connection to cinema servers...</div>
+        <div class="grid" id="movieGrid"></div>
     </div>
 
     <div id="settingsModal">
-        <div class="settings-box">
-            <div class="settings-title">StreamX Control</div>
-            
-            <button class="menu-item" onclick="toggleSub('acc')">👤 Account & Security <span>▼</span></button>
-            <div id="acc" class="sub-content">
-                <input type="text" class="auth-input" placeholder="Email Address">
-                <input type="password" class="auth-input" placeholder="Password">
-                <button class="auth-btn" onclick="alert('Profile Saved!')">LOG IN / SIGN UP</button>
-            </div>
-
-            <button class="menu-item" onclick="toggleSub('abt')">ℹ️ Professional About Us <span>▼</span></button>
-            <div id="abt" class="sub-content">
-                <p><strong>Founder:</strong> Felix Nyoka</p>
-                <p><strong>Status:</strong> Elite Build Active</p>
-                <p>StreamX is a global leader in clean, high-speed media delivery, providing premium movies and live broadcasts without adult content.</p>
-            </div>
-
-            <button class="menu-item" onclick="alert('Report logged for the Technical Team.')" style="color:var(--main)">⚠️ Report Technical Issue</button>
-
-            <button onclick="closeSettings()" style="width:100%; padding:15px; background:none; border:1px solid #333; color:#fff; border-radius:12px; margin-top:15px; font-weight:bold; cursor:pointer;">CLOSE MENU</button>
+        <div class="settings-header">
+            <span onclick="closeSettings()" style="font-size: 24px; cursor: pointer;">←</span>
+            <h2 style="margin:0;">Settings</h2>
         </div>
+
+        <div class="profile-box">
+            <h3 style="margin:0;">My profile</h3>
+            <p style="color:#888; font-size: 13px;">Sign in to synchronize your movies and series</p>
+            <button class="continue-btn" onclick="alert('Login system initializing...')">Continue</button>
+        </div>
+
+        <div class="menu-item" onclick="toggleSub('abt')">General <span style="color:#555;">〉</span></div>
+        <div id="abt" style="display:none; padding: 15px; color:#aaa; font-size:14px; border-bottom: 1px solid #222;">
+            <p><strong>Founder:</strong> Felix Nyoka</p>
+            <p>StreamX is a global leader in high-speed media delivery, providing premium movies and live broadcasts.</p>
+        </div>
+
+        <div class="menu-item" onclick="toggleSub('contact')">Contact Us <span style="color:#555;">〉</span></div>
+        <div id="contact" style="display:none; padding: 15px; border-bottom: 1px solid #222;">
+            <a href="https://wa.me/260976461030" class="social-link">📱 WhatsApp: +260 976461030</a>
+            <a href="#" class="social-link">📸 Instagram: @StreamX_Official</a>
+        </div>
+
+        <div class="menu-item">User interface <span style="color:#555;">〉</span></div>
+        <div class="menu-item" style="color:#4a9eff;">Trakt profile <span style="color:#555;">〉</span></div>
     </div>
 
     <div id="player">
         <div class="player-bar">
-            <span style="font-weight:900; color:var(--accent); font-size:12px;">STREAMX SECURE PLAYER</span>
-            <button onclick="closePlayer()" style="background:var(--main); color:#fff; border:none; padding:8px 15px; border-radius:6px; font-weight:bold; cursor:pointer;">CLOSE X</button>
+            <span style="font-weight:900; color:var(--main);">STREAMX CINEMA</span>
+            <button onclick="closePlayer()" style="background:#ff0000; color:#fff; border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer;">CLOSE X</button>
         </div>
-        <iframe id="video" allowfullscreen></iframe>
+        <iframe id="videoFrame" allowfullscreen></iframe>
     </div>
 
     <script>
-        const KEY = '8093d6645564c71853a8089408018e6e';
-        const IMG = 'https://image.tmdb.org/t/p/w500';
+        const API_KEY = '8093d6645564c71853a8089408018e6e';
+        const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 
         function init() { loadData('movie'); }
 
         async function loadData(type) {
             const grid = document.getElementById('movieGrid');
-            const status = document.getElementById('status');
-            document.getElementById('gridTitle').innerText = type === 'movie' ? "🔥 Popular Movies" : "📺 Popular Series";
-            
-            try {
-                // Using the most stable endpoint for cross-device loading
-                const res = await fetch(`https://api.themoviedb.org/3/discover/${type}?api_key=${KEY}&sort_by=popularity.desc&include_adult=false`);
-                const data = await res.json();
-                
-                if(!data.results || data.results.length === 0) throw new Error();
+            const loading = document.getElementById('loading');
+            grid.innerHTML = "";
+            loading.style.display = "block";
 
-                status.style.display = "none";
-                grid.innerHTML = "";
-                data.results.forEach(m => {
-                    if(!m.poster_path) return;
-                    const div = document.createElement('div');
-                    div.className = 'card';
-                    div.onclick = () => play(`https://vidsrc.to/embed/${type}/${m.id}`);
-                    div.innerHTML = `<img src="${IMG + m.poster_path}"><p>${m.title || m.name}</p>`;
-                    grid.appendChild(div);
-                });
-            } catch (e) {
-                status.innerHTML = "⚠️ Data server timeout. Please tap Movies or Series to retry.";
+            try {
+                // Discover API is more robust for bypassing local network timeouts
+                const url = `https://api.themoviedb.org/3/discover/${type}?api_key=${API_KEY}&sort_by=popularity.desc&page=1`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if(data.results) {
+                    loading.style.display = "none";
+                    data.results.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'movie-card';
+                        card.onclick = () => play(`https://vidsrc.to/embed/${type}/${item.id}`);
+                        card.innerHTML = `
+                            <div class="quality-tag">HDTV</div>
+                            <img src="${IMG_URL + item.poster_path}" onerror="this.src='https://via.placeholder.com/140x210?text=No+Poster'">
+                            <div class="info"><p>${item.title || item.name}</p></div>
+                        `;
+                        grid.appendChild(card);
+                    });
+                }
+            } catch (error) {
+                loading.innerHTML = "⚠️ Server connection failed. Please check your data or refresh.";
             }
         }
 
         function play(url) {
             document.getElementById('player').style.display = 'flex';
-            document.getElementById('video').src = url;
+            document.getElementById('videoFrame').src = url;
         }
 
         function closePlayer() {
             document.getElementById('player').style.display = 'none';
-            document.getElementById('video').src = "";
+            document.getElementById('videoFrame').src = "";
         }
 
-        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
+        function openSettings() { document.getElementById('settingsModal').style.display = 'block'; }
         function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
         
         function toggleSub(id) {
