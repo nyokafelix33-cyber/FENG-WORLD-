@@ -3,42 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamX | World Wide Cinema</title>
+    <title>StreamX | World Wide</title>
     <style>
-        :root { --main: #d3f243; --bg: #080808; --card: #121212; --gold: #ffd700; }
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
+        :root { --main: #d3f243; --bg: #080808; --card: #121212; }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; }
 
-        /* Navigation */
+        /* Header with Settings Icon */
         header { background: #000; padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
         .logo { font-size: 26px; font-weight: 900; color: #ff0000; text-decoration: none; }
-        .logo span { color: white; }
         .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-item { color: #888; cursor: pointer; font-size: 14px; transition: 0.3s; text-decoration: none; }
-        .nav-item:hover { color: var(--main); }
+        .nav-item { color: #888; cursor: pointer; font-size: 14px; text-decoration: none; }
+        .settings-icon { font-size: 20px; cursor: pointer; color: white; margin-left: 10px; }
 
-        /* Cinematic Hero */
-        .hero { height: 60vh; background: linear-gradient(to top, var(--bg), transparent), url('https://image.tmdb.org/t/p/original/or06vS3ST0P3neyCwbXvXpI2lzC.jpg'); background-size: cover; background-position: center; display: flex; align-items: center; padding: 0 5%; }
-        .hero-text h1 { font-size: 50px; margin: 0; text-transform: uppercase; }
+        /* Cinematic Avengers Banner */
+        .hero { 
+            height: 75vh; 
+            background: linear-gradient(to right, rgba(0,0,0,0.9) 20%, transparent), 
+                        url('https://image.tmdb.org/t/p/original/7RyHs7yYpSduUjH19uSdrzB7CHu.jpg'); 
+            background-size: cover; 
+            background-position: center top; 
+            display: flex; 
+            align-items: center; 
+            padding: 0 5%; 
+        }
+        .hero-text h1 { font-size: clamp(30px, 5vw, 60px); margin: 10px 0; text-transform: uppercase; font-weight: 900; max-width: 600px; }
+        .btn-watch { background: var(--main); color: black; border: none; padding: 15px 40px; border-radius: 5px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
-        /* Grid & Rows */
-        .container { padding: 30px 5%; }
-        .row-title { font-size: 22px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        /* Top 10 Row */
+        .container { padding: 40px 5%; }
+        .row-title { font-size: 22px; font-weight: bold; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
         .movie-row { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 20px; scrollbar-width: none; }
-        .movie-card { min-width: 170px; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; position: relative; cursor: pointer; }
+        .movie-card { min-width: 180px; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; position: relative; cursor: pointer; }
         .movie-card:hover { transform: translateY(-10px); border-color: var(--main); }
         .movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .rank-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: var(--main); padding: 5px 10px; border-radius: 5px; font-weight: bold; border: 1px solid var(--main); }
-
-        /* Player & Chat */
-        #player { display: none; position: fixed; inset: 0; background: #000; z-index: 9000; padding: 20px; overflow-y: auto; }
-        .player-layout { display: flex; flex-direction: column; gap: 20px; }
-        @media (min-width: 900px) { .player-layout { flex-direction: row; } }
-        video { flex: 2; width: 100%; border-radius: 10px; background: #000; }
-        .chat-box { flex: 1; background: #111; border-radius: 10px; height: 400px; display: flex; flex-direction: column; border: 1px solid #333; }
-
-        /* About & Report Overlays */
-        .overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 8000; padding: 50px 10%; overflow-y: auto; }
-        .close-btn { position: fixed; top: 20px; right: 20px; background: var(--main); color: #000; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .rank { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: var(--main); padding: 5px 10px; border-radius: 5px; font-weight: 900; border: 1px solid var(--main); z-index: 2; }
     </style>
 </head>
 <body>
@@ -46,17 +44,18 @@
     <header>
         <a href="#" class="logo">STREAM<span>X</span></a>
         <div class="nav-links">
-            <span class="nav-item" onclick="location.reload()">Home</span>
-            <span class="nav-item" onclick="toggleOverlay('aboutPage', true)">About Us</span>
-            <span class="nav-item" onclick="shareSite()" style="color:var(--main); font-weight:bold;">📤 Share</span>
+            <span class="nav-item">Home</span>
+            <span class="nav-item">About Us</span>
+            <span class="nav-item" style="color:var(--main); font-weight:bold;">Mars</span>
+            <span class="settings-icon" onclick="alert('Settings coming soon!')">⚙️</span>
         </div>
     </header>
 
     <div class="hero">
         <div class="hero-text">
-            <p style="color:var(--main); letter-spacing:4px; margin-bottom:10px;">WORLD WIDE PREMIERE</p>
-            <h1>Avengers: Endgame</h1>
-            <button onclick="openPlayer('Avengers: Endgame')" style="background:var(--main); border:none; padding:15px 40px; border-radius:5px; font-weight:bold; margin-top:20px; cursor:pointer;">WATCH NOW</button>
+            <p style="color:var(--main); letter-spacing:4px; font-weight:bold;">WORLD WIDE PREMIERES</p>
+            <h1>AVENGERS: ENDGAME</h1>
+            <button class="btn-watch" onclick="alert('Streaming Avengers now...')">Watch Now</button>
         </div>
     </div>
 
@@ -65,95 +64,25 @@
         <div class="movie-row" id="top10Grid"></div>
     </div>
 
-    <div id="aboutPage" class="overlay">
-        <button class="close-btn" onclick="toggleOverlay('aboutPage', false)">✕ CLOSE</button>
-        <h1 style="font-size:48px;">Beyond <span>Streaming.</span></h1>
-        <p style="color:#888; font-size:18px; margin-bottom:40px;">StreamX is a vision created by StreamX to redefine entertainment world wide.</p>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:30px;">
-            <div style="background:#111; padding:20px; border-radius:10px; border-left:4px solid var(--main);">
-                <h3>Global Access</h3>
-                <p>High-quality cinema for everyone, everywhere.</p>
-            </div>
-            <div style="background:#111; padding:20px; border-radius:10px; border-left:4px solid var(--main);">
-                <h3>Community Driven</h3>
-                <p>Real-time chat and user reporting features.</p>
-            </div>
-        </div>
-        <div style="text-align:center; margin-top:60px;">
-            <p>Follow the creator:</p>
-            <a href="https://www.instagram.com/felix_ny10" target="_blank" style="text-decoration:none; background: linear-gradient(45deg, #f09433, #bc1888); color:white; padding:12px 30px; border-radius:30px; font-weight:bold; display:inline-block;">📸 @felix_ny10</a>
-            <p style="margin-top:20px; color:#444;">© 2026 StreamX Media Group</p>
-        </div>
-    </div>
-
-    <div id="player">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-            <h2 id="pTitle" style="color:var(--main);"></h2>
-            <button onclick="closePlayer()" style="background:#222; color:white; border:none; padding:10px 20px; cursor:pointer;">✕ CLOSE</button>
-        </div>
-        <div class="player-layout">
-            <video id="v" controls><source src="https://www.w3schools.com/html/mov_bbb.mp4"></video>
-            <div class="chat-box">
-                <div style="padding:15px; border-bottom:1px solid #222; font-weight:bold;">LIVE CHAT 🟢</div>
-                <div id="msgs" style="flex:1; padding:15px; overflow-y:auto; font-size:14px;"></div>
-                <div style="padding:10px; display:flex; gap:5px; border-top:1px solid #222;">
-                    <input type="text" id="chatIn" placeholder="Say something..." style="flex:1; background:#000; border:1px solid #333; color:white; padding:10px; border-radius:5px;">
-                    <button onclick="sendMsg()" style="background:var(--main); border:none; padding:10px; border-radius:5px; font-weight:bold;">SEND</button>
-                </div>
-            </div>
-        </div>
-        <button onclick="alert('Report Sent!')" style="margin-top:20px; background:none; border:1px solid red; color:red; padding:10px 20px; cursor:pointer; font-weight:bold;">🚩 REPORT PROBLEM</button>
-    </div>
-
     <script>
+        // High-quality poster URLs for the Top 10
         const top10 = [
-            { t: "Avatar: The Way of Water", i: "https://image.tmdb.org/t/p/w500/t6pEKntAI2ZzdvUv3pk679p36vu.jpg", r: "4.9" },
-            { t: "Spider-Man: No Way Home", i: "https://image.tmdb.org/t/p/w500/1g0m2YpScy62BC4t1q6qZ6FXuwi.jpg", r: "4.8" },
-            { t: "John Wick 4", i: "https://image.tmdb.org/t/p/w500/v796S79hDma9TZo9auY9LS6Y0B.jpg", r: "4.8" },
-            { t: "The Batman", i: "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onun.jpg", r: "4.7" },
-            { t: "Top Gun: Maverick", i: "https://image.tmdb.org/t/p/w500/62HCnUTziL79KWvKW6u2Sbhgojw.jpg", r: "4.9" }
+            { t: "Avatar: The Way of Water", i: "https://image.tmdb.org/t/p/w500/t6pEKntAI2ZzdvUv3pk679p36vu.jpg" },
+            { t: "Spider-Man: No Way Home", i: "https://image.tmdb.org/t/p/w500/1g0m2YpScy62BC4t1q6qZ6FXuwi.jpg" },
+            { t: "John Wick 4", i: "https://image.tmdb.org/t/p/w500/v796S79hDma9TZo9auY9LS6Y0B.jpg" },
+            { t: "The Batman", i: "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onun.jpg" },
+            { t: "Top Gun: Maverick", i: "https://image.tmdb.org/t/p/w500/62HCnUTziL79KWvKW6u2Sbhgojw.jpg" }
         ];
 
         function render() {
-            document.getElementById('top10Grid').innerHTML = top10.map((m, i) => `
-                <div class="movie-card" onclick="openPlayer('${m.t}')">
-                    <div class="rank-badge">#${i+1}</div>
-                    <img src="${m.i}">
-                    <div style="padding:10px; text-align:center; font-weight:bold;">${m.t}</div>
+            const grid = document.getElementById('top10Grid');
+            grid.innerHTML = top10.map((m, i) => `
+                <div class="movie-card">
+                    <div class="rank">#${i+1}</div>
+                    <img src="${m.i}" alt="${m.t}">
+                    <div style="padding:15px; text-align:center; font-weight:bold; font-size:14px;">${m.t}</div>
                 </div>
             `).join('');
-        }
-
-        function openPlayer(t) {
-            document.getElementById('pTitle').innerText = t;
-            document.getElementById('player').style.display = 'block';
-            document.getElementById('v').play();
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance("Now streaming " + t));
-        }
-
-        function closePlayer() {
-            document.getElementById('player').style.display = 'none';
-            document.getElementById('v').pause();
-        }
-
-        function toggleOverlay(id, show) {
-            document.getElementById(id).style.display = show ? 'block' : 'none';
-        }
-
-        function sendMsg() {
-            const input = document.getElementById('chatIn');
-            if(!input.value) return;
-            document.getElementById('msgs').innerHTML += `<div><b style="color:var(--main)">User:</b> ${input.value}</div>`;
-            input.value = "";
-        }
-
-        function shareSite() {
-            if (navigator.share) {
-                navigator.share({ title: 'StreamX', url: window.location.href });
-            } else {
-                navigator.clipboard.writeText(window.location.href);
-                alert("Link copied!");
-            }
         }
 
         window.onload = render;
