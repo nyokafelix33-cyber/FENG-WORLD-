@@ -2,61 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StreamX Pro</title>
     <style>
-        /* BASE THEME - No more leaks! */
-        :root { --main: #d3f243; --bg: #080808; --card: #151515; --text: #ffffff; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+        :root { --main: #d3f243; --bg: #0a0a0a; --card: #1a1a1a; --text: #ffffff; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
 
-        /* HEADER */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 1000; }
-        .brand { color: #ff0000; font-weight: 900; font-size: 22px; letter-spacing: -1px; }
-        .brand span { color: #fff; }
+        /* Header */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px; position: sticky; top: 0; background: rgba(10,10,10,0.95); z-index: 100; }
+        .logo { color: #ff0000; font-weight: 900; font-size: 24px; }
+        .logo span { color: #fff; }
 
-        /* HERO AREA (The "Watch Now" Look) */
-        .hero { width: 100%; height: 350px; background: linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; box-sizing: border-box; }
-        .hero h1 { margin: 0; font-size: 28px; }
-        .hero-btns { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-play { background: var(--main); color: #000; border: none; padding: 10px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        /* Hero Banner */
+        .hero { width: 100%; height: 300px; background: linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; box-sizing: border-box; }
+        .hero h1 { margin: 0; font-size: 24px; }
+        .play-btn { background: var(--main); color: #000; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin-top: 10px; cursor: pointer; width: fit-content; }
 
-        /* MOVIE GRID */
-        .section-title { padding: 20px 20px 10px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 0 20px; }
-        .movie-card { position: relative; border-radius: 8px; overflow: hidden; background: var(--card); transition: 0.3s; cursor: pointer; }
-        .movie-card:hover { transform: scale(1.05); }
-        .movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
-        .hd-tag { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.7); font-size: 10px; padding: 2px 5px; border-radius: 3px; font-weight: bold; border: 1px solid #444; }
-        .movie-title { padding: 8px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #bbb; }
+        /* Movie Sections */
+        .section-title { padding: 20px 20px 10px; font-size: 18px; font-weight: bold; border-left: 4px solid var(--main); margin-left: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding: 20px; }
+        .card { background: var(--card); border-radius: 10px; overflow: hidden; transition: 0.3s; cursor: pointer; border: 1px solid #222; }
+        .card:hover { transform: scale(1.05); border-color: var(--main); }
+        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+        .card-info { padding: 10px; font-size: 12px; text-align: center; color: #bbb; }
 
-        /* PLAYER OVERLAY */
-        #videoOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; }
-        #videoOverlay video { width: 100%; aspect-ratio: 16/9; }
-        .close-vid { padding: 20px; color: var(--main); font-weight: bold; cursor: pointer; text-align: right; }
+        /* Video Player Overlay - Hidden by default */
+        #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; }
+        #playerOverlay video { width: 100%; aspect-ratio: 16/9; }
+        .close-player { padding: 20px; color: var(--main); font-weight: bold; cursor: pointer; text-align: right; }
 
-        /* BOTTOM NAV */
-        nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: #000; display: flex; border-top: 1px solid #222; z-index: 5000; }
-        .nav-link { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 10px; text-decoration: none; cursor: pointer; }
-        .nav-link.active { color: var(--main); }
-        .nav-link i { font-size: 20px; margin-bottom: 4px; }
+        /* Bottom Nav */
+        nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; display: flex; border-top: 1px solid #222; z-index: 1000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 11px; cursor: pointer; }
+        .nav-item.active { color: var(--main); }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; }
+
+        /* Admin Panel Drawer */
+        #adminDrawer { display: none; position: fixed; bottom: 70px; width: 100%; background: var(--card); padding: 20px; border-radius: 20px 20px 0 0; border-top: 2px solid var(--main); box-sizing: border-box; z-index: 1500; }
+        input { width: 100%; padding: 12px; margin-bottom: 10px; background: #000; color: #fff; border: 1px solid #333; border-radius: 8px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="brand">STREAM<span>X</span></div>
-        <div style="display:flex; gap:15px; font-size: 20px;">🔍 ⚙️</div>
+        <div class="logo">STREAM<span>X</span></div>
+        <div style="font-size: 20px; cursor: pointer;" onclick="toggleAdmin()">⚙️</div>
     </header>
 
-    <div class="hero">
-        <h1>Greenland 2</h1>
-        <div style="font-size: 12px; color: #ccc;">Movie • Action, Sci-Fi</div>
-        <div class="hero-btns">
-            <button class="btn-play" onclick="playMovie('https://www.w3schools.com/html/mov_bbb.mp4', 'Greenland 2')">WATCH NOW</button>
-            <button style="background:rgba(255,255,255,0.1); color:white; border:none; padding:10px; border-radius:5px;">+</button>
+    <div id="home-content">
+        <div class="hero">
+            <h1>Greenland 2: Migration</h1>
+            <button class="play-btn" onclick="playMovie('https://www.w3schools.com/html/mov_bbb.mp4', 'Greenland 2')">WATCH NOW</button>
         </div>
+
+        <div class="section-title">Trending Now</div>
+        <div class="grid" id="mainGrid">
+            </div>
     </div>
 
-    <div class="section-title">Trending <span>View all</span></div>
-    <div class="grid">
-        <div class="movie-card" onclick="playMovie('https://www.w
+    <div id="playerOverlay">
+        <div class="close-player" onclick="closePlayer()">✕ CLOSE PLAYER</div>
+        <video id="videoElement" controls playsinline></video>
