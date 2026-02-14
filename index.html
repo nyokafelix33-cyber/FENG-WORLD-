@@ -9,128 +9,115 @@
         :root { --main: #d3f243; --bg: #0b0e14; --card: #1c1f26; --red: #ff0000; }
         body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
 
-        /* --- HEADER & NAVIGATION --- */
+        /* --- STYLING (Kept exactly as V5.0) --- */
         header { background: #000; padding: 12px 5%; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 22px; font-weight: 900; color: var(--red); text-decoration: none; }
-        
         .container { padding: 20px 5% 100px 5%; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
+        .row-title { color: var(--main); font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 16px; text-transform: uppercase; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
+        .card { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid #222; position: relative; cursor: pointer; transition: 0.2s; }
+        .card:active { transform: scale(0.95); }
+        .card img { width: 100%; height: 165px; object-fit: cover; background: #222; }
+        .card p { margin: 0; padding: 10px; font-size: 10px; text-align: center; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tag { position: absolute; top: 5px; right: 5px; background: var(--main); color: #000; font-size: 8px; font-weight: 900; padding: 2px 4px; border-radius: 3px; }
 
-        /* --- MOVIE CARDS --- */
-        .card { background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid #333; cursor: pointer; position: relative; }
-        .card img { width: 100%; height: 190px; object-fit: cover; background: #222; }
-        .card-info { padding: 10px; text-align: center; }
-        .card-info p { margin: 0; font-size: 11px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .hdtv { position: absolute; top: 8px; right: 8px; background: var(--main); color: #000; font-size: 9px; font-weight: 900; padding: 2px 5px; border-radius: 4px; }
+        /* --- MODALS & PLAYER --- */
+        #setModal, #player { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; padding: 20px; overflow-y: auto; }
+        #player { background: #000; flex-direction: column; padding: 0; }
+        .btn-sync { background: var(--main); color: #000; padding: 14px; border: none; border-radius: 10px; font-weight: 800; width: 100%; margin-top: 15px; }
 
-        /* --- STREAM & DOWNLOAD OPTIONS --- */
-        #actionSheet { position: fixed; bottom: 0; width: 100%; background: #161b22; z-index: 3000; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 25px 5%; display: none; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .btn-act { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
-        .btn-stream { background: var(--main); color: #000; }
-        .btn-dl { background: #333; color: #fff; }
-
-        /* --- PLAYER --- */
-        #player { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; }
-        iframe { width: 100%; height: 100%; border: none; }
-
-        /* --- FOOTER NAV (MATCHING 157851.png) --- */
         footer { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; z-index: 1000; }
         footer div { text-align: center; font-size: 10px; color: #555; cursor: pointer; }
         footer div.active { color: var(--main); }
         footer i { font-size: 22px; display: block; margin-bottom: 5px; }
     </style>
 </head>
-<body onload="loadLibrary()">
+<body onload="renderContent('movie')">
 
     <header>
         <a href="#" class="logo">STREAMX</a>
-        <div style="font-size:10px; color:var(--main); font-weight:900;">V4.1 CINEMA ENGINE</div>
+        <div style="font-size:10px; color:#444;">V5.1 CATALOG</div>
     </header>
 
     <div class="container">
-        <h3 style="color:var(--main); margin-bottom:20px; font-weight:900;"><i class="fas fa-fire"></i> POPULAR MOVIES</h3>
-        <div class="grid" id="movieGrid"></div>
-    </div>
-
-    <div id="actionSheet">
-        <h3 id="movieName" style="margin-top:0; color:var(--main);">Movie Title</h3>
-        <button class="btn-act btn-stream" onclick="playMovie()"><i class="fas fa-play"></i> Watch Now (Premium Stream)</button>
-        <button class="btn-act btn-dl" onclick="downloadMovie()"><i class="fas fa-download"></i> Download HD (Offline)</button>
-        <button onclick="closeActions()" style="background:transparent; color:#888; border:none; width:100%; padding:10px;">Cancel</button>
+        <div class="row-title" id="pageTitle"><i class="fas fa-fire"></i> Trending Movies</div>
+        <div class="grid" id="mainGrid"></div>
     </div>
 
     <div id="player">
         <div style="padding:15px; background:#111; display:flex; justify-content:space-between; align-items:center;">
-            <span id="playerTitle" style="color:var(--main); font-weight:bold;">STREAMX PLAYER</span>
-            <button onclick="closePlayer()" style="background:var(--red); color:#fff; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">CLOSE X</button>
+            <span id="pT" style="color:var(--main); font-weight:bold;">STREAMX PLAYER</span>
+            <button onclick="closeP()" style="background:var(--red); color:#fff; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">CLOSE X</button>
         </div>
-        <iframe id="videoFrame" allowfullscreen></iframe>
+        <iframe id="vF" allowfullscreen style="width:100%; height:100%; border:none;"></iframe>
+    </div>
+
+    <div id="setModal">
+        <i class="fas fa-arrow-left fa-lg" onclick="closeSets()"></i>
+        <div style="background:#1c1f26; padding:20px; border-radius:10px; margin-top:20px;">
+            <h3 style="margin:0;">My profile</h3>
+            <p style="color:#888; font-size:12px;">Sign in to sync your library</p>
+            <button class="btn-sync">Continue</button>
+        </div>
+        <p style="margin-top:20px; color:#555;">Founder: Felix Nyoka</p>
     </div>
 
     <footer>
-        <div onclick="loadLibrary()"><i class="fas fa-home"></i>Home</div>
-        <div onclick="loadLibrary()"><i class="fas fa-play-circle"></i>Movies</div>
-        <div class="active"><i class="fas fa-tv"></i>Series</div>
-        <div onclick="alert('Watch List Empty')"><i class="fas fa-bookmark"></i>Watch List</div>
-        <div onclick="alert('Settings Panel Open')"><i class="fas fa-bars"></i>More</div>
+        <div id="nav-home" onclick="renderContent('movie')"><i class="fas fa-home"></i>Home</div>
+        <div id="nav-movie" onclick="renderContent('movie')"><i class="fas fa-play-circle"></i>Movies</div>
+        <div id="nav-tv" onclick="renderContent('tv')"><i class="fas fa-tv"></i>Series/Toons</div>
+        <div><i class="fas fa-bookmark"></i>Watch List</div>
+        <div onclick="openSets()"><i class="fas fa-bars"></i>More</div>
     </footer>
 
     <script>
-        let currentID = "";
-        let currentTitle = "";
+        const data = {
+            movie: [
+                {id: 823464, title: "Godzilla x Kong", img: "https://image.tmdb.org/t/p/w500/13g9U99Y0vS4S9fU16E49I6I0.jpg"},
+                {id: 653346, title: "Planet of the Apes", img: "https://image.tmdb.org/t/p/w500/gKkl37vVI2umAU31my0xrPzMhps.jpg"},
+                {id: 929590, title: "Civil War", img: "https://image.tmdb.org/t/p/w500/sh7NS6tRABW0Yp9nmbvU0A0aCcT.jpg"}
+            ],
+            tv: [
+                {id: 60735, title: "The Flash", img: "https://image.tmdb.org/t/p/w500/l99vgn6z9GqyG79p9Ujqr9uYQYI.jpg", tag: "Series"},
+                {id: 126485, title: "Avatar: Last Airbender", img: "https://image.tmdb.org/t/p/w500/v7Uy7hc62fs4h6vGvLqZGoXoZ6u.jpg", tag: "Cartoon"},
+                {id: 40075, title: "SpongeBob SquarePants", img: "https://image.tmdb.org/t/p/w500/69Sns8WoY6wcCXLZhp9bs6TbsC2.jpg", tag: "Cartoon"},
+                {id: 67155, title: "Kung Fu Panda", img: "https://image.tmdb.org/t/p/w500/f57876f4776b7017686620593f65b.jpg", tag: "Cartoon"}
+            ]
+        };
 
-        // NEW LOCAL LIBRARY with bypass image links
-        const library = [
-            {id: 823464, title: "Godzilla x Kong", img: "https://images.tmdb.org/t/p/w500/13g9U99Y0vS4S9fU16E49I6I0.jpg"},
-            {id: 653346, title: "Planet of the Apes", img: "https://images.tmdb.org/t/p/w500/gKkl37vVI2umAU31my0xrPzMhps.jpg"},
-            {id: 929590, title: "Civil War", img: "https://images.tmdb.org/t/p/w500/sh7NS6tRABW0Yp9nmbvU0A0aCcT.jpg"},
-            {id: 1022789, title: "Inside Out 2", img: "https://images.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLv1oD9186.jpg"},
-            {id: 967847, title: "Dune: Part Two", img: "https://images.tmdb.org/t/p/w500/czembW0RjT5P39R97CSTr8S4O2w.jpg"},
-            {id: 719221, title: "The Fall Guy", img: "https://images.tmdb.org/t/p/w500/tMefBTEvBrCc0vUun0Zp8oQ39p2.jpg"}
-        ];
-
-        function loadLibrary() {
-            const grid = document.getElementById('movieGrid');
+        function renderContent(type) {
+            const grid = document.getElementById('mainGrid');
+            const title = document.getElementById('pageTitle');
+            
+            // Update UI
+            document.querySelectorAll('footer div').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-' + (type === 'tv' ? 'tv' : type)).classList.add('active');
+            title.innerHTML = `<i class="fas fa-fire"></i> ${type === 'movie' ? 'Trending Movies' : 'Shows & Cartoons'}`;
+            
             grid.innerHTML = "";
-            library.forEach(m => {
+            data[type].forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'card';
-                div.onclick = () => openActions(m.id, m.title);
+                div.onclick = () => play(item.id, item.title, type);
                 div.innerHTML = `
-                    <div class="hdtv">HDTV</div>
-                    <img src="${m.img}" onerror="this.src='https://via.placeholder.com/300x450?text=Network+Blocked'">
-                    <div class="card-info"><p>${m.title}</p></div>
+                    <div class="tag">${item.tag || 'HDTV'}</div>
+                    <img src="${item.img}">
+                    <p>${item.title}</p>
                 `;
                 grid.appendChild(div);
             });
         }
 
-        function openActions(id, title) {
-            currentID = id;
-            currentTitle = title;
-            document.getElementById('movieName').innerText = title;
-            document.getElementById('actionSheet').style.display = 'block';
-        }
-
-        function closeActions() { document.getElementById('actionSheet').style.display = 'none'; }
-
-        function playMovie() {
-            closeActions();
+        function play(id, title, type) {
             document.getElementById('player').style.display = 'flex';
-            document.getElementById('videoFrame').src = `https://vidsrc.to/embed/movie/${currentID}`;
-            document.getElementById('playerTitle').innerText = currentTitle;
+            document.getElementById('vF').src = `https://vidsrc.to/embed/${type}/${id}`;
+            document.getElementById('pT').innerText = title;
         }
 
-        function downloadMovie() {
-            // This redirects to a high-speed download server for the selected movie
-            window.location.href = `https://vidsrc.to/embed/movie/${currentID}`;
-            alert("Rerouting to High-Speed Download Server...");
-        }
-
-        function closePlayer() {
-            document.getElementById('player').style.display = 'none';
-            document.getElementById('videoFrame').src = '';
-        }
+        function closeP() { document.getElementById('player').style.display = 'none'; document.getElementById('vF').src = ''; }
+        function openSets() { document.getElementById('setModal').style.display = 'block'; }
+        function closeSets() { document.getElementById('setModal').style.display = 'none'; }
     </script>
 </body>
 </html>
