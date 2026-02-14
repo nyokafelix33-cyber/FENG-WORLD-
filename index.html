@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamX | Premium World Wide</title>
+    <title>StreamX | Felix Nyoka Edition</title>
     <style>
         :root { --main: #d3f243; --bg: #080808; --card: #121212; --transition: 0.4s ease; }
         body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
@@ -32,15 +32,12 @@
         .movie-row { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 20px; scrollbar-width: none; min-height: 250px; }
         .movie-card { min-width: 170px; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; }
         .movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .live-badge { background: red; color: white; padding: 2px 6px; font-size: 10px; position: absolute; top: 10px; left: 10px; border-radius: 3px; font-weight: bold; }
 
         /* --- PLAYER --- */
         #playerModal { position: fixed; inset: 0; background: black; z-index: 5000; display: none; flex-direction: column; }
         #videoFrame { width: 100%; height: 100%; border: none; }
         .player-controls { position: absolute; top: 20px; left: 20px; z-index: 5001; }
-
-        /* --- MODALS --- */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: #1a1a1a; padding: 40px; border-radius: 20px; width: 80%; max-width: 400px; text-align: center; border: 1px solid #333; }
     </style>
 </head>
 <body>
@@ -54,7 +51,7 @@
                 <input type="checkbox" id="rememberMe"> Remember Me
             </div>
             <button class="auth-btn" onclick="handleLogin()">SIGN IN</button>
-            <span class="toggle-link" onclick="toggleAuth('signup')">New here? Create Account</span>
+            <span class="toggle-link" onclick="toggleAuth('signup')">New here? Sign Up</span>
             <span class="toggle-link" style="font-size: 11px;" onclick="openModal('forgotModal')">Forgot Password?</span>
         </div>
 
@@ -64,72 +61,65 @@
             <input type="email" id="regEmail" placeholder="Email Address">
             <input type="password" id="regPass" placeholder="Create Password">
             <button class="auth-btn" onclick="handleSignup()">CREATE ACCOUNT</button>
-            <span class="toggle-link" onclick="toggleAuth('login')">Already have an account? Login</span>
+            <span class="toggle-link" onclick="toggleAuth('login')">Have an account? Login</span>
         </div>
     </div>
 
     <div id="mainSite">
         <header>
-            <a href="#" class="logo">STREAMX</a>
+            <a href="#" class="logo" onclick="location.reload()">STREAMX</a>
             <div class="search-container">
-                <input type="text" id="searchBar" placeholder="Search..." onkeyup="searchAPI()">
+                <input type="text" id="searchBar" placeholder="Search world wide..." onkeyup="searchAPI()">
             </div>
             <div style="display:flex; gap:15px; align-items:center;">
                 <span onclick="loadCategory('movie')" style="cursor:pointer; font-size:13px;">Movies</span>
                 <span onclick="loadCategory('tv')" style="cursor:pointer; font-size:13px;">Series</span>
-                <span onclick="window.scrollTo(0,0)" style="cursor:pointer; font-size:13px; color:red;">● LIVE</span>
                 <span id="userNameDisplay" style="color:var(--main); font-weight:bold; cursor:pointer;" onclick="location.reload()">Felix ⚙️</span>
             </div>
         </header>
 
         <div class="container">
-            <h3 style="color:#ff4d4d;">📺 Live Channels</h3>
+            <h3 style="color:#d3f243;">🏆 Live Sports Channels</h3>
             <div class="movie-row">
-                <div class="movie-card" onclick="playLive('https://www.youtube.com/embed/9Auq9mYxvEE?autoplay=1')">
-                    <img src="https://images.unsplash.com/photo-1585829365234-781fcd0d4301?w=400">
-                    <p style="text-align:center; font-size:12px;">Sky News Live</p>
-                </div>
-                <div class="movie-card" onclick="playLive('https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1')">
+                <div class="movie-card" style="position:relative;" onclick="playLive('https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1')">
+                    <span class="live-badge">LIVE</span>
                     <img src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=400">
-                    <p style="text-align:center; font-size:12px;">LBC Live</p>
+                    <p style="text-align:center; font-size:12px; padding:5px;">Sky Sports News</p>
+                </div>
+                <div class="movie-card" style="position:relative;" onclick="playLive('https://www.youtube.com/embed/5_XESl5XrmY?autoplay=1')">
+                    <span class="live-badge">LIVE</span>
+                    <img src="https://images.unsplash.com/photo-1540747913346-19e3adbb17c3?w=400">
+                    <p style="text-align:center; font-size:12px;">Global Football TV</p>
+                </div>
+                <div class="movie-card" style="position:relative;" onclick="playLive('https://www.youtube.com/embed/A47vS_UVR38?autoplay=1')">
+                    <span class="live-badge">LIVE</span>
+                    <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400">
+                    <p style="text-align:center; font-size:12px;">EuroSports Live</p>
                 </div>
             </div>
         </div>
 
         <div class="container">
-            <h3 id="rowTitle">🔥 Trending Movies</h3>
+            <h3 id="rowTitle">🔥 Trending Now</h3>
             <div class="movie-row" id="mainGrid"></div>
         </div>
     </div>
 
     <div id="playerModal">
         <div class="player-controls">
-            <button onclick="closePlayer()" style="background:red; color:white; border:none; padding:10px 20px; cursor:pointer; font-weight:bold;">✕ CLOSE</button>
+            <button onclick="closePlayer()" style="background:red; color:white; border:none; padding:10px 20px; cursor:pointer; font-weight:bold; border-radius:5px;">✕ CLOSE PLAYER</button>
         </div>
         <iframe id="videoFrame" src="" allowfullscreen></iframe>
     </div>
 
-    <div id="forgotModal" class="modal">
-        <div class="modal-content">
-            <h2>Recovery</h2>
-            <p style="font-size:13px; color:#aaa;">Enter your email to receive a recovery code.</p>
-            <input type="email" id="recoverEmail" placeholder="Email" style="width:100%; padding:10px; margin-bottom:10px; background:#000; border:1px solid #444; color:white;">
-            <button onclick="sendRecovery()" style="background:var(--main); border:none; padding:10px; width:100%; font-weight:bold; cursor:pointer;">SEND CODE</button>
-            <p onclick="closeModal()" style="margin-top:15px; cursor:pointer; color:#888;">Cancel</p>
-        </div>
-    </div>
-
     <script>
-        // NEW ACTIVE API KEY (Fixed blank screen issue)
+        // Use your verified API Key
         const API_KEY = '8093d6645564c71853a8089408018e6e';
         const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 
-        // Check for "Remember Me" on load
         window.onload = () => {
             const savedUser = localStorage.getItem('rememberedUser');
-            if(savedUser) {
-                loginSuccess(savedUser);
-            }
+            if(savedUser) loginSuccess(savedUser);
         };
 
         function toggleAuth(type) {
@@ -143,9 +133,9 @@
             const pass = document.getElementById('regPass').value;
             if(name && email && pass) {
                 localStorage.setItem(email, JSON.stringify({name, pass}));
-                alert("Account created! Please Login.");
+                alert("Account created! You can now Login.");
                 toggleAuth('login');
-            } else { alert("Fill all fields"); }
+            }
         }
 
         function handleLogin() {
@@ -158,7 +148,7 @@
                     localStorage.setItem('rememberedUser', user.name);
                 }
                 loginSuccess(user.name);
-            } else { alert("Invalid credentials or user doesn't exist."); }
+            } else { alert("User not found or wrong password"); }
         }
 
         function loginSuccess(name) {
@@ -169,38 +159,25 @@
         }
 
         async function loadCategory(type) {
-            document.getElementById('rowTitle').innerText = type === 'movie' ? "🔥 Popular Movies" : "📺 Popular TV Shows";
-            try {
-                const res = await fetch(`https://api.themoviedb.org/3/discover/${type}?api_key=${API_KEY}`);
-                const data = await res.json();
-                render(data.results, type);
-            } catch(e) { console.error("API Error: ", e); }
+            document.getElementById('rowTitle').innerText = type === 'movie' ? "🔥 Trending Movies" : "📺 Popular TV Series";
+            const res = await fetch(`https://api.themoviedb.org/3/trending/${type}/week?api_key=${API_KEY}`);
+            const data = await res.json();
+            render(data.results, type);
         }
 
-        async function searchAPI() {
-            const q = document.getElementById('searchBar').value;
-            if(q.length > 2) {
-                const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${q}`);
-                const data = await res.json();
-                render(data.results);
-            }
-        }
-
-        function render(items, type = 'movie') {
-            document.getElementById('mainGrid').innerHTML = items.map(m => {
-                if(!m.poster_path) return '';
-                return `
-                    <div class="movie-card" onclick="openPlayer('${m.id}', '${m.media_type || type}')">
-                        <img src="${IMG_URL + m.poster_path}">
-                        <p style="text-align:center; font-size:11px; padding:5px;">${m.title || m.name}</p>
-                    </div>
-                `;
-            }).join('');
+        function render(items, type) {
+            document.getElementById('mainGrid').innerHTML = items.map(m => `
+                <div class="movie-card" onclick="openPlayer('${m.id}', '${type}')">
+                    <img src="${IMG_URL + m.poster_path}" onerror="this.src='https://via.placeholder.com/170x250/111/fff?text=StreamX'">
+                    <p style="text-align:center; font-size:11px; padding:5px;">${m.title || m.name}</p>
+                </div>
+            `).join('');
         }
 
         function openPlayer(id, type) {
             document.getElementById('playerModal').style.display = 'flex';
-            const base = type === 'tv' ? 'https://vidsrc.me/embed/tv?tmdb=' : 'https://vidsrc.me/embed/movie?tmdb=';
+            // Using a more reliable playback server
+            const base = type === 'tv' ? 'https://vidsrc.xyz/embed/tv?tmdb=' : 'https://vidsrc.xyz/embed/movie?tmdb=';
             document.getElementById('videoFrame').src = base + id;
         }
 
@@ -213,14 +190,6 @@
             document.getElementById('playerModal').style.display = 'none';
             document.getElementById('videoFrame').src = "";
         }
-
-        function sendRecovery() {
-            alert("Recovery code sent to: " + document.getElementById('recoverEmail').value);
-            closeModal();
-        }
-
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
     </script>
 </body>
 </html>
