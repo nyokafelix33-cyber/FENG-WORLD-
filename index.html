@@ -3,69 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamX | World Wide</title>
+    <title>StreamX | Premium World Wide</title>
     <style>
-        :root { --main: #d3f243; --bg: #080808; --card: #121212; }
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; }
+        :root { --main: #d3f243; --bg: #080808; --card: #121212; --transition: 0.3s ease; }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
 
-        /* Header with Settings Icon */
-        header { background: #000; padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
+        /* Modern Centered Header */
+        header { 
+            background: rgba(0,0,0,0.95); padding: 15px 5%; display: flex; 
+            align-items: center; justify-content: space-between; position: sticky; 
+            top: 0; z-index: 1000; border-bottom: 1px solid #222; backdrop-filter: blur(10px);
+        }
         .logo { font-size: 26px; font-weight: 900; color: #ff0000; text-decoration: none; }
-        .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-item { color: #888; cursor: pointer; font-size: 14px; text-decoration: none; }
-        .settings-icon { font-size: 20px; cursor: pointer; color: white; margin-left: 10px; }
+        .logo span { color: white; }
 
-        /* Cinematic Avengers Banner */
+        /* Centered Search with Microphone */
+        .search-container {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; background: rgba(255,255,255,0.1);
+            border-radius: 30px; padding: 5px 15px; border: 1px solid #333; width: 30%; min-width: 250px;
+        }
+        .search-bar { 
+            background: none; border: none; color: white; padding: 8px; width: 100%; 
+            outline: none; text-align: center; font-size: 14px; 
+        }
+        .mic-btn { cursor: pointer; font-size: 18px; transition: 0.3s; color: var(--main); }
+        .mic-btn:hover { transform: scale(1.2); }
+
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-item { color: #888; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .settings-btn { font-size: 22px; cursor: pointer; transition: 0.4s; }
+
+        /* Settings Sidebar */
+        #settingsMenu { 
+            position: fixed; right: -300px; top: 0; width: 280px; height: 100%; 
+            background: #111; z-index: 2000; padding: 40px 20px; transition: 0.4s; border-left: 1px solid #222; 
+        }
+        #settingsMenu.active { right: 0; }
+
+        /* Cinematic Avengers Hero */
         .hero { 
             height: 75vh; 
             background: linear-gradient(to right, rgba(0,0,0,0.9) 20%, transparent), 
                         url('https://image.tmdb.org/t/p/original/7RyHs7yYpSduUjH19uSdrzB7CHu.jpg'); 
-            background-size: cover; 
-            background-position: center top; 
-            display: flex; 
-            align-items: center; 
-            padding: 0 5%; 
+            background-size: cover; background-position: center top; display: flex; align-items: center; padding: 0 5%; 
         }
-        .hero-text h1 { font-size: clamp(30px, 5vw, 60px); margin: 10px 0; text-transform: uppercase; font-weight: 900; max-width: 600px; }
-        .btn-watch { background: var(--main); color: black; border: none; padding: 15px 40px; border-radius: 5px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
+        .hero-text h1 { font-size: clamp(30px, 5vw, 60px); font-weight: 900; max-width: 600px; line-height: 1.1; }
 
-        /* Top 10 Row */
+        /* Top 10 Styling */
         .container { padding: 40px 5%; }
-        .row-title { font-size: 22px; font-weight: bold; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
         .movie-row { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 20px; scrollbar-width: none; }
         .movie-card { min-width: 180px; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; position: relative; cursor: pointer; }
-        .movie-card:hover { transform: translateY(-10px); border-color: var(--main); }
-        .movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .rank { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: var(--main); padding: 5px 10px; border-radius: 5px; font-weight: 900; border: 1px solid var(--main); z-index: 2; }
+        .rank { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: var(--main); padding: 5px 10px; border-radius: 5px; font-weight: 900; border: 1px solid var(--main); }
     </style>
 </head>
 <body>
 
     <header>
         <a href="#" class="logo">STREAM<span>X</span></a>
+        
+        <div class="search-container">
+            <input type="text" id="movieSearch" class="search-bar" placeholder="Search movies..." onkeyup="filterMovies()">
+            <span class="mic-btn" onclick="startVoiceSearch()">🎤</span>
+        </div>
+
         <div class="nav-links">
             <span class="nav-item">Home</span>
-            <span class="nav-item">About Us</span>
-            <span class="nav-item" style="color:var(--main); font-weight:bold;">Mars</span>
-            <span class="settings-icon" onclick="alert('Settings coming soon!')">⚙️</span>
+            <span class="nav-item" style="color:var(--main);">Mars</span>
+            <span class="settings-btn" onclick="toggleSettings()">⚙️</span>
         </div>
     </header>
+
+    <div id="settingsMenu">
+        <h3>Control Panel</h3>
+        <p style="font-size:12px; color:#888;">THEME COLOR</p>
+        <div onclick="setTheme('#d3f243')" style="background:#d3f243; width:30px; height:30px; display:inline-block; cursor:pointer; border-radius:50%;"></div>
+        <div onclick="setTheme('#ff4444')" style="background:#ff4444; width:30px; height:30px; display:inline-block; cursor:pointer; border-radius:50%; margin-left:10px;"></div>
+        <button onclick="toggleSettings()" style="width:100%; margin-top:50px; padding:10px; background:none; border:1px solid #444; color:white;">Close</button>
+    </div>
 
     <div class="hero">
         <div class="hero-text">
             <p style="color:var(--main); letter-spacing:4px; font-weight:bold;">WORLD WIDE PREMIERES</p>
             <h1>AVENGERS: ENDGAME</h1>
-            <button class="btn-watch" onclick="alert('Streaming Avengers now...')">Watch Now</button>
+            <button style="background:var(--main); border:none; padding:15px 40px; border-radius:5px; font-weight:bold; cursor:pointer; margin-top:20px;">WATCH NOW</button>
         </div>
     </div>
 
     <div class="container">
-        <div class="row-title">🏆 Global Top 10</div>
+        <h2>🏆 Global Top 10</h2>
         <div class="movie-row" id="top10Grid"></div>
     </div>
 
     <script>
-        // High-quality poster URLs for the Top 10
         const top10 = [
             { t: "Avatar: The Way of Water", i: "https://image.tmdb.org/t/p/w500/t6pEKntAI2ZzdvUv3pk679p36vu.jpg" },
             { t: "Spider-Man: No Way Home", i: "https://image.tmdb.org/t/p/w500/1g0m2YpScy62BC4t1q6qZ6FXuwi.jpg" },
@@ -74,12 +104,35 @@
             { t: "Top Gun: Maverick", i: "https://image.tmdb.org/t/p/w500/62HCnUTziL79KWvKW6u2Sbhgojw.jpg" }
         ];
 
-        function render() {
-            const grid = document.getElementById('top10Grid');
-            grid.innerHTML = top10.map((m, i) => `
+        function toggleSettings() { document.getElementById('settingsMenu').classList.toggle('active'); }
+        
+        function setTheme(color) { 
+            document.documentElement.style.setProperty('--main', color);
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance("Theme updated"));
+        }
+
+        function filterMovies() {
+            const input = document.getElementById('movieSearch').value.toLowerCase();
+            const filtered = top10.filter(m => m.t.toLowerCase().includes(input));
+            render(filtered);
+        }
+
+        function startVoiceSearch() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.onstart = () => { window.speechSynthesis.speak(new SpeechSynthesisUtterance("Listening")); };
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('movieSearch').value = transcript;
+                filterMovies();
+            };
+            recognition.start();
+        }
+
+        function render(data = top10) {
+            document.getElementById('top10Grid').innerHTML = data.map((m, i) => `
                 <div class="movie-card">
                     <div class="rank">#${i+1}</div>
-                    <img src="${m.i}" alt="${m.t}">
+                    <img src="${m.i}" style="width:100%; aspect-ratio:2/3; object-fit:cover;">
                     <div style="padding:15px; text-align:center; font-weight:bold; font-size:14px;">${m.t}</div>
                 </div>
             `).join('');
