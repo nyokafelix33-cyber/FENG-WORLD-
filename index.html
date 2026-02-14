@@ -5,51 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StreamX Pro</title>
     <style>
-        :root { --main: #d3f243; --bg: #0a0a0a; --card: #1a1a1a; --text: #ffffff; --accent-red: #ff0000; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
+        :root { --main: #d3f243; --bg: #0a0a0a; --card: #1a1a1a; --red: #ff0000; }
+        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding-bottom: 90px; overflow-x: hidden; }
 
-        /* Header & Search */
-        header { display: flex; flex-direction: column; padding: 15px 20px; position: sticky; top: 0; background: rgba(10,10,10,0.95); z-index: 1000; border-bottom: 1px solid #222; }
+        /* Header */
+        header { display: flex; flex-direction: column; padding: 15px 20px; background: #000; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
         .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .logo { color: var(--accent-red); font-weight: 900; font-size: 24px; text-transform: uppercase; }
-        .logo span { color: #fff; }
+        .logo { color: var(--red); font-weight: 900; font-size: 24px; }
+        .logo span { color: white; }
         .search-bar { width: 100%; background: #1a1a1a; border: 1px solid #333; padding: 10px; border-radius: 8px; color: white; outline: none; }
-        .search-bar:focus { border-color: var(--main); }
 
         /* Hero Banner */
-        .hero { width: 100%; height: 300px; background: linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; box-sizing: border-box; }
-        .hero h1 { margin: 0; font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        .play-btn { background: var(--main); color: #000; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin-top: 10px; cursor: pointer; width: fit-content; }
+        .hero { height: 300px; background: linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; }
+        .play-btn { background: var(--main); color: black; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; width: fit-content; margin-top: 10px; }
 
         /* Movie Grid */
-        .section-title { padding: 20px; font-size: 18px; font-weight: bold; border-left: 4px solid var(--main); margin: 20px; }
+        .section-title { padding: 20px; font-size: 18px; font-weight: bold; color: var(--main); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 0 20px; }
-        .card { background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid #222; cursor: pointer; transition: 0.3s; }
-        .card:hover { transform: scale(1.05); border-color: var(--main); }
+        .card { background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid #222; cursor: pointer; }
         .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
-        .card-info { padding: 10px; font-size: 12px; text-align: center; color: #bbb; }
+        .card-info { padding: 10px; font-size: 12px; text-align: center; color: #ccc; }
 
-        /* VIDEO PLAYER OVERLAY */
-        #videoOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; flex-direction: column; }
-        .player-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #111; }
-        .close-btn { font-size: 24px; color: var(--main); cursor: pointer; font-weight: bold; }
-        video { width: 100%; max-height: 80vh; background: #000; }
+        /* Player Overlay */
+        #playerOverlay { display: none; position: fixed; inset: 0; background: #000; z-index: 5000; flex-direction: column; }
+        .player-header { padding: 20px; display: flex; justify-content: space-between; background: #111; }
 
-        /* Bottom Nav */
-        nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 4000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; font-size: 11px; cursor: pointer; text-decoration: none; }
+        /* Nav */
+        nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 4000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; font-size: 11px; cursor: pointer; }
         .nav-item.active { color: var(--main); }
-        .nav-icon { font-size: 20px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
-    <div id="videoOverlay">
+    <div id="playerOverlay">
         <div class="player-header">
-            <div id="nowPlayingTitle" style="font-weight:bold;">Streaming...</div>
-            <div class="close-btn" onclick="closePlayer()">✕</div>
+            <div id="playingTitle" style="font-weight:bold;">Streaming...</div>
+            <div onclick="closePlayer()" style="color:var(--main); cursor:pointer; font-weight:bold;">✕ CLOSE</div>
         </div>
-        <video id="videoElement" controls>
+        <video id="videoMain" controls style="width:100%; max-height:80vh;">
             <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
         </video>
     </div>
@@ -57,6 +51,23 @@
     <header>
         <div class="nav-top">
             <div class="logo">STREAM<span>X</span></div>
-            <div style="font-size: 22px; cursor: pointer;">👤</div>
+            <div style="font-size: 22px;">👤</div>
         </div>
-        <input type="text" id="sear
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search movies..." oninput="searchFunc()">
+    </header>
+
+    <div id="hero" class="hero">
+        <h1 style="margin:0;">Greenland 2: Migration</h1>
+        <button class="play-btn" onclick="openPlayer('Greenland 2')">WATCH NOW</button>
+    </div>
+
+    <div class="section-title" id="gridTitle">Trending Now</div>
+    <div class="grid" id="movieGrid"></div>
+
+    <nav>
+        <div class="nav-item active"><span>🏠</span><span>Home</span></div>
+        <div class="nav-item"><span>🎬</span><span>Movies</span></div>
+        <div class="nav-item"><span>📺</span><span>Series</span></div>
+    </nav>
+
+    <scri
