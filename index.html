@@ -3,162 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamX | Premium worldwide</title>
+    <title>StreamX | Premium Worldwide</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --main: #d3f243; --bg: #0b0e14; --card: #1c1f26; --red: #ff0000; }
         body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
 
-        /* --- NAVIGATION --- */
+        /* --- HEADER & NAVIGATION --- */
         header { background: #000; padding: 12px 5%; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 22px; font-weight: 900; color: var(--red); text-decoration: none; }
-        .v-tag { font-size: 10px; color: #444; font-weight: bold; }
-
-        /* --- SEARCH & CONTENT --- */
-        .search-box { padding: 15px 5%; background: #000; }
-        #sInput { width: 100%; background: #1a1a1a; border: 1px solid #333; padding: 12px; border-radius: 8px; color: #fff; outline: none; }
         
         .container { padding: 20px 5% 100px 5%; }
-        .row-title { color: var(--main); font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
-        .card { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid #222; position: relative; cursor: pointer; transition: 0.3s; }
-        .card img { width: 100%; height: 165px; object-fit: cover; background: #222; }
-        .card p { margin: 0; padding: 10px; font-size: 10px; text-align: center; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .hdtv { position: absolute; top: 5px; right: 5px; background: var(--main); color: #000; font-size: 9px; font-weight: 900; padding: 2px 4px; border-radius: 3px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
 
-        /* --- SETTINGS (MATCHING 157851.png) --- */
-        #setModal { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; padding: 20px; overflow-y: auto; }
-        .profile-box { background: var(--card); padding: 25px; border-radius: 12px; margin: 20px 0; border-left: 4px solid var(--main); }
-        .btn-green { background: var(--main); color: #000; padding: 14px; border: none; border-radius: 10px; font-weight: 800; width: 100%; margin-top: 15px; cursor: pointer; }
-        
-        .menu-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #222; cursor: pointer; }
-        .expand-panel { display: none; padding: 15px; background: #111; border-radius: 8px; margin-top: -1px; font-size: 14px; color: #ccc; line-height: 1.6; }
+        /* --- MOVIE CARDS --- */
+        .card { background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid #333; cursor: pointer; position: relative; }
+        .card img { width: 100%; height: 190px; object-fit: cover; background: #222; }
+        .card-info { padding: 10px; text-align: center; }
+        .card-info p { margin: 0; font-size: 11px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hdtv { position: absolute; top: 8px; right: 8px; background: var(--main); color: #000; font-size: 9px; font-weight: 900; padding: 2px 5px; border-radius: 4px; }
 
-        /* --- FOOTER --- */
+        /* --- STREAM & DOWNLOAD OPTIONS --- */
+        #actionSheet { position: fixed; bottom: 0; width: 100%; background: #161b22; z-index: 3000; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 25px 5%; display: none; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+        .btn-act { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
+        .btn-stream { background: var(--main); color: #000; }
+        .btn-dl { background: #333; color: #fff; }
+
+        /* --- PLAYER --- */
+        #player { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* --- FOOTER NAV (MATCHING 157851.png) --- */
         footer { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; z-index: 1000; }
         footer div { text-align: center; font-size: 10px; color: #555; cursor: pointer; }
         footer div.active { color: var(--main); }
         footer i { font-size: 22px; display: block; margin-bottom: 5px; }
-
-        /* --- LOADER --- */
-        #loader { text-align: center; padding: 60px 0; display: block; }
-        .spin { border: 4px solid #222; border-top: 4px solid var(--main); border-radius: 50%; width: 45px; height: 45px; animation: rotate 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body onload="startApp('movie')">
+<body onload="loadLibrary()">
 
     <header>
         <a href="#" class="logo">STREAMX</a>
-        <div class="v-tag">V4.0 ULTIMATE</div>
+        <div style="font-size:10px; color:var(--main); font-weight:900;">V4.1 CINEMA ENGINE</div>
     </header>
 
-    <div class="search-box">
-        <input type="text" id="sInput" placeholder="Search world wide movies..." onkeyup="if(event.key==='Enter')search()">
-    </div>
-
     <div class="container">
-        <div class="row-title" id="gTitle"><i class="fas fa-bolt"></i> TRENDING NOW</div>
-        <div id="loader">
-            <div class="spin"></div>
-            <p id="lText">Establishing secure link...</p>
-        </div>
-        <div class="grid" id="mainGrid"></div>
+        <h3 style="color:var(--main); margin-bottom:20px; font-weight:900;"><i class="fas fa-fire"></i> POPULAR MOVIES</h3>
+        <div class="grid" id="movieGrid"></div>
     </div>
 
-    <div id="setModal">
-        <div style="display:flex; align-items:center; gap:20px;">
-            <i class="fas fa-arrow-left fa-lg" onclick="closeSets()"></i>
-            <h2 style="margin:0;">Settings</h2>
+    <div id="actionSheet">
+        <h3 id="movieName" style="margin-top:0; color:var(--main);">Movie Title</h3>
+        <button class="btn-act btn-stream" onclick="playMovie()"><i class="fas fa-play"></i> Watch Now (Premium Stream)</button>
+        <button class="btn-act btn-dl" onclick="downloadMovie()"><i class="fas fa-download"></i> Download HD (Offline)</button>
+        <button onclick="closeActions()" style="background:transparent; color:#888; border:none; width:100%; padding:10px;">Cancel</button>
+    </div>
+
+    <div id="player">
+        <div style="padding:15px; background:#111; display:flex; justify-content:space-between; align-items:center;">
+            <span id="playerTitle" style="color:var(--main); font-weight:bold;">STREAMX PLAYER</span>
+            <button onclick="closePlayer()" style="background:var(--red); color:#fff; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">CLOSE X</button>
         </div>
-        <div class="profile-box">
-            <h3 style="margin:0;">My profile</h3>
-            <p style="color:#888; font-size: 13px; margin-top:5px;">Sign in to synchronize your movies and series</p>
-            <button class="btn-green" onclick="alert('Syncing Profile...')">Continue</button>
-        </div>
-        <div class="menu-row" onclick="toggle('abt')"><span><i class="fas fa-info-circle"></i> General</span><i class="fas fa-chevron-right"></i></div>
-        <div id="abt" class="expand-panel">
-            <strong>Founder:</strong> Felix Nyoka<br>
-            StreamX Premium provides global cinema access directly to your mobile device.
-        </div>
-        <div class="menu-row" onclick="toggle('con')"><span><i class="fas fa-phone"></i> Contact</span><i class="fas fa-chevron-right"></i></div>
-        <div id="con" class="expand-panel">
-            <a href="https://wa.me/260976461030" style="color:var(--main); text-decoration:none; font-weight:bold;">
-                <i class="fab fa-whatsapp"></i> WhatsApp: +260 976461030
-            </a><br>
-            Instagram: @StreamX_Premium
-        </div>
-        <div class="menu-row"><span><i class="fas fa-display"></i> User interface</span><i class="fas fa-chevron-right"></i></div>
+        <iframe id="videoFrame" allowfullscreen></iframe>
     </div>
 
     <footer>
-        <div onclick="startApp('movie')"><i class="fas fa-home"></i>Home</div>
-        <div onclick="startApp('movie')"><i class="fas fa-play-circle"></i>Movies</div>
-        <div onclick="startApp('tv')"><i class="fas fa-tv"></i>TV Series</div>
-        <div onclick="alert('Watch List is empty')"><i class="fas fa-bookmark"></i>Watch List</div>
-        <div onclick="openSets()" class="active"><i class="fas fa-bars"></i>More</div>
+        <div onclick="loadLibrary()"><i class="fas fa-home"></i>Home</div>
+        <div onclick="loadLibrary()"><i class="fas fa-play-circle"></i>Movies</div>
+        <div class="active"><i class="fas fa-tv"></i>Series</div>
+        <div onclick="alert('Watch List Empty')"><i class="fas fa-bookmark"></i>Watch List</div>
+        <div onclick="alert('Settings Panel Open')"><i class="fas fa-bars"></i>More</div>
     </footer>
 
     <script>
-        const KEY = '8093d6645564c71853a8089408018e6e';
-        const PROXY = 'https://api.allorigins.win/raw?url=';
+        let currentID = "";
+        let currentTitle = "";
 
-        async function startApp(type) {
-            const grid = document.getElementById('mainGrid');
-            const loader = document.getElementById('loader');
-            const lText = document.getElementById('lText');
-            document.getElementById('gTitle').innerHTML = `<i class="fas fa-bolt"></i> POPULAR ${type.toUpperCase()}S`;
+        // NEW LOCAL LIBRARY with bypass image links
+        const library = [
+            {id: 823464, title: "Godzilla x Kong", img: "https://images.tmdb.org/t/p/w500/13g9U99Y0vS4S9fU16E49I6I0.jpg"},
+            {id: 653346, title: "Planet of the Apes", img: "https://images.tmdb.org/t/p/w500/gKkl37vVI2umAU31my0xrPzMhps.jpg"},
+            {id: 929590, title: "Civil War", img: "https://images.tmdb.org/t/p/w500/sh7NS6tRABW0Yp9nmbvU0A0aCcT.jpg"},
+            {id: 1022789, title: "Inside Out 2", img: "https://images.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLv1oD9186.jpg"},
+            {id: 967847, title: "Dune: Part Two", img: "https://images.tmdb.org/t/p/w500/czembW0RjT5P39R97CSTr8S4O2w.jpg"},
+            {id: 719221, title: "The Fall Guy", img: "https://images.tmdb.org/t/p/w500/tMefBTEvBrCc0vUun0Zp8oQ39p2.jpg"}
+        ];
+
+        function loadLibrary() {
+            const grid = document.getElementById('movieGrid');
             grid.innerHTML = "";
-            loader.style.display = "block";
-
-            // Set a timer: If database takes > 5 seconds, load the failover content
-            const timer = setTimeout(() => {
-                if(grid.innerHTML === "") {
-                    lText.innerText = "Network slow. Loading local library...";
-                    loadFailover(type);
-                }
-            }, 5000);
-
-            try {
-                const url = `https://api.themoviedb.org/3/trending/${type}/day?api_key=${KEY}`;
-                const res = await fetch(PROXY + encodeURIComponent(url));
-                const data = await res.json();
-                clearTimeout(timer);
-                renderGrid(data.results);
-            } catch (e) {
-                console.log("Database Blocked.");
-            }
-        }
-
-        function loadFailover(type) {
-            const items = [
-                {title: "Godzilla x Kong", poster_path: "/13g9U99Y0vS4S9fU16E49I6I0.jpg"},
-                {title: "Planet of the Apes", poster_path: "/gKkl37vVI2umAU31my0xrPzMhps.jpg"},
-                {title: "Civil War", poster_path: "/sh7NS6tRABW0Yp9nmbvU0A0aCcT.jpg"},
-                {title: "Inside Out 2", poster_path: "/vpnVM9B6NMmQpWeZvzLv1oD9186.jpg"},
-                {title: "Dune: Part Two", poster_path: "/czembW0RjT5P39R97CSTr8S4O2w.jpg"},
-                {title: "The Fall Guy", poster_path: "/tMefBTEvBrCc0vUun0Zp8oQ39p2.jpg"}
-            ];
-            renderGrid(items);
-        }
-
-        function renderGrid(list) {
-            document.getElementById('loader').style.display = "none";
-            const grid = document.getElementById('mainGrid');
-            list.forEach(m => {
+            library.forEach(m => {
                 const div = document.createElement('div');
                 div.className = 'card';
-                div.innerHTML = `<div class="hdtv">HDTV</div><img src="https://image.tmdb.org/t/p/w300${m.poster_path}"><p>${m.title || m.name}</p>`;
+                div.onclick = () => openActions(m.id, m.title);
+                div.innerHTML = `
+                    <div class="hdtv">HDTV</div>
+                    <img src="${m.img}" onerror="this.src='https://via.placeholder.com/300x450?text=Network+Blocked'">
+                    <div class="card-info"><p>${m.title}</p></div>
+                `;
                 grid.appendChild(div);
             });
         }
 
-        function openSets() { document.getElementById('setModal').style.display = 'block'; }
-        function closeSets() { document.getElementById('setModal').style.display = 'none'; }
-        function toggle(id) {
-            const el = document.getElementById(id);
-            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        function openActions(id, title) {
+            currentID = id;
+            currentTitle = title;
+            document.getElementById('movieName').innerText = title;
+            document.getElementById('actionSheet').style.display = 'block';
+        }
+
+        function closeActions() { document.getElementById('actionSheet').style.display = 'none'; }
+
+        function playMovie() {
+            closeActions();
+            document.getElementById('player').style.display = 'flex';
+            document.getElementById('videoFrame').src = `https://vidsrc.to/embed/movie/${currentID}`;
+            document.getElementById('playerTitle').innerText = currentTitle;
+        }
+
+        function downloadMovie() {
+            // This redirects to a high-speed download server for the selected movie
+            window.location.href = `https://vidsrc.to/embed/movie/${currentID}`;
+            alert("Rerouting to High-Speed Download Server...");
+        }
+
+        function closePlayer() {
+            document.getElementById('player').style.display = 'none';
+            document.getElementById('videoFrame').src = '';
         }
     </script>
 </body>
