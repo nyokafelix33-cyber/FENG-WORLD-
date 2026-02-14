@@ -2,58 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StreamX Pro</title>
     <style>
         :root { --main: #d3f243; --bg: #0a0a0a; --card: #1a1a1a; --red: #ff0000; }
-        
-        /* Core Reset - Fixes "Frozen" touches */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding-bottom: 90px; }
 
         /* Header */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(0,0,0,0.9); position: sticky; top: 0; z-index: 1000; }
-        .logo { color: var(--red); font-weight: 900; font-size: 24px; letter-spacing: -1px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #000; position: sticky; top: 0; z-index: 1000; }
+        .logo { color: var(--red); font-weight: 900; font-size: 24px; }
         .logo span { color: white; }
 
-        /* Hero Section */
-        .hero { height: 350px; background: linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px; margin-bottom: 10px; }
-        .hero h1 { margin: 0; font-size: 28px; }
-        .play-btn { background: var(--main); color: black; border: none; padding: 14px 30px; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer; width: fit-content; font-size: 16px; }
+        /* Hero Banner */
+        .hero { height: 350px; background: linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px; }
+        .play-btn { background: var(--main); color: black; border: none; padding: 14px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; width: fit-content; margin-top: 10px; }
 
         /* Movie Grid */
-        .section-title { padding: 15px 20px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .section-title { padding: 20px; font-size: 18px; font-weight: bold; color: var(--main); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding: 0 20px; }
-        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.2s; cursor: pointer; }
-        .card:active { transform: scale(0.95); }
+        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; text-align: center; }
         .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .card-info { padding: 10px; font-size: 12px; text-align: center; font-weight: 500; }
+        .card-info { padding: 10px; font-size: 12px; }
 
         /* Settings Overlay */
-        #settingsUI { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; overflow-y: auto; padding-bottom: 100px; }
-        .profile-box { text-align: center; padding: 40px 20px; background: #111; border-bottom: 1px solid #222; position: relative; }
-        .avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--main); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: black; font-size: 35px; font-weight: bold; }
-        .menu-item { display: flex; justify-content: space-between; padding: 20px; border-bottom: 1px solid #1a1a1a; cursor: pointer; }
+        #settingsUI { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; padding: 20px; }
+        .avatar { width: 70px; height: 70px; background: var(--main); border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; color: black; font-size: 30px; font-weight: bold; }
 
-        /* Admin/Add Movie Drawer */
-        #adminUI { display: none; position: fixed; bottom: 80px; left: 0; width: 100%; background: #151515; padding: 25px; border-radius: 20px 20px 0 0; border-top: 2px solid var(--main); z-index: 4000; }
-        input { width: 100%; padding: 12px; margin-bottom: 10px; background: #000; color: #fff; border: 1px solid #333; border-radius: 8px; }
-
-        /* Bottom Navigation */
-        nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; display: flex; border-top: 1px solid #222; z-index: 4500; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 11px; cursor: pointer; }
+        /* Bottom Nav */
+        nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; display: flex; border-top: 1px solid #222; z-index: 4000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 11px; cursor: pointer; text-decoration: none; }
         .nav-item.active { color: var(--main); }
-        .nav-icon { font-size: 22px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">STREAM<span>X</span></div>
-        <div style="font-size: 22px;" onclick="toggleSettings()">👤</div>
+        <div style="font-size: 24px; cursor: pointer;" onclick="toggleSettings()">👤</div>
     </header>
 
-    <div id="home-view">
-        <div class="hero">
-            <h1>Greenland 2: Migration</h1>
-            <button class="play-btn" onclick="alert('Playing Greenl
+    <div class="hero">
+        <h1 style="margin:0;">Greenland 2: Migration</h1>
+        <p style="margin:5px 0; color:#ccc;">Action • Sci-Fi • 2025</p>
+        <button class="play-btn">WATCH NOW</button>
+    </div>
+
+    <div class="section-title">Trending Now</div>
+    <div class="grid" id="movieGrid">
+        </div>
+
+    <div id="settingsUI">
+        <div style="text-align: right; font-size: 30px;" onclick="toggleSettings()">✕</div>
+        <div class="avatar">F</div>
+        <h2 style="text-align: center; margin: 0;">Felix Nyoka</h2>
+        <p style="text-align: center; color: #666;">nyokafelix33@gmail.com</p>
+        <hr style="border: 0; border-top: 1px solid #222; margin: 30px 0;">
+        <div style="padding: 15px; border-bottom: 1px solid #1a1a1a;">⚙️ General Settings</div>
+        <div style="padding: 15px; border-bottom: 1px solid #1a1a1a;">🎨 User Interface</div>
+        <div style="padding: 15px; color: red; font-weight: bold;" onclick="location.reload()">Log Out</div>
+    </div>
+
+    <nav>
+        <div class="nav-item active" onclick="location.reload()">
+            <span style="font-size:20px;">🏠</span><span>Home</span>
+        </div>
+        <div class="nav-item">
+            <span style="font-size:20px;">🎬</span><span>Mov
