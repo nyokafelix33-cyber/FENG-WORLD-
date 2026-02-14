@@ -10,62 +10,64 @@
         body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding-bottom: 90px; }
 
         /* Header */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #000; position: sticky; top: 0; z-index: 1000; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #000; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
         .logo { color: var(--red); font-weight: 900; font-size: 24px; }
         .logo span { color: white; }
 
         /* Hero Banner */
         .hero { height: 350px; background: linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px; }
-        .play-btn { background: var(--main); color: black; border: none; padding: 14px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; width: fit-content; margin-top: 10px; }
+        .play-btn { background: var(--main); color: black; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; width: fit-content; margin-top: 10px; font-size: 14px; }
 
         /* Movie Grid */
         .section-title { padding: 20px; font-size: 18px; font-weight: bold; color: var(--main); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding: 0 20px; }
         .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; text-align: center; }
-        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .card-info { padding: 10px; font-size: 12px; }
-
-        /* Settings Overlay */
-        #settingsUI { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; padding: 20px; }
-        .avatar { width: 70px; height: 70px; background: var(--main); border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; color: black; font-size: 30px; font-weight: bold; }
+        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+        .card-info { padding: 10px; font-size: 12px; font-weight: bold; }
 
         /* Bottom Nav */
         nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; display: flex; border-top: 1px solid #222; z-index: 4000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 11px; cursor: pointer; text-decoration: none; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 11px; cursor: pointer; }
         .nav-item.active { color: var(--main); }
+        .nav-icon { font-size: 20px; margin-bottom: 5px; }
+
+        /* Settings (Hidden) */
+        #settingsUI { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; padding: 20px; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">STREAM<span>X</span></div>
-        <div style="font-size: 24px; cursor: pointer;" onclick="toggleSettings()">👤</div>
+        <div style="font-size: 24px;" onclick="toggleSettings()">👤</div>
     </header>
 
-    <div class="hero">
-        <h1 style="margin:0;">Greenland 2: Migration</h1>
-        <p style="margin:5px 0; color:#ccc;">Action • Sci-Fi • 2025</p>
-        <button class="play-btn">WATCH NOW</button>
-    </div>
-
-    <div class="section-title">Trending Now</div>
-    <div class="grid" id="movieGrid">
+    <div id="main-content">
+        <div class="hero">
+            <h1 style="margin:0;">Greenland 2: Migration</h1>
+            <p style="margin:5px 0; color:#ccc;">Action • Sci-Fi • 2025</p>
+            <button class="play-btn" onclick="alert('Playing Movie...')">WATCH NOW</button>
         </div>
+
+        <div class="section-title">Trending Now</div>
+        <div class="grid" id="movieGrid">
+            </div>
+    </div>
 
     <div id="settingsUI">
         <div style="text-align: right; font-size: 30px;" onclick="toggleSettings()">✕</div>
-        <div class="avatar">F</div>
-        <h2 style="text-align: center; margin: 0;">Felix Nyoka</h2>
-        <p style="text-align: center; color: #666;">nyokafelix33@gmail.com</p>
-        <hr style="border: 0; border-top: 1px solid #222; margin: 30px 0;">
-        <div style="padding: 15px; border-bottom: 1px solid #1a1a1a;">⚙️ General Settings</div>
-        <div style="padding: 15px; border-bottom: 1px solid #1a1a1a;">🎨 User Interface</div>
-        <div style="padding: 15px; color: red; font-weight: bold;" onclick="location.reload()">Log Out</div>
+        <div style="text-align:center;">
+            <div style="width:70px; height:70px; background:var(--main); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:black; font-size:30px; font-weight:bold;">F</div>
+            <h2>Felix Nyoka</h2>
+            <p style="color:#666;">nyokafelix33@gmail.com</p>
+        </div>
+        <div style="margin-top:40px;">
+            <div style="padding:15px; border-bottom:1px solid #222;">⚙️ General Settings</div>
+            <div style="padding:15px; border-bottom:1px solid #222;">🎨 User Interface</div>
+            <div style="padding:15px; color:red; font-weight:bold;" onclick="location.reload()">Log Out</div>
+        </div>
     </div>
 
     <nav>
-        <div class="nav-item active" onclick="location.reload()">
-            <span style="font-size:20px;">🏠</span><span>Home</span>
-        </div>
-        <div class="nav-item">
-            <span style="font-size:20px;">🎬</span><span>Mov
+        <div class="nav-item active">
+            <span class="nav-icon">🏠</span><spa
