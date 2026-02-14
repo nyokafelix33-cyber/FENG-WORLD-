@@ -78,3 +78,18 @@
             document.getElementById('hero').style.display = q ? 'none' : 'flex';
             draw(data.filter(m => m.t.toLowerCase().includes(q)));
         }
+
+        function openP(t) {
+            document.getElementById('videoLayer').style.display = 'flex';
+            document.getElementById('vid').play();
+        }
+
+        function closeP() {
+            document.getElementById('videoLayer').style.display = 'none';
+            document.getElementById('vid').pause();
+        }
+
+        window.onload = () => draw(data);
+    </script>
+</body>
+</html>
