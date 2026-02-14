@@ -3,59 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamX Pro</title>
+    <title>StreamX | Watch Movies & Series Online</title>
     <style>
-        :root { --main: #d3f243; --bg: #0a0a0a; --card: #1a1a1a; --red: #ff0000; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+        :root { --main: #d3f243; --bg: #050505; --card: #111; --text: #eee; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
 
-        /* Sidebar Styling */
-        #sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #111; z-index: 6000; transition: 0.3s; padding: 20px; box-sizing: border-box; border-left: 1px solid #333; }
-        .sidebar-item { padding: 15px 0; border-bottom: 1px solid #222; cursor: pointer; color: #ccc; }
-        .sidebar-item:hover { color: var(--main); }
-
-        /* Header & Search */
-        header { display: flex; flex-direction: column; padding: 15px 20px; background: #000; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
-        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .logo { color: var(--red); font-weight: 900; font-size: 24px; text-transform: uppercase; }
+        /* Global Desktop Header */
+        header { background: rgba(0,0,0,0.95); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 2000; border-bottom: 1px solid #222; }
+        .logo { font-size: 28px; font-weight: 900; color: #ff0000; letter-spacing: -1px; cursor: pointer; }
         .logo span { color: white; }
-        .search-bar { width: 100%; background: #1a1a1a; border: 1px solid #333; padding: 10px; border-radius: 8px; color: white; outline: none; box-sizing: border-box; }
+        
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-links a { color: #bbb; text-decoration: none; font-weight: 500; font-size: 14px; transition: 0.3s; }
+        .nav-links a:hover { color: var(--main); }
 
-        /* Hero Banner */
-        .hero { height: 280px; background: linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; box-sizing: border-box; }
-        .play-btn { background: var(--main); color: black; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; width: fit-content; margin-top: 10px; }
+        .search-container { flex-grow: 0.6; position: relative; }
+        .search-bar { width: 100%; background: #1a1a1a; border: 1px solid #333; padding: 10px 15px; border-radius: 20px; color: white; outline: none; }
 
-        /* Movie Grid */
-        .section-title { padding: 20px; font-size: 18px; font-weight: bold; color: var(--main); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 0 20px; }
-        .card { background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid #222; cursor: pointer; transition: 0.3s; }
-        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
-        .card-info { padding: 10px; font-size: 12px; text-align: center; color: #ccc; }
+        /* Sidebar Menu */
+        #sidebar { position: fixed; top: 0; right: -300px; width: 300px; height: 100%; background: #0f0f0f; z-index: 5000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px; border-left: 1px solid #222; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        /* Premium Hero Banner */
+        .hero { height: 450px; background: linear-gradient(to right, var(--bg) 10%, transparent), linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center 20%; display: flex; align-items: center; padding: 0 5%; }
+        .hero-content { max-width: 500px; }
+        .hero-content h1 { font-size: 48px; margin: 0; }
+        .play-btn { background: var(--main); color: black; border: none; padding: 15px 35px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; transition: 0.2s; }
+        .play-btn:hover { transform: scale(1.05); background: #e6ff6b; }
 
-        /* Video Player Layer */
-        #playerOverlay { display: none; position: fixed; inset: 0; background: #000; z-index: 5000; flex-direction: column; }
-        .player-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #111; }
+        /* Goojara-Style Grid */
+        .container { padding: 40px 5%; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-left: 4px solid var(--main); padding-left: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
+        .card { background: var(--card); border-radius: 5px; overflow: hidden; transition: 0.3s; cursor: pointer; position: relative; border: 1px solid #222; }
+        .card:hover { transform: translateY(-5px); border-color: var(--main); }
+        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .card-info { padding: 12px; font-size: 13px; font-weight: 500; text-align: center; }
+        .quality-tag { position: absolute; top: 8px; left: 8px; background: var(--main); color: black; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 3px; }
 
-        /* Bottom Nav */
-        nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 4000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; font-size: 11px; cursor: pointer; }
-        .nav-item.active { color: var(--main); }
+        /* Fullscreen Player */
+        #playerOverlay { display: none; position: fixed; inset: 0; background: #000; z-index: 10000; flex-direction: column; }
+        
+        @media (max-width: 768px) {
+            .nav-links, .search-container { display: none; }
+            .hero { height: 300px; }
+            .hero-content h1 { font-size: 28px; }
+        }
     </style>
 </head>
 <body>
 
     <div id="sidebar">
-        <div onclick="toggleSidebar()" style="text-align:right; cursor:pointer; color:var(--main); font-weight:bold;">✕ CLOSE</div>
-        <div style="text-align:center; margin-top:30px;">
-            <div style="font-size:50px;">👤</div>
-            <h2 style="margin:10px 0 5px;">Felix Nyoka</h2>
-            <p style="color:#666; font-size:14px;">felix@streamx.com</p>
+        <div class="sidebar-header">
+            <span style="font-weight: bold;">MY ACCOUNT</span>
+            <span onclick="toggleSidebar()" style="cursor:pointer; color:var(--main);">✕</span>
         </div>
-        <hr style="border:0; border-top:1px solid #222; margin:20px 0;">
-        <div class="sidebar-item">⭐ My Watchlist</div>
-        <div class="sidebar-item">⚙️ Account Settings</div>
-        <div class="sidebar-item" style="color:red;">📥 Logout</div>
-    </div>
-
-    <div id="playerOverlay">
-        <div class="player-header">
-            <div id="playingTi
+        <div style="text-align:center; padding: 20px 0;">
+            <div style="font-si
