@@ -3,59 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamX | Secure Login</title>
+    <title>StreamX | World Wide Entertainment</title>
     <style>
-        :root { --main: #d3f243; --bg: #080808; --card: #121212; }
+        :root { --main: #d3f243; --bg: #080808; --card: #121212; --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; }
 
-        /* Login Screen Overlay */
+        /* --- 1. LOGIN SCREEN --- */
         #loginScreen {
-            position: fixed; inset: 0; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
-            url('https://image.tmdb.org/t/p/original/7RyHs7yYpSduUjH19uSdrzB7CHu.jpg');
-            background-size: cover; background-position: center;
-            display: flex; align-items: center; justify-content: center; z-index: 10000;
+            position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://image.tmdb.org/t/p/original/7RyHs7yYpSduUjH19uSdrzB7CHu.jpg');
+            background-size: cover; background-position: center; backdrop-filter: blur(10px);
         }
-        .login-box {
-            background: rgba(20, 20, 20, 0.9); padding: 40px; border-radius: 15px;
-            width: 90%; max-width: 400px; text-align: center; border: 1px solid #333;
-            backdrop-filter: blur(10px);
-        }
-        .login-box h2 { font-size: 30px; margin-bottom: 20px; color: #ff0000; font-weight: 900; }
-        .login-box h2 span { color: white; }
-        
-        input {
-            width: 100%; padding: 12px; margin: 10px 0; background: #000;
-            border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box;
-        }
-        .login-btn {
-            width: 100%; padding: 12px; background: var(--main); color: black;
-            border: none; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px;
-        }
+        .login-box { background: rgba(20,20,20,0.9); padding: 40px; border-radius: 15px; width: 90%; max-width: 380px; text-align: center; border: 1px solid #333; }
+        .login-box h2 { font-size: 32px; color: #ff0000; font-weight: 900; margin-bottom: 20px; }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #444; color: white; border-radius: 5px; }
+        .login-btn { width: 100%; padding: 12px; background: var(--main); color: #000; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; }
 
-        /* Main Site Content (Hidden until login) */
+        /* --- 2. MAIN INTERFACE (Hidden initially) --- */
         #mainSite { display: none; }
 
-        /* Centered Header with Search & Settings */
-        header { 
-            background: #000; padding: 15px 5%; display: flex; 
-            align-items: center; justify-content: space-between; border-bottom: 1px solid #222;
-        }
-        .search-container {
-            position: absolute; left: 50%; transform: translateX(-50%);
-            display: flex; align-items: center; background: rgba(255,255,255,0.1);
-            border-radius: 30px; padding: 5px 15px; border: 1px solid #333; width: 30%;
-        }
-        .search-bar { background: none; border: none; color: white; width: 100%; outline: none; text-align: center; }
+        /* Header & Centered Search */
+        header { background: #000; padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
+        .logo { font-size: 24px; font-weight: 900; color: #ff0000; text-decoration: none; }
+        .search-wrapper { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 5px 15px; border: 1px solid #333; width: 30%; min-width: 250px; }
+        .search-wrapper input { background: none; border: none; color: white; width: 100%; outline: none; text-align: center; font-size: 14px; }
+        
+        .nav-links { display: flex; gap: 15px; align-items: center; }
+        .nav-item { color: #888; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { color: var(--main); }
 
-        /* Hero & Top 10 */
-        .hero { 
-            height: 65vh; background: linear-gradient(to right, #000, transparent), 
-            url('https://image.tmdb.org/t/p/original/7RyHs7yYpSduUjH19uSdrzB7CHu.jpg');
-            background-size: cover; background-position: center top; display: flex; align-items: center; padding: 0 5%;
-        }
-        .movie-row { display: flex; overflow-x: auto; gap: 20px; padding: 20px 5%; scrollbar-width: none; }
-        .movie-card { min-width: 170px; background: var(--card); border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #222; }
-        .rank { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: var(--main); padding: 5px 10px; border-radius: 5px; font-weight: bold; }
+        /* Hero Banner */
+        .hero { height: 60vh; background: linear-gradient(to right, #000, transparent), url('https://image.tmdb.org/t/p/original/7RyHs7yYpSduUjH19uSdrzB7CHu.jpg'); background-size: cover; background-position: center top; display: flex; align-items: center; padding: 0 5%; }
+        
+        /* Movie Rows & History */
+        .container { padding: 20px 5%; }
+        .movie-row { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 20px; scrollbar-width: none; }
+        .movie-card { min-width: 160px; background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid #222; position: relative; cursor: pointer; transition: 0.3s; }
+        .movie-card:hover { transform: translateY(-5px); border-color: var(--main); }
+        .movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .rank { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: var(--main); padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; border: 1px solid var(--main); }
+
+        /* Settings/Profile Sidebar */
+        #profileMenu { position: fixed; right: -320px; top: 0; width: 300px; height: 100%; background: #111; z-index: 2000; padding: 40px 20px; transition: var(--transition); border-left: 1px solid #333; }
+        #profileMenu.active { right: 0; }
+        .profile-pic { width: 80px; height: 80px; background: var(--main); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: black; font-weight: 900; }
     </style>
 </head>
 <body>
@@ -63,74 +54,142 @@
     <div id="loginScreen">
         <div class="login-box">
             <h2>STREAM<span>X</span></h2>
-            <p style="color:#888; margin-bottom: 20px;">World Wide Premium Access</p>
-            <input type="text" id="user" placeholder="Username (Mars)">
-            <input type="password" id="pass" placeholder="Password">
-            <button class="login-btn" onclick="checkLogin()">SIGN IN</button>
-            <p id="errMsg" style="color:red; font-size:12px; margin-top:10px; display:none;">Invalid Credentials!</p>
+            <input type="text" id="userInput" placeholder="Username (Mars)">
+            <input type="password" id="passInput" placeholder="Password (1234)">
+            <button class="login-btn" onclick="login()">ENTER STREAMX</button>
+            <p id="loginError" style="color:red; font-size:12px; margin-top:10px; display:none;">Invalid Credentials!</p>
         </div>
     </div>
 
     <div id="mainSite">
         <header>
-            <a href="#" style="text-decoration:none; font-weight:900; font-size:24px; color:#ff0000;">STREAM<span style="color:white;">X</span></a>
-            <div class="search-container">
-                <input type="text" class="search-bar" placeholder="Search...">
-                <span style="color:var(--main); cursor:pointer;">🎤</span>
+            <a href="#" class="logo">STREAM<span>X</span></a>
+            <div class="search-wrapper">
+                <input type="text" id="searchBar" placeholder="Search world wide..." onkeyup="search()">
+                <span style="cursor:pointer;" onclick="voiceSearch()">🎤</span>
             </div>
-            <div style="display:flex; gap:20px; align-items:center;">
-                <span style="color:var(--main); font-weight:bold;">Mars</span>
-                <span style="font-size:20px; cursor:pointer;">⚙️</span>
+            <div class="nav-links">
+                <span class="nav-item active" onclick="renderAll()">Movies</span>
+                <span class="nav-item" onclick="renderSeries()">TV Series</span>
+                <span class="nav-item" style="color:var(--main);" onclick="toggleProfile()">Mars ⚙️</span>
             </div>
         </header>
 
         <div class="hero">
             <div style="max-width: 500px;">
-                <p style="color:var(--main); letter-spacing:3px;">TRENDING GLOBAL</p>
-                <h1 style="font-size:50px; margin:10px 0;">AVENGERS: ENDGAME</h1>
-                <button style="background:var(--main); border:none; padding:12px 30px; font-weight:bold; cursor:pointer; border-radius:5px;">PLAY NOW</button>
+                <p style="color:var(--main); letter-spacing:4px; font-weight:bold;">NOW STREAMING GLOBAL</p>
+                <h1 style="font-size:45px; margin:10px 0;">AVENGERS: ENDGAME</h1>
+                <button onclick="playMovie('Avengers: Endgame')" style="background:var(--main); border:none; padding:12px 30px; font-weight:bold; border-radius:5px; cursor:pointer;">PLAY NOW</button>
             </div>
         </div>
 
-        <div style="padding: 20px 5%;">
-            <h3>🏆 Global Top 10</h3>
-            <div class="movie-row" id="topGrid"></div>
+        <div class="container" id="historyBox" style="display:none; background: #0f0f0f;">
+            <h3 style="color:var(--main);">🕒 Continue Watching</h3>
+            <div class="movie-row" id="historyGrid"></div>
+        </div>
+
+        <div class="container">
+            <h3 id="rowTitle">🏆 Global Top 10</h3>
+            <div class="movie-row" id="mainGrid"></div>
+        </div>
+
+        <div style="text-align:center; padding:40px; border-top:1px solid #222;">
+            <p style="color:#666;">Follow creator: <a href="https://www.instagram.com/felix_ny10" target="_blank" style="color:var(--main); text-decoration:none;">@felix_ny10</a></p>
         </div>
     </div>
 
+    <div id="profileMenu">
+        <div onclick="toggleProfile()" style="cursor:pointer; text-align:right;">✕</div>
+        <div class="profile-pic">M</div>
+        <h2 style="text-align:center; margin-bottom:5px;">Mars</h2>
+        <p style="text-align:center; color:#888; font-size:12px; margin-bottom:30px;">Premium World Wide Member</p>
+        <hr border="0" style="border-top:1px solid #333;">
+        <p onclick="location.reload()" style="cursor:pointer; padding:15px 0;">Logout</p>
+        <p onclick="alert('About StreamX: Redefining world wide entertainment.')" style="cursor:pointer; padding:15px 0;">About Us</p>
+    </div>
+
     <script>
-        const topMovies = [
-            { t: "Avatar 2", i: "https://image.tmdb.org/t/p/w500/t6pEKntAI2ZzdvUv3pk679p36vu.jpg" },
-            { t: "Spider-Man", i: "https://image.tmdb.org/t/p/w500/1g0m2YpScy62BC4t1q6qZ6FXuwi.jpg" },
-            { t: "John Wick 4", i: "https://image.tmdb.org/t/p/w500/v796S79hDma9TZo9auY9LS6Y0B.jpg" },
-            { t: "Batman", i: "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onun.jpg" },
-            { t: "Top Gun", i: "https://image.tmdb.org/t/p/w500/62HCnUTziL79KWvKW6u2Sbhgojw.jpg" }
+        const movies = [
+            { t: "Avatar 2", i: "https://image.tmdb.org/t/p/w500/t6pEKntAI2ZzdvUv3pk679p36vu.jpg", type: "movie" },
+            { t: "Spider-Man", i: "https://image.tmdb.org/t/p/w500/1g0m2YpScy62BC4t1q6qZ6FXuwi.jpg", type: "movie" },
+            { t: "The Last of Us", i: "https://image.tmdb.org/t/p/w500/uKVH56J20o77vovm0Ym4u6Q6mnd.jpg", type: "series" },
+            { t: "Stranger Things", i: "https://image.tmdb.org/t/p/w500/49Wf9S1Cbgq93R6S66oR0Y96JvB.jpg", type: "series" },
+            { t: "John Wick 4", i: "https://image.tmdb.org/t/p/w500/v796S79hDma9TZo9auY9LS6Y0B.jpg", type: "movie" }
         ];
 
-        function checkLogin() {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
+        let watchHistory = [];
 
-            // Simple Logic: Username 'Mars' and password '1234'
+        function login() {
+            const u = document.getElementById('userInput').value;
+            const p = document.getElementById('passInput').value;
             if(u === 'Mars' && p === '1234') {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainSite').style.display = 'block';
                 document.body.style.overflow = 'auto';
-                window.speechSynthesis.speak(new SpeechSynthesisUtterance("Welcome back, Mars. Your world-wide access is active."));
-                render();
+                window.speechSynthesis.speak(new SpeechSynthesisUtterance("Welcome back, Mars."));
+                renderAll();
             } else {
-                document.getElementById('errMsg').style.display = 'block';
+                document.getElementById('loginError').style.display = 'block';
             }
         }
 
-        function render() {
-            document.getElementById('topGrid').innerHTML = topMovies.map((m, i) => `
-                <div class="movie-card">
+        function renderAll() {
+            document.getElementById('rowTitle').innerText = "🏆 Global Top 10";
+            renderGrid(movies);
+        }
+
+        function renderSeries() {
+            document.getElementById('rowTitle').innerText = "📺 Premium TV Series";
+            const series = movies.filter(m => m.type === 'series');
+            renderGrid(series);
+        }
+
+        function renderGrid(data) {
+            document.getElementById('mainGrid').innerHTML = data.map((m, i) => `
+                <div class="movie-card" onclick="playMovie('${m.t}', '${m.i}')">
                     <div class="rank">#${i+1}</div>
-                    <img src="${m.i}" style="width:100%; aspect-ratio:2/3; object-fit:cover;">
-                    <div style="padding:10px; text-align:center; font-size:12px;">${m.t}</div>
+                    <img src="${m.i}">
+                    <div style="padding:10px; text-align:center; font-size:12px; font-weight:bold;">${m.t}</div>
                 </div>
             `).join('');
+        }
+
+        function playMovie(title, img) {
+            alert("Now Playing: " + title);
+            if(!watchHistory.find(h => h.t === title)) {
+                watchHistory.unshift({t: title, i: img});
+                updateHistory();
+            }
+        }
+
+        function updateHistory() {
+            const box = document.getElementById('historyBox');
+            const grid = document.getElementById('historyGrid');
+            box.style.display = 'block';
+            grid.innerHTML = watchHistory.map(m => `
+                <div class="movie-card" style="min-width:120px;">
+                    <img src="${m.i}">
+                    <div style="padding:5px; text-align:center; font-size:10px;">${m.t}</div>
+                </div>
+            `).join('');
+        }
+
+        function toggleProfile() { document.getElementById('profileMenu').classList.toggle('active'); }
+
+        function search() {
+            const term = document.getElementById('searchBar').value.toLowerCase();
+            const filtered = movies.filter(m => m.t.toLowerCase().includes(term));
+            renderGrid(filtered);
+        }
+
+        function voiceSearch() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.onstart = () => { window.speechSynthesis.speak(new SpeechSynthesisUtterance("Listening")); };
+            recognition.onresult = (e) => {
+                document.getElementById('searchBar').value = e.results[0][0].transcript;
+                search();
+            };
+            recognition.start();
         }
     </script>
 </body>
