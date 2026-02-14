@@ -5,65 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>StreamX Pro</title>
     <style>
-        :root { --main: #d3f243; --bg: #0a0a0a; --card: #1a1a1a; }
+        :root { --main: #d3f243; --bg: #0a0a0a; --card: #1a1a1a; --red: #ff0000; }
         
-        /* 1. Prevent "Frozen" Screen: Reset the basics */
+        /* Core Reset - Fixes "Frozen" touches */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 90px; overflow-x: hidden; }
 
         /* Header */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #000; position: sticky; top: 0; z-index: 100; }
-        .logo { color: red; font-weight: 900; font-size: 22px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(0,0,0,0.9); position: sticky; top: 0; z-index: 1000; }
+        .logo { color: var(--red); font-weight: 900; font-size: 24px; letter-spacing: -1px; }
         .logo span { color: white; }
 
-        /* Banner */
-        .hero { height: 280px; background: linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 20px; }
-        .watch-btn { background: var(--main); color: black; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        /* Hero Section */
+        .hero { height: 350px; background: linear-gradient(to top, var(--bg), transparent), url('https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px; margin-bottom: 10px; }
+        .hero h1 { margin: 0; font-size: 28px; }
+        .play-btn { background: var(--main); color: black; border: none; padding: 14px 30px; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer; width: fit-content; font-size: 16px; }
 
-        /* 2. Responsive Grid for Buttons/Movies */
-        .section-label { padding: 20px 20px 10px; font-weight: bold; color: var(--main); }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px; }
-        .movie-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; position: relative; cursor: pointer; }
-        .movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; pointer-events: none; }
-        .movie-card p { margin: 8px; font-size: 13px; text-align: center; pointer-events: none; }
+        /* Movie Grid */
+        .section-title { padding: 15px 20px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding: 0 20px; }
+        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.2s; cursor: pointer; }
+        .card:active { transform: scale(0.95); }
+        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .card-info { padding: 10px; font-size: 12px; text-align: center; font-weight: 500; }
 
-        /* 3. Navigation: Always clickable */
-        nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.9); border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; z-index: 2000; }
-        .nav-link { color: #666; text-decoration: none; font-size: 11px; text-align: center; flex: 1; padding: 10px; }
-        .nav-link.active { color: var(--main); }
+        /* Settings Overlay */
+        #settingsUI { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; overflow-y: auto; padding-bottom: 100px; }
+        .profile-box { text-align: center; padding: 40px 20px; background: #111; border-bottom: 1px solid #222; position: relative; }
+        .avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--main); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: black; font-size: 35px; font-weight: bold; }
+        .menu-item { display: flex; justify-content: space-between; padding: 20px; border-bottom: 1px solid #1a1a1a; cursor: pointer; }
 
-        /* 4. Settings Menu: Hidden properly so it doesn't "freeze" the screen */
-        #settingsUI { display: none; position: fixed; inset: 0; background: #0a0a0a; z-index: 3000; padding: 20px; overflow-y: auto; }
-        .menu-row { padding: 20px; border-bottom: 1px solid #1a1a1a; display: flex; justify-content: space-between; align-items: center; }
+        /* Admin/Add Movie Drawer */
+        #adminUI { display: none; position: fixed; bottom: 80px; left: 0; width: 100%; background: #151515; padding: 25px; border-radius: 20px 20px 0 0; border-top: 2px solid var(--main); z-index: 4000; }
+        input { width: 100%; padding: 12px; margin-bottom: 10px; background: #000; color: #fff; border: 1px solid #333; border-radius: 8px; }
+
+        /* Bottom Navigation */
+        nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; display: flex; border-top: 1px solid #222; z-index: 4500; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 11px; cursor: pointer; }
+        .nav-item.active { color: var(--main); }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">STREAM<span>X</span></div>
-        <div style="font-size: 24px;" onclick="toggleMenu()">👤</div>
+        <div style="font-size: 22px;" onclick="toggleSettings()">👤</div>
     </header>
 
-    <div id="homeView">
+    <div id="home-view">
         <div class="hero">
-            <button class="watch-btn" onclick="alert('Starting Movie...')">WATCH NOW</button>
-        </div>
-
-        <div class="section-label">Trending Now</div>
-        <div class="grid" id="mainGrid">
-            </div>
-    </div>
-
-    <div id="settingsUI">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2>Settings</h2>
-            <div onclick="toggleMenu()" style="font-size: 30px;">✕</div>
-        </div>
-        <div style="text-align: center; padding: 20px;">
-            <div style="width:70px; height:70px; background:var(--main); border-radius:50%; margin: 0 auto 10px; display:flex; align-items:center; justify-content:center; color:black; font-size:30px;">F</div>
-            <h3 style="margin:0;">Felix Nyoka</h3>
-            <p style="color:#666; font-size:14px;">nyokafelix33@gmail.com</p>
-        </div>
-        <div class="menu-row"><span>⚙️ General</span><span>❯</span></div>
-        <div class="menu-row"><span>🎨 User Interface</span><span>❯</span></div>
-        <div class="menu-row" style="color:red; font-weight:bo
+            <h1>Greenland 2: Migration</h1>
+            <button class="play-btn" onclick="alert('Playing Greenl
