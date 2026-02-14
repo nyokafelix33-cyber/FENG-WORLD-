@@ -67,8 +67,48 @@
     </nav>
 
     <script>
-        const movieData = [
-            { title: "Love Me Love Me", img: "https://image.tmdb.org/t/p/w500/8Gxv8nYmS1uLp77unrqS8SgS74a.jpg" },
-            { title: "The Art of Sarah", img: "https://image.tmdb.org/t/p/w500/v9Y69m9v5s6Y0B1U7y8vL6bX3Y1.jpg" },
-            { title: "Joe's Road Trip", img: "https://image.tmdb.org/t/p/w500/2u7BUzqC0S7Y0XU9sn69v5S6Y0B.jpg" },
-            { title:
+    // Expanded movie library based on your app goals
+    const movieData = [
+        { title: "The Evil Inside", img: "https://image.tmdb.org/t/p/w500/b69m9v5s6Y0B1U7y8vL6bX3Y1.jpg", year: "2024", quality: "HD" },
+        { title: "Angel Flight", img: "https://image.tmdb.org/t/p/w500/v9Y69m9v5s6Y0B1U7y8vL6bX3Y1.jpg", year: "2023", quality: "HD" },
+        { title: "Cold Storage", img: "https://image.tmdb.org/t/p/w500/96KfTsvY9o6S17s5Y1JqVp6tA8Z.jpg", year: "2024", quality: "CAM" },
+        { title: "Joe's Road Trip", img: "https://image.tmdb.org/t/p/w500/2u7BUzqC0S7Y0XU9sn69v5S6Y0B.jpg", year: "2025", quality: "HD" },
+        { title: "Love Me Love Me", img: "https://image.tmdb.org/t/p/w500/8Gxv8nYmS1uLp77unrqS8SgS74a.jpg", year: "2024", quality: "HD" },
+        { title: "Greenland 2: Migration", img: "https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg", year: "2025", quality: "HD" },
+        { title: "The Wrecking Crew", img: "https://image.tmdb.org/t/p/w500/49W0L95u6p3Y96o6Y0B.jpg", year: "2026", quality: "HD" }
+    ];
+
+    function renderMovies(list) {
+        const grid = document.getElementById('movieGrid');
+        grid.innerHTML = list.map(m => `
+            <div class="card" onclick="playMovie('${m.title}')">
+                <div style="position:absolute; background:rgba(0,0,0,0.7); font-size:10px; padding:2px 5px; margin:5px; border-radius:3px; font-weight:bold;">${m.quality}</div>
+                <img src="${m.img}" onerror="this.src='https://via.placeholder.com/150x225?text=Poster'">
+                <div class="card-info">${m.title}</div>
+            </div>
+        `).join('');
+    }
+
+    function filterMovies() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = movieData.filter(m => m.title.toLowerCase().includes(query));
+        const hero = document.getElementById('heroSection');
+        const label = document.getElementById('sectionLabel');
+        
+        if (query.length > 0) {
+            hero.style.display = "none";
+            label.innerText = `Results for "${query}"`;
+        } else {
+            hero.style.display = "flex";
+            label.innerText = "Trending Now";
+        }
+        renderMovies(filtered);
+    }
+
+    function playMovie(title) {
+        alert("Preparing to stream: " + title);
+        // We will build the actual player in the next step!
+    }
+
+    renderMovies(movieData);
+</script>
