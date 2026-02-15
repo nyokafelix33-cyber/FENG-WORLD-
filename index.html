@@ -3,387 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Feng | The World Tool</title>
+    <title>Feng | The Master Tool</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* SECTION 1: CORE CSS VARIABLES & DESIGN SYSTEM 
-           This section handles the visual identity. 
+        /* SECTION 1: SYSTEM ARCHITECTURE 
+           This part ensures the layout never breaks even on old phones.
         */
         :root {
-            --main-brand: #d3f243;
-            --background-deep: #0b0e14;
-            --card-surface: #1c1f26;
-            --text-primary: #eeeeee;
-            --text-secondary: #a0a0a0;
-            --header-bg: #000000;
-            --whatsapp-green: #25d366;
-            --instagram-pink: #e1306c;
-            --danger-red: #ff4444;
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --shadow-standard: 0 12px 40px rgba(0,0,0,0.6);
-            --safe-area-bottom: 80px;
+            --brand-main: #d3f243;
+            --bg-deep: #0b0e14;
+            --surface-panel: #1c1f26;
+            --text-bold: #eeeeee;
+            --text-dim: #9ca3af;
+            --header-prime: #000000;
+            --wa-color: #25d366;
+            --ig-color: #e1306c;
+            --error-color: #ff4444;
+            --border-line: rgba(255, 255, 255, 0.1);
         }
 
         [data-theme="light"] {
-            --background-deep: #f0f2f5;
-            --card-surface: #ffffff;
-            --text-primary: #121212;
-            --header-bg: #ffffff;
-            --border-subtle: rgba(0, 0, 0, 0.1);
+            --bg-deep: #f3f4f6;
+            --surface-panel: #ffffff;
+            --text-bold: #111827;
+            --header-prime: #ffffff;
+            --border-line: rgba(0, 0, 0, 0.1);
         }
 
-        /* SECTION 2: RESET & GLOBAL NORMALIZATION 
-        */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; -webkit-font-smoothing: antialiased; }
-        html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+        /* SECTION 2: CORE BODY LOGIC */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { 
-            background-color: var(--background-deep); 
-            color: var(--text-primary); 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: var(--bg-deep); 
+            color: var(--text-bold); 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            margin: 0; 
+            padding: 0; 
             overflow-x: hidden;
-            transition: background-color 0.4s ease;
+            height: 100vh;
         }
 
-        /* SECTION 3: HEADER & INTERFACE WRAPPERS
+        /* SECTION 3: REINFORCED HEADER 
+           The search bar is now tied to a high-speed filter engine.
         */
-        .app-header {
-            background-color: var(--header-bg);
-            padding: 18px 6%;
+        header {
+            background: var(--header-prime);
+            padding: 20px 6%;
             position: sticky;
             top: 0;
-            z-index: 9000;
-            border-bottom: 3px solid var(--main-brand);
-            box-shadow: var(--shadow-standard);
+            z-index: 9999;
+            border-bottom: 3px solid var(--brand-main);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .header-content { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .app-logo { font-size: 30px; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; color: var(--text-primary); }
-        .app-logo span { color: var(--main-brand); }
+        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .logo-text { font-size: 32px; font-weight: 900; letter-spacing: -2px; }
+        .logo-text span { color: var(--brand-main); }
 
-        .search-container {
-            margin-top: 15px;
-            background: rgba(255,255,255,0.06);
-            border: 1.5px solid var(--border-subtle);
-            border-radius: 14px;
+        .search-vault {
+            background: rgba(255,255,255,0.07);
+            border: 2px solid var(--border-line);
+            border-radius: 15px;
             display: flex;
             align-items: center;
-            padding: 14px 20px;
+            padding: 15px 20px;
             gap: 15px;
-            transition: all 0.3s ease;
+            transition: 0.3s ease;
         }
-        .search-container:focus-within { border-color: var(--main-brand); background: rgba(255,255,255,0.1); }
-        .search-container input { background: transparent; border: none; color: #fff; width: 100%; font-size: 16px; font-weight: 500; }
+        .search-vault:focus-within { border-color: var(--brand-main); background: rgba(255,255,255,0.12); }
+        .search-vault input { background: transparent; border: none; color: #fff; width: 100%; font-size: 16px; font-weight: 600; }
 
-        /* SECTION 4: DYNAMIC CONTENT LAYOUTS
+        /* SECTION 4: CONTENT MANAGEMENT SYSTEM 
+           We use specific grids for Movies and Series so they don't mix up.
         */
-        .main-scroller { padding: 10px 0 var(--safe-area-bottom) 0; }
+        .content-main { padding: 10px 0 120px 0; display: block; }
         
-        .row-heading {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .cat-title {
             padding: 0 6%;
-            margin: 30px 0 15px 0;
-        }
-        .row-heading h2 { font-size: 20px; font-weight: 800; color: var(--main-brand); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .horizontal-shelf {
+            margin: 35px 0 15px 0;
             display: flex;
-            overflow-x: auto;
-            gap: 18px;
-            padding: 0 6% 15px 6%;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            align-items: center;
+            gap: 10px;
         }
-        .horizontal-shelf::-webkit-scrollbar { display: none; }
+        .cat-title h2 { font-size: 20px; text-transform: uppercase; letter-spacing: 1px; color: var(--brand-main); margin: 0; }
+        .cat-title .line { flex-grow: 1; height: 1px; background: var(--border-line); }
 
-        .vertical-grid {
+        /* The Grid System */
+        .grid-master {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 20px;
             padding: 0 6%;
         }
 
-        /* SECTION 5: THE COMPONENT FACTORY (CARDS)
+        /* SECTION 5: COMPONENT - MEDIA CARD 
+           The visuals for the movie items.
         */
-        .media-card {
-            background: var(--card-surface);
+        .media-box {
+            background: var(--surface-panel);
             border-radius: 20px;
             overflow: hidden;
-            border: 1px solid var(--border-subtle);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            border: 1px solid var(--border-line);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             position: relative;
         }
-        .media-card:active { transform: scale(0.94); }
-        .media-card img { width: 100%; height: 230px; object-fit: cover; border-bottom: 1px solid var(--border-subtle); }
-        .media-card .info-bar { padding: 14px; }
-        .media-card .title-txt { font-size: 14px; font-weight: 700; color: var(--text-primary); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .media-card .meta-txt { font-size: 11px; color: var(--main-brand); font-weight: 800; text-transform: uppercase; margin-top: 5px; opacity: 0.9; }
+        .media-box:active { transform: scale(0.95); }
+        .media-box img { width: 100%; height: 240px; object-fit: cover; border-bottom: 1px solid var(--border-line); }
+        .media-details { padding: 15px; }
+        .media-details .m-name { font-size: 14px; font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .media-details .m-info { font-size: 11px; color: var(--brand-main); font-weight: 800; margin-top: 6px; text-transform: uppercase; }
 
-        /* SECTION 6: MODAL ENGINE (REPAIR FOR SETTINGS/PLAYER)
+        /* SECTION 6: ISOLATED MODAL SCREENS 
+           This prevents the "freezing" by keeping views separate.
         */
-        .modal-screen {
+        .full-modal {
             position: fixed;
             inset: 0;
-            background-color: var(--background-deep);
+            background: var(--bg-deep);
             z-index: 10000;
             display: none;
             flex-direction: column;
             overflow-y: auto;
-            animation: slideIn 0.4s ease forwards;
         }
-        @keyframes slideIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        .modal-header {
+        .modal-nav {
             padding: 20px 6%;
-            background: var(--header-bg);
+            background: var(--header-prime);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-line);
         }
 
-        /* SECTION 7: SETTINGS CONTENT (PROTECTED)
-        */
-        .settings-layout { padding: 35px 6%; }
-        .menu-tile {
-            background: var(--card-surface);
-            padding: 22px;
-            border-radius: 18px;
+        /* SECTION 7: SETTINGS VAULT (PROTECTED AREA) */
+        .settings-container { padding: 40px 6%; }
+        .settings-card {
+            background: var(--surface-panel);
+            padding: 25px;
+            border-radius: 20px;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 20px;
-            border: 1.5px solid var(--border-subtle);
-            transition: background 0.2s ease;
+            border: 2px solid var(--border-line);
         }
-        .menu-tile:active { background: rgba(255,255,255,0.05); }
-        .menu-tile i { font-size: 20px; color: var(--main-brand); width: 25px; text-align: center; }
-        .menu-tile span { font-weight: 600; font-size: 16px; }
-
-        .handle-box { display: flex; gap: 15px; margin: 25px 0; }
-        .handle-btn {
+        .settings-card i { font-size: 22px; color: var(--brand-main); }
+        
+        .social-link-row { display: flex; gap: 15px; margin: 30px 0; }
+        .social-btn {
             flex: 1;
-            padding: 20px;
-            border-radius: 18px;
+            padding: 22px;
+            border-radius: 20px;
             text-align: center;
-            font-size: 24px;
-            color: #ffffff;
+            font-size: 26px;
+            color: #fff;
             text-decoration: none;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        .vision-statement {
-            background: linear-gradient(135deg, rgba(211,242,67,0.1), transparent);
+        .vision-text-block {
+            background: linear-gradient(rgba(211,242,67,0.1), transparent);
             padding: 30px;
-            border-radius: 22px;
+            border-radius: 25px;
             text-align: center;
-            border: 1px solid rgba(211,242,67,0.2);
-            margin-top: 40px;
+            border: 1px dashed var(--brand-main);
+            margin-top: 50px;
         }
 
-        /* SECTION 8: BOTTOM NAVIGATION
-        */
-        .bottom-nav {
+        /* SECTION 8: BOTTOM NAVIGATION HUB */
+        footer {
             position: fixed;
             bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--header-bg);
+            width: 100%;
+            background: var(--header-prime);
             display: flex;
             justify-content: space-around;
-            padding: 15px 0 35px 0;
-            border-top: 1.5px solid var(--border-subtle);
+            padding: 15px 0 40px 0;
+            border-top: 2px solid var(--border-line);
             z-index: 9500;
-            backdrop-filter: blur(15px);
         }
-        .nav-anchor { text-align: center; color: #5c5c5c; cursor: pointer; transition: color 0.3s ease; flex: 1; }
-        .nav-anchor.active { color: var(--main-brand); }
-        .nav-anchor i { font-size: 24px; margin-bottom: 6px; }
-        .nav-anchor span { font-size: 11px; font-weight: 800; display: block; }
+        .nav-item { text-align: center; color: #666; cursor: pointer; transition: 0.3s; flex: 1; }
+        .nav-item.active { color: var(--brand-main); }
+        .nav-item i { font-size: 26px; margin-bottom: 8px; }
+        .nav-item b { font-size: 12px; display: block; letter-spacing: 1px; }
 
     </style>
 </head>
-<body id="app-body">
+<body onload="FENG.launch()">
 
-    <header class="app-header" id="ui-header">
-        <div class="header-content">
-            <div class="app-logo">FE<span>NG</span></div>
-            <div class="theme-switch" onclick="FENG.toggleMode()"><i class="fas fa-moon"></i></div>
+    <header id="app-header">
+        <div class="top-row">
+            <div class="logo-text">FE<span>NG</span></div>
+            <div onclick="FENG.switchTheme()"><i class="fas fa-adjust fa-lg"></i></div>
         </div>
-        <div class="search-container">
-            <i class="fas fa-search" style="color: var(--main-brand)"></i>
-            <input type="text" id="feng-search" placeholder="Search the Master Vault..." onkeyup="FENG.searchEngine()">
+        <div class="search-vault">
+            <i class="fas fa-search" style="color:var(--brand-main)"></i>
+            <input type="text" id="vault-search" placeholder="Search 1,000+ Titles..." onkeyup="FENG.runSearch()">
         </div>
     </header>
 
-    <main class="main-scroller" id="screen-home">
+    <main class="content-main" id="view-home">
         
-        <div class="row-heading"><h2>🔥 Trending Now</h2></div>
-        <div class="horizontal-shelf" id="shelf-trending"></div>
+        <div class="cat-title"><h2>🔥 Featured Trending</h2><div class="line"></div></div>
+        <div class="grid-master" id="grid-trending"></div>
 
-        <div class="row-heading"><h2>📺 Global TV Series</h2></div>
-        <div class="vertical-grid" id="grid-series"></div>
+        <div class="cat-title"><h2>📺 All TV Series</h2><div class="line"></div></div>
+        <div class="grid-master" id="grid-series"></div>
 
-        <div class="row-heading"><h2>🎬 Movie Collections</h2></div>
-        <div class="vertical-grid" id="grid-movies"></div>
+        <div class="cat-title"><h2>🎬 Full Movies</h2><div class="line"></div></div>
+        <div class="grid-master" id="grid-movies"></div>
 
     </main>
 
-    <div class="modal-screen" id="screen-settings">
-        <div class="modal-header">
-            <h2 style="margin:0">System Portal</h2>
-            <i class="fas fa-times fa-2x" onclick="FENG.navigate('home')"></i>
+    <div class="full-modal" id="view-settings">
+        <div class="modal-nav">
+            <h2 style="margin:0">Platinum Center</h2>
+            <i class="fas fa-times fa-2x" onclick="FENG.screen('home')"></i>
         </div>
-        <div class="settings-layout">
-            <div class="menu-tile" onclick="alert('Issue Reporting Protocol Active: +260770605003')">
-                <i class="fas fa-tools"></i> <span>Report Technical Issue</span>
+        <div class="settings-container">
+            <div class="settings-card" onclick="alert('Contact Support: +260770605003')">
+                <i class="fas fa-headset"></i> <b>Direct Help Line</b>
             </div>
-            <div class="menu-tile" onclick="alert('Feng Tool v39.0 Platinum Edition. Finalized 2026.')">
-                <i class="fas fa-info-circle"></i> <span>About Platinum Update</span>
-            </div>
-
-            <div class="handle-box">
-                <a href="https://wa.me/260770605003" class="handle-btn" style="background:var(--whatsapp-green)"><i class="fab fa-whatsapp"></i></a>
-                <a href="https://instagram.com/felix_nyoka" target="_blank" class="handle-btn" style="background:var(--instagram-pink)"><i class="fab fa-instagram"></i></a>
+            <div class="settings-card" onclick="alert('Feng World Tool v40.0 Platinum Edition')">
+                <i class="fas fa-shield-alt"></i> <b>Version & Policy</b>
             </div>
 
-            <div class="vision-statement">
-                <h3 style="color:var(--main-brand); margin-top:0;">THE VISION OF FENG</h3>
-                <p style="font-size:14px; opacity:0.85; line-height:1.7;">To become the premier global hub for cinematic accessibility, bridging the gap between world-class entertainment and users in Zambia and beyond.</p>
+            <div class="social-link-row">
+                <a href="https://wa.me/260770605003" class="social-btn" style="background:var(--wa-color)"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://instagram.com/felix_nyoka" target="_blank" class="social-btn" style="background:var(--ig-color)"><i class="fab fa-instagram"></i></a>
+            </div>
+
+            <div class="vision-text-block">
+                <h3 style="color:var(--brand-main); margin-bottom:15px;">OUR CINEMATIC VISION</h3>
+                <p style="font-size:14px; line-height:1.8; opacity:0.8;">To become the premier global hub for cinematic accessibility, bridging the gap between world-class entertainment and users in Zambia and beyond.</p>
             </div>
         </div>
     </div>
 
-    <div class="modal-screen" id="screen-player">
-        <div class="modal-header">
-            <span id="video-title" style="font-weight:900; color:var(--main-brand)">Initializing...</span>
-            <button onclick="FENG.stopPlayback()" style="background:var(--danger-red); color:#fff; border:none; padding:10px 20px; border-radius:12px; font-weight:bold;">CLOSE</button>
+    <div class="full-modal" id="view-player">
+        <div class="modal-nav">
+            <span id="p-title" style="font-weight:bold; color:var(--brand-main)">Connecting...</span>
+            <button onclick="FENG.stop()" style="background:var(--error-color); color:#fff; border:none; padding:10px 20px; border-radius:12px; font-weight:bold;">EXIT PLAYER</button>
         </div>
-        <iframe id="video-frame" allowfullscreen src=""></iframe>
+        <iframe id="p-frame" allowfullscreen src="" style="width:100%; flex-grow:1; border:none; background:#000;"></iframe>
     </div>
 
-    <footer class="bottom-nav">
-        <div class="nav-anchor active" id="nav-home" onclick="FENG.navigate('home')">
-            <i class="fas fa-home"></i><span>HOME</span>
+    <footer>
+        <div class="nav-item active" id="nav-home" onclick="FENG.screen('home')">
+            <i class="fas fa-home"></i><b>HOME</b>
         </div>
-        <div class="nav-anchor" id="nav-sets" onclick="FENG.navigate('settings')">
-            <i class="fas fa-sliders-h"></i><span>SETTINGS</span>
+        <div class="nav-item" id="nav-sets" onclick="FENG.screen('settings')">
+            <i class="fas fa-cog"></i><b>SETTINGS</b>
         </div>
     </footer>
 
     <script>
         const FENG = {
-            // THE MASTER VAULT (BATCH 1 - 14)
-            // You can easily add 100s of movies here.
+            // DATABASE: BATCH 1 - 14
             vault: [
+                // Batch 14
                 { id: 939243, title: "Sonic the Hedgehog 3", type: "movie", tag: "Trending", img: "https://image.tmdb.org/t/p/w500/1908.jpg" },
-                { id: 299534, title: "Avengers: Doomsday", type: "movie", tag: "Trending", img: "https://image.tmdb.org/t/p/w500/or06vSqzWBFscv1qCG76uC1fsR6.jpg" },
                 { id: 111112, title: "Stranger Things S5", type: "tv", tag: "Series", img: "https://image.tmdb.org/t/p/w500/689V8.jpg" },
+                { id: 111113, title: "28 Years Later", type: "movie", tag: "Movie", img: "https://image.tmdb.org/t/p/w500/fT0X.jpg" },
+                
+                // Batch 13
+                { id: 299534, title: "Avengers: Doomsday", type: "movie", tag: "Trending", img: "https://image.tmdb.org/t/p/w500/or06vSqzWBFscv1qCG76uC1fsR6.jpg" },
                 { id: 111110, title: "Dexter: Resurrection", type: "tv", tag: "Series", img: "https://image.tmdb.org/t/p/w500/vZloY0Cc8pPTMvS3v1wZ94Ydn94.jpg" },
+                
+                // Legacy Batches
                 { id: 420634, title: "Scream 7", type: "movie", tag: "Movie", img: "https://image.tmdb.org/t/p/w500/fT0X.jpg" },
                 { id: 111111, title: "FNAF 2", type: "movie", tag: "Movie", img: "https://image.tmdb.org/t/p/w500/78R9.jpg" },
                 { id: 804616, title: "Jurassic World: Rebirth", type: "movie", tag: "Trending", img: "https://image.tmdb.org/t/p/w500/yK9I.jpg" },
                 { id: 533535, title: "Deadpool & Wolverine", type: "movie", tag: "Movie", img: "https://image.tmdb.org/t/p/w500/8cdclPkS1fSgtHd96YvFhX7U93v.jpg" },
-                { id: 115508, title: "The Night Agent S3", type: "tv", tag: "Series", img: "https://image.tmdb.org/t/p/w500/689V8.jpg" },
-                { id: 933260, title: "The Substance", type: "movie", tag: "Movie", img: "https://image.tmdb.org/t/p/w500/78R9.jpg" }
+                { id: 115508, title: "The Night Agent", type: "tv", tag: "Series", img: "https://image.tmdb.org/t/p/w500/689V8.jpg" }
             ],
 
-            // Initialize App
-            init: function() {
-                this.renderUI();
-                console.log("Feng V39.0 Engine: Online");
+            launch: function() {
+                this.display(this.vault);
+                console.log("Platinum Framework Loaded.");
             },
 
-            // High-Performance Rendering Logic
-            renderUI: function(source = this.vault) {
-                const trShelf = document.getElementById('shelf-trending');
-                const mvGrid = document.getElementById('grid-movies');
-                const tvGrid = document.getElementById('grid-series');
+            // High-Speed Rendering
+            display: function(data) {
+                const trG = document.getElementById('grid-trending');
+                const mvG = document.getElementById('grid-movies');
+                const tvG = document.getElementById('grid-series');
 
-                // Clear current views to prevent double-loading
-                trShelf.innerHTML = ''; mvGrid.innerHTML = ''; tvGrid.innerHTML = '';
+                trG.innerHTML = ''; mvG.innerHTML = ''; tvG.innerHTML = '';
 
-                source.forEach(media => {
-                    const cardHTML = `
-                        <div class="media-card" onclick="FENG.startPlayback('${media.type}','${media.id}','${media.title}')">
-                            <img src="${media.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=Reloading...'">
-                            <div class="info-bar">
-                                <span class="title-txt">${media.title}</span>
-                                <span class="meta-txt">${media.type} • 2026</span>
+                data.forEach(item => {
+                    const card = `
+                        <div class="media-box" onclick="FENG.play('${item.type}','${item.id}','${item.title}')">
+                            <img src="${item.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=Reloading...'">
+                            <div class="media-details">
+                                <span class="m-name">${item.title}</span>
+                                <span class="m-info">${item.type} • 2026</span>
                             </div>
                         </div>
                     `;
 
-                    if(media.tag === 'Trending') trShelf.innerHTML += cardHTML;
-                    if(media.type === 'movie' && media.tag !== 'Trending') mvGrid.innerHTML += cardHTML;
-                    if(media.type === 'tv') tvGrid.innerHTML += cardHTML;
+                    if(item.tag === 'Trending') trG.innerHTML += card;
+                    if(item.type === 'movie' && item.tag !== 'Trending') mvG.innerHTML += card;
+                    if(item.type === 'tv') tvG.innerHTML += card;
                 });
             },
 
-            // State-Based Navigation (Prevents Freezing)
-            navigate: function(screen) {
-                const hS = document.getElementById('screen-home');
-                const sS = document.getElementById('screen-settings');
-                const hdr = document.getElementById('ui-header');
-                const navH = document.getElementById('nav-home');
-                const navS = document.getElementById('nav-sets');
+            // State-Switching (Prevents Settings from Disappearing)
+            screen: function(name) {
+                const views = ['view-home', 'view-settings', 'view-player'];
+                views.forEach(v => document.getElementById(v).style.display = 'none');
 
-                // Reset all
-                hS.style.display = 'none';
-                sS.style.display = 'none';
-                navH.classList.remove('active');
-                navS.classList.remove('active');
-
-                if(screen === 'home') {
-                    hS.style.display = 'block';
-                    hdr.style.display = 'block';
-                    navH.classList.add('active');
-                    this.renderUI(); 
+                if(name === 'home') {
+                    document.getElementById('view-home').style.display = 'block';
+                    document.getElementById('app-header').style.display = 'block';
+                    document.getElementById('nav-home').classList.add('active');
+                    document.getElementById('nav-sets').classList.remove('active');
+                    this.display(this.vault); // Refresh home grid
                 } else {
-                    sS.style.display = 'flex';
-                    hdr.style.display = 'none'; // Hide header in settings for more space
-                    navS.classList.add('active');
+                    document.getElementById('view-settings').style.display = 'flex';
+                    document.getElementById('app-header').style.display = 'none'; // Lock header to focus on settings
+                    document.getElementById('nav-sets').classList.add('active');
+                    document.getElementById('nav-home').classList.remove('active');
                 }
             },
 
-            // Playback Engine
-            startPlayback: function(type, id, title) {
-                const modal = document.getElementById('screen-player');
-                const frame = document.getElementById('video-frame');
-                const tSlot = document.getElementById('video-title');
+            // Player Controller
+            play: function(type, id, title) {
+                const player = document.getElementById('view-player');
+                const frame = document.getElementById('p-frame');
+                document.getElementById('p-title').innerText = title;
                 
-                tSlot.innerText = title;
-                modal.style.display = 'flex';
-                // Using Vidsrc.to for Platinum reliability
+                player.style.display = 'flex';
                 frame.src = `https://vidsrc.to/embed/${type}/${id}`;
             },
 
-            stopPlayback: function() {
-                document.getElementById('screen-player').style.display = 'none';
-                document.getElementById('video-frame').src = '';
+            stop: function() {
+                document.getElementById('view-player').style.display = 'none';
+                document.getElementById('p-frame').src = '';
             },
 
-            // Search Logic
-            searchEngine: function() {
-                const val = document.getElementById('feng-search').value.toLowerCase();
-                const filtered = this.vault.filter(item => item.title.toLowerCase().includes(val));
-                this.renderUI(filtered);
+            runSearch: function() {
+                const q = document.getElementById('vault-search').value.toLowerCase();
+                const filtered = this.vault.filter(i => i.title.toLowerCase().includes(q));
+                this.display(filtered);
             },
 
-            toggleMode: function() {
-                const html = document.documentElement;
-                const isDark = html.getAttribute('data-theme') === 'dark';
-                html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            switchTheme: function() {
+                const h = document.documentElement;
+                h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
             }
         };
-
-        // Start App
-        FENG.init();
     </script>
 </body>
-        </html>
+</html>
