@@ -3,190 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FENG WORLD V68.0 - TITAN PLATINUM</title>
+    <title>FENG WORLD V68.0 | TITAN PLATINUM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <script src="db.js"></script>
 
     <style>
-        :root { --primary: #d3f243; --bg: #0b0e14; --card: #1c1f26; --text: #eeeeee; --header: #000; --border: rgba(255,255,255,0.1); }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 120px; overflow-x: hidden; }
+        :root { --primary: #d3f243; --bg: #0b1016; --card: #161a21; --text: #f0f0f0; --header: #000; --accent: #1c1f26; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Roboto, sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 100px; overflow-x: hidden; }
 
-        .slider-container { width: 100%; height: 300px; overflow: hidden; position: relative; border-bottom: 5px solid var(--primary); }
-        .slides { display: flex; transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1); height: 100%; }
-        .slide { min-width: 100%; height: 100%; position: relative; }
-        .slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.45; }
-        .slide-content { position: absolute; bottom: 40px; left: 5%; z-index: 15; text-shadow: 2px 2px 15px #000; }
-        .slide-content h2 { font-size: 32px; font-weight: 900; color: var(--primary); text-transform: uppercase; }
+        /* Professional Header & Search */
+        header { background: var(--header); padding: 25px 6%; position: sticky; top: 0; z-index: 2000; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; } .logo span { color: var(--primary); }
+        .search-area { margin-top: 20px; position: relative; }
+        .search-input { width: 100%; padding: 16px 50px; background: var(--accent); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(211,242,67,0.2); }
+        .search-area i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--primary); }
 
-        header { background: var(--header); padding: 30px 5% 20px; position: sticky; top: 0; z-index: 2000; }
-        .logo { font-size: 28px; font-weight: 900; letter-spacing: -1.5px; } .logo span { color: var(--primary); }
-        .search-container { position: relative; margin-top: 20px; }
-        .search-bar { width: 100%; padding: 18px 55px; background: #111; border: 2.5px solid var(--border); border-radius: 14px; color: #fff; outline: none; font-size: 16px; }
-        .search-container i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--primary); }
-
-        .section-label { padding: 30px 5% 10px; font-size: 16px; color: var(--primary); font-weight: 900; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
-        .titan-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; padding: 15px 5%; }
-        .card { background: var(--card); border-radius: 14px; overflow: hidden; border: 1.5px solid var(--border); transition: 0.4s; position: relative; }
-        .card img { width: 100%; height: 165px; object-fit: cover; background: #000; }
-        .card-info { padding: 10px; font-size: 10px; font-weight: 800; text-align: center; height: 45px; display: flex; align-items: center; justify-content: center; }
-
-        .sheet { position: fixed; bottom: -100%; width: 100%; height: 92vh; background: #12141a; z-index: 5001; border-radius: 40px 40px 0 0; padding: 35px; transition: 0.7s cubic-bezier(0.19, 1, 0.22, 1); overflow-y: auto; border-top: 2px solid var(--primary); }
-        .sheet.active { bottom: 0; }
-        .detail-top { display: flex; gap: 25px; margin-bottom: 25px; }
-        .detail-poster { width: 130px; height: 190px; border-radius: 18px; border: 3px solid var(--primary); object-fit: cover; }
+        /* Main Content Grid */
+        .container { padding: 10px 5%; }
+        .section-title { font-size: 14px; font-weight: 900; color: var(--primary); text-transform: uppercase; margin: 30px 0 15px; display: flex; align-items: center; gap: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 15px; }
         
-        .synopsis { font-size: 14px; color: #aaa; line-height: 1.7; margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 15px; }
-        .cast-section { padding: 20px; border-radius: 15px; border-left: 6px solid var(--primary); background: rgba(255,255,255,0.03); margin-bottom: 25px; }
+        .movie-card { background: var(--card); border-radius: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; position: relative; }
+        .movie-card:active { transform: scale(0.96); }
+        .movie-card img { width: 100%; height: 170px; object-fit: cover; }
+        .movie-card .info { padding: 10px; font-size: 11px; font-weight: 700; text-align: center; height: 45px; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
 
-        .picker-group { margin-bottom: 30px; }
-        .grid-picker { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .btn-pick { background: #1e222a; padding: 14px; text-align: center; border-radius: 10px; font-size: 13px; font-weight: 900; border: 1.5px solid var(--border); }
-        .btn-pick.active { background: var(--primary); color: #000; border-color: var(--primary); }
+        /* Professional Bottom Sheet (Detail Page) */
+        .sheet { position: fixed; bottom: -110%; left: 0; width: 100%; height: 94vh; background: #0b0e14; z-index: 5000; border-radius: 35px 35px 0 0; padding: 30px; transition: 0.6s cubic-bezier(0.2, 1, 0.3, 1); overflow-y: auto; border-top: 2px solid var(--primary); }
+        .sheet.active { bottom: 0; }
+        .close-btn { text-align: right; margin-bottom: 10px; color: #555; font-size: 28px; }
 
-        .btn-main { width: 100%; padding: 20px; border-radius: 18px; font-weight: 900; border: none; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 16px; }
+        .det-flex { display: flex; gap: 20px; align-items: flex-start; }
+        .det-poster { width: 130px; border-radius: 15px; border: 2px solid var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .det-title { font-size: 24px; font-weight: 900; line-height: 1.1; }
+        .det-meta { color: var(--primary); font-size: 13px; font-weight: 800; margin: 8px 0; }
+        
+        .synopsis { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 18px; font-size: 14px; color: #bbb; line-height: 1.6; margin: 25px 0; border-left: 4px solid var(--primary); }
 
-        nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; padding: 18px 0 40px; border-top: 2px solid var(--border); z-index: 3000; }
-        .nav-item { flex: 1; text-align: center; font-size: 11px; font-weight: 900; color: #555; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item i { display: block; font-size: 26px; margin-bottom: 8px; }
+        /* Series Season/Episode Picker */
+        .picker-box { margin: 20px 0; }
+        .picker-label { font-size: 12px; font-weight: 900; color: #666; margin-bottom: 10px; display: block; }
+        .picker-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px; }
+        .pick-btn { background: var(--accent); padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 800; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .pick-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
-        .full-page { position: fixed; inset: 0; background: var(--bg); z-index: 8500; display: none; padding: 50px 8%; overflow-y: auto; }
-        .contact-card { background: #161a22; padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .btn-action { width: 100%; padding: 20px; border-radius: 15px; font-weight: 900; border: none; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; cursor: pointer; }
+
+        /* Settings/Support Page */
+        .page-full { position: fixed; inset: 0; background: var(--bg); z-index: 6000; display: none; padding: 40px 8%; }
+        .contact-box { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 15px; display: flex; align-items: center; gap: 20px; }
+        .contact-box i { font-size: 30px; }
+
+        /* Bottom Nav */
+        nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; padding: 15px 0 35px; border-top: 1px solid var(--accent); z-index: 4000; }
+        .nav-link { flex: 1; text-align: center; color: #555; font-size: 10px; font-weight: 900; transition: 0.3s; }
+        .nav-link.active { color: var(--primary); }
+        .nav-link i { display: block; font-size: 24px; margin-bottom: 6px; }
     </style>
 </head>
-<body onload="FENG.boot()">
-
-    <div class="slider-container">
-        <div class="slides" id="hero-slider"></div>
-    </div>
+<body onload="FENG.init()">
 
     <header>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="logo">FENG <span>WORLD</span></div>
-            <i class="fas fa-exclamation-triangle" style="color:#ff4d4d; font-size:24px;" onclick="FENG.showPage('report')"></i>
-        </div>
-        <div class="search-container">
+        <div class="logo">FENG <span>WORLD</span></div>
+        <div class="search-area">
             <i class="fas fa-search"></i>
-            <input type="text" class="search-bar" id="search-box" placeholder="Search 100+ Titles..." onkeyup="FENG.search()">
+            <input type="text" id="search" class="search-input" placeholder="Search 100+ titles..." onkeyup="FENG.search()">
         </div>
     </header>
 
-    <main>
-        <div class="section-label"><i class="fas fa-tv"></i> Unified Series</div>
-        <div class="titan-grid" id="series-grid"></div>
-        <div class="section-label"><i class="fas fa-film"></i> Movie Archive</div>
-        <div class="titan-grid" id="movie-grid"></div>
-    </main>
+    <div class="container">
+        <div class="section-title"><i class="fas fa-play-circle"></i> Trending Series</div>
+        <div id="series-display" class="grid"></div>
 
-    <div class="sheet" id="detail-sheet">
-        <div style="text-align:right"><i class="fas fa-times-circle" style="font-size:32px; color:#444;" onclick="FENG.closeSheet()"></i></div>
-        <div class="detail-top">
-            <img id="det-img" class="detail-poster" src="">
-            <div style="flex:1">
-                <h2 id="det-title" style="font-weight:900;"></h2>
-                <p id="det-meta" style="color:var(--primary); font-weight:900; margin-top:8px;"></p>
-            </div>
-        </div>
-        <div class="synopsis" id="det-desc"></div>
-        <div class="cast-section">
-            <b style="color:var(--primary); font-size:12px;">TOP CASTING:</b><br>
-            <span id="det-cast" style="font-size:14px;"></span>
-        </div>
-        <div id="series-logic" style="display:none">
-            <div class="picker-group"><div class="grid-picker" id="s-grid"></div></div>
-            <div class="picker-group"><div class="grid-picker" id="e-grid"></div></div>
-        </div>
-        <button class="btn-main" style="background:var(--primary); color:#000;" onclick="FENG.watch()"><i class="fas fa-play-circle"></i> WATCH ONLINE</button>
-        <button class="btn-main" style="background:#00d2ff; color:#000; margin-bottom:60px;" onclick="FENG.download()"><i class="fas fa-cloud-download-alt"></i> SPLAYER DOWNLOAD</button>
+        <div class="section-title"><i class="fas fa-film"></i> Movies Archive</div>
+        <div id="movie-display" class="grid"></div>
     </div>
 
-    <div class="full-page" id="report-page">
-        <h1 style="color:#ff4d4d; font-weight:900;">SUPPORT</h1>
-        <div class="contact-card" onclick="window.location.href='https://wa.me/260770605003'">
-            <i class="fab fa-whatsapp" style="font-size:30px; color:#25d366;"></i> <b>+260770605003</b>
+    <div class="sheet" id="sheet">
+        <div class="close-btn" onclick="FENG.close()"><i class="fas fa-times-circle"></i></div>
+        <div class="det-flex">
+            <img id="m-img" class="det-poster" src="">
+            <div style="flex:1">
+                <h2 id="m-title" class="det-title"></h2>
+                <div id="m-meta" class="det-meta"></div>
+                <div id="m-cast" style="font-size:12px; color:#666;"></div>
+            </div>
         </div>
-        <div class="contact-card" onclick="window.location.href='https://instagram.com/felix_ny10'">
-            <i class="fab fa-instagram" style="font-size:30px; color:#e1306c;"></i> <b>@felix_ny10</b>
+        
+        <div class="synopsis" id="m-desc"></div>
+
+        <div id="series-controls" style="display:none">
+            <div class="picker-box">
+                <span class="picker-label">SELECT SEASON</span>
+                <div id="season-grid" class="picker-grid"></div>
+            </div>
+            <div class="picker-box">
+                <span class="picker-label">SELECT EPISODE</span>
+                <div id="episode-grid" class="picker-grid"></div>
+            </div>
         </div>
-        <button class="btn-main" style="background:#333; color:#fff;" onclick="FENG.closePages()">BACK</button>
+
+        <button class="btn-action" style="background:var(--primary); color:#000;" onclick="FENG.play()"><i class="fas fa-play"></i> WATCH NOW</button>
+        <button class="btn-action" style="background:#222; color:#fff; margin-bottom:80px;" onclick="FENG.download()"><i class="fas fa-download"></i> DOWNLOAD (SPLAYER)</button>
+    </div>
+
+    <div class="page-full" id="support-page">
+        <h1 style="color:var(--primary); font-weight:900; margin-bottom:30px;">SETTINGS & HELP</h1>
+        <div class="contact-box" onclick="location.href='https://wa.me/260770605003'">
+            <i class="fab fa-whatsapp" style="color:#25d366"></i>
+            <div><b>WhatsApp Support</b><br><small>+260770605003</small></div>
+        </div>
+        <div class="contact-box" onclick="location.href='https://instagram.com/felix_ny10'">
+            <i class="fab fa-instagram" style="color:#e1306c"></i>
+            <div><b>Instagram</b><br><small>@felix_ny10</small></div>
+        </div>
+        <button class="btn-action" style="background:#333; color:#fff; margin-top:20px;" onclick="FENG.togglePage('support', false)">BACK TO HOME</button>
     </div>
 
     <nav>
-        <div class="nav-item active" onclick="FENG.closePages()"><i class="fas fa-home"></i>HOME</div>
-        <div class="nav-item" onclick="FENG.showPage('report')"><i class="fas fa-headset"></i>SUPPORT</div>
+        <div class="nav-link active" onclick="FENG.togglePage('support', false)"><i class="fas fa-home"></i>HOME</div>
+        <div class="nav-link" onclick="FENG.togglePage('support', true)"><i class="fas fa-cog"></i>SETTINGS</div>
     </nav>
 
     <script>
-        /* CORE SYSTEM BOOTLOADER - Connects to db.js */
         const FENG = {
-            // Merges the 60 titles (FENG_DB) and 40 titles (FINAL_EXPANSION) from db.js
-            db: [...FENG_DB, ...FINAL_EXPANSION], 
+            db: [], 
             cur: null, s: 1, e: 1,
-            boot: function() {
-                this.loadSlider();
-                this.render(this.db);
+
+            init: function() {
+                // Merges the 100 movies from your db.js file
+                if (typeof FENG_DB !== 'undefined') {
+                    this.db = [...FENG_DB, ...FINAL_EXPANSION];
+                    this.render(this.db);
+                } else {
+                    document.body.innerHTML = "<h1 style='color:red; text-align:center; padding-top:100px;'>Error: db.js file not found!</h1>";
+                }
             },
-            loadSlider: function() {
-                const el = document.getElementById('hero-slider');
-                const slides = this.db.slice(0, 5); // Picks first 5 movies for slider
-                slides.forEach(s => {
-                    el.innerHTML += `<div class="slide"><img src="https://image.tmdb.org/t/p/original${s.i}"><div class="slide-content"><h2>${s.t}</h2></div></div>`;
-                });
-                let i = 0; setInterval(() => {
-                    i = (i + 1) % slides.length;
-                    el.style.transform = `translateX(-${i * 100}%)`;
-                }, 5000);
-            },
-            render: function(data) {
-                const sG = document.getElementById('series-grid'); const mG = document.getElementById('movie-grid');
-                sG.innerHTML = ''; mG.innerHTML = '';
-                data.forEach(item => {
-                    const html = `<div class="card" onclick="FENG.openSheet('${item.id}')">
-                        <img src="https://image.tmdb.org/t/p/w500${item.i}">
-                        <div class="card-info">${item.t}</div>
+
+            render: function(list) {
+                const sg = document.getElementById('series-display');
+                const mg = document.getElementById('movie-display');
+                sg.innerHTML = ''; mg.innerHTML = '';
+                
+                list.forEach(item => {
+                    const el = `<div class="movie-card" onclick="FENG.open('${item.id}')">
+                        <img src="https://image.tmdb.org/t/p/w500${item.i}" loading="lazy">
+                        <div class="info">${item.t}</div>
                     </div>`;
-                    if(item.c === 'tv') sG.innerHTML += html; else mG.innerHTML += html;
+                    if(item.c === 'tv') sg.innerHTML += el;
+                    else mg.innerHTML += el;
                 });
             },
-            openSheet: function(id) {
+
+            open: function(id) {
                 this.cur = this.db.find(x => x.id == id);
-                document.getElementById('det-img').src = "https://image.tmdb.org/t/p/w500" + this.cur.i;
-                document.getElementById('det-title').innerText = this.cur.t;
-                document.getElementById('det-meta').innerText = `${this.cur.y} • ${this.cur.g}`;
-                document.getElementById('det-desc').innerText = this.cur.desc;
-                document.getElementById('det-cast').innerText = this.cur.cast;
-                const box = document.getElementById('series-logic');
-                if(this.cur.c === 'tv') { box.style.display = 'block'; this.buildPickers(); } 
-                else { box.style.display = 'none'; }
-                document.getElementById('detail-sheet').classList.add('active');
+                this.s = 1; this.e = 1; // Reset to S1 E1
+                
+                document.getElementById('m-img').src = "https://image.tmdb.org/t/p/w500" + this.cur.i;
+                document.getElementById('m-title').innerText = this.cur.t;
+                document.getElementById('m-meta').innerText = `${this.cur.y} • ${this.cur.g}`;
+                document.getElementById('m-desc').innerText = this.cur.desc;
+                document.getElementById('m-cast').innerText = "Casting: " + this.cur.cast;
+                
+                const sCtrl = document.getElementById('series-controls');
+                if(this.cur.c === 'tv') {
+                    sCtrl.style.display = 'block';
+                    this.buildPickers();
+                } else {
+                    sCtrl.style.display = 'none';
+                }
+                
+                document.getElementById('sheet').classList.add('active');
             },
+
             buildPickers: function() {
-                const sg = document.getElementById('s-grid'); const eg = document.getElementById('e-grid');
-                sg.innerHTML = ''; eg.innerHTML = '';
+                const sG = document.getElementById('season-grid');
+                const eG = document.getElementById('episode-grid');
+                sG.innerHTML = ''; eG.innerHTML = '';
+                
                 for(let i=1; i<=this.cur.s; i++) {
-                    sg.innerHTML += `<div class="btn-pick ${i==this.s?'active':''}" onclick="FENG.s=${i};FENG.buildPickers()">${i}</div>`;
+                    sG.innerHTML += `<div class="pick-btn ${i==this.s?'active':''}" onclick="FENG.s=${i};FENG.buildPickers()">${i}</div>`;
                 }
                 for(let i=1; i<=this.cur.e; i++) {
-                    eg.innerHTML += `<div class="btn-pick ${i==this.e?'active':''}" onclick="FENG.e=${i};FENG.buildPickers()">${i}</div>`;
+                    eG.innerHTML += `<div class="pick-btn ${i==this.e?'active':''}" onclick="FENG.e=${i};FENG.buildPickers()">${i}</div>`;
                 }
             },
+
             search: function() {
-                const q = document.getElementById('search-box').value.toLowerCase();
-                this.render(this.db.filter(i => i.t.toLowerCase().includes(q)));
+                const val = document.getElementById('search').value.toLowerCase();
+                this.render(this.db.filter(x => x.t.toLowerCase().includes(val)));
             },
-            watch: function() {
-                const url = this.cur.c === 'tv' ? `https://vidsrc.to/embed/tv/${this.cur.id}/${this.s}/${this.e}` : `https://vidsrc.to/embed/movie/${this.cur.id}`;
-                window.open(url, '_blank');
+
+            play: function() {
+                const link = this.cur.c === 'tv' 
+                    ? `https://vidsrc.to/embed/tv/${this.cur.id}/${this.s}/${this.e}` 
+                    : `https://vidsrc.to/embed/movie/${this.cur.id}`;
+                window.open(link, '_blank');
             },
+
             download: function() {
-                const url = this.cur.c === 'tv' ? `https://vidsrc.to/embed/tv/${this.cur.id}/${this.s}/${this.e}` : `https://vidsrc.to/embed/movie/${this.cur.id}`;
-                window.location.href = "intent://" + url + "#Intent;package=com.thunder.realplayer;scheme=https;end";
+                const link = this.cur.c === 'tv' 
+                    ? `https://vidsrc.to/embed/tv/${this.cur.id}/${this.s}/${this.e}` 
+                    : `https://vidsrc.to/embed/movie/${this.cur.id}`;
+                window.location.href = "intent://" + link + "#Intent;package=com.thunder.realplayer;scheme=https;end";
             },
-            showPage: function(id) { document.getElementById(id + '-page').style.display = 'block'; },
-            closePages: function() { document.getElementById('report-page').style.display = 'none'; },
-            closeSheet: function() { document.getElementById('detail-sheet').classList.remove('active'); }
+
+            togglePage: function(id, show) {
+                document.getElementById(id + '-page').style.display = show ? 'block' : 'none';
+            },
+
+            close: function() { document.getElementById('sheet').classList.remove('active'); }
         };
     </script>
 </body>
