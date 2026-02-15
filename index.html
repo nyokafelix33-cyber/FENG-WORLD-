@@ -6,165 +6,117 @@
     <title>Feng | World Tool</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { 
-            --main: #d3f243; 
-            --bg: #0b0e14; 
-            --card: #1c1f26; 
-            --text: #eeeeee; 
-            --header: #000;
-            --input: #1a1a1a;
-        }
-
-        /* LIGHT MODE OVERRIDES */
-        [data-theme="light"] {
-            --bg: #f5f7fa;
-            --card: #ffffff;
-            --text: #1a1a1a;
-            --header: #ffffff;
-            --input: #e2e8f0;
-        }
-
+        :root { --main: #d3f243; --bg: #0b0e14; --card: #1c1f26; --text: #eeeeee; --header: #000; --input: #1a1a1a; }
+        [data-theme="light"] { --bg: #f5f7fa; --card: #ffffff; --text: #1a1a1a; --header: #ffffff; --input: #e2e8f0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 0; transition: 0.3s; }
-        header { background: var(--header); padding: 15px 5%; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .logo { color: var(--text); font-weight: 900; font-size: 26px; letter-spacing: -1px; }
-        .logo span { color: var(--main); }
+        
+        /* CAROUSEL */
+        .carousel { width: 100%; height: 200px; overflow: hidden; position: relative; background: #000; }
+        .track { display: flex; transition: 0.5s; height: 100%; }
+        .slide { min-width: 100%; position: relative; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .cap { position: absolute; bottom: 20px; left: 20px; }
 
-        /* SEARCH BAR REFINEMENT */
-        .search-area { display: flex; gap: 8px; margin-top: 10px; }
-        .search-bar { background: var(--input); border: 1px solid #333; border-radius: 8px; padding: 10px; display: flex; flex-grow: 1; align-items: center; }
-        .search-bar input { background: transparent; border: none; color: var(--text); width: 100%; outline: none; }
-        .year-select { background: var(--input); color: var(--main); border: 1px solid #333; border-radius: 8px; padding: 0 8px; outline: none; font-size: 12px; font-weight: bold; }
+        /* TRENDING HORIZONTAL SCROLL */
+        .trending-row { display: flex; overflow-x: auto; gap: 15px; padding: 10px 5%; scrollbar-width: none; }
+        .t-card { min-width: 110px; height: 160px; border-radius: 10px; overflow: hidden; border: 1px solid var(--main); flex-shrink: 0; }
+        .t-card img { width: 100%; height: 100%; object-fit: cover; }
 
+        header { background: var(--header); padding: 15px 5%; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
         .container { padding: 20px 5% 100px 5%; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #33333333; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .card:active { transform: scale(0.96); }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card-info { padding: 10px; }
-        .card-title { font-size: 11px; font-weight: bold; height: 30px; overflow: hidden; color: var(--text); display: block; }
-        .meta { font-size: 9px; color: var(--main); margin-bottom: 5px; font-weight: bold; }
+        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #33333333; }
+        .card img { width: 100%; height: 180px; object-fit: cover; display: block; } /* Fixed Image Display */
 
-        /* SETTINGS MENU */
+        /* SETTINGS (V30 VERSION) */
         #setModal { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: none; padding: 25px; overflow-y: auto; }
-        .profile-banner { background: linear-gradient(135deg, var(--main), #a8c22d); padding: 30px 20px; border-radius: 20px; text-align: center; color: #000; margin-bottom: 20px; }
-        .menu-item { background: var(--card); padding: 16px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border: 1px solid #33333333; }
-        
-        /* THEME TOGGLE SWITCH */
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #444; transition: .4s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--main); }
-        input:checked + .slider:before { transform: translateX(20px); }
+        .auth-box { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; }
+        .menu-item { background: var(--card); padding: 15px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; cursor: pointer; }
+        .vision-text { font-size: 11px; color: #777; line-height: 1.6; padding: 20px 0; text-align: center; border-top: 1px solid #333; margin-top: 20px; }
 
-        footer { position: fixed; bottom: 0; width: 100%; background: var(--header); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #33333333; }
-        footer div { text-align: center; font-size: 10px; color: #777; cursor: pointer; }
-        footer div.active { color: var(--main); }
+        footer { position: fixed; bottom: 0; width: 100%; background: var(--header); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; }
     </style>
 </head>
-<body onload="render(movieDB)">
+<body onload="startCarousel(); render()">
 
     <header>
-        <div class="logo">FE<span>NG</span></div>
-        <div class="search-area">
-            <div class="search-bar">
-                <input type="text" id="sInp" placeholder="Search Feng..." onkeyup="filterLib()">
-                <i class="fas fa-search" style="color:var(--main)"></i>
-            </div>
-            <select class="year-select" id="yInp" onchange="filterLib()">
-                <option value="All">All</option>
-                <option value="2026">2026</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
-            </select>
-        </div>
+        <div style="font-weight:900; font-size:22px;">FE<span>NG</span></div>
     </header>
 
+    <div class="carousel">
+        <div class="track" id="track">
+            <div class="slide"><img src="https://image.tmdb.org/t/p/original/or06vSqzWBFscv1qCG76uC1fsR6.jpg"><div class="cap"><h2>AVENGERS</h2></div></div>
+            <div class="slide"><img src="https://image.tmdb.org/t/p/original/6968y.jpg"><div class="cap"><h2>SCREAM 7</h2></div></div>
+        </div>
+    </div>
+
     <div class="container">
-        <h3 id="libTag" style="color:var(--main); font-size:10px; letter-spacing:2px; margin-bottom:15px;">BATCH #8 LOADED</h3>
+        <h4 style="color:var(--main); margin:0 0 10px 0;">🔥 TRENDING NOW</h4>
+        <div class="trending-row" id="trendingGrid"></div>
+
+        <h4 style="color:var(--main); margin:25px 0 10px 0;">RECENTLY ADDED (BATCH 10)</h4>
         <div class="grid" id="mainGrid"></div>
     </div>
 
     <div id="setModal">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 style="margin:0">Settings</h2>
-            <i class="fas fa-times fa-lg" onclick="closeSets()"></i>
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+            <h3>Menu & Account</h3><i class="fas fa-times fa-lg" onclick="closeSets()"></i>
         </div>
-
-        <div class="profile-banner">
-            <div style="font-size:40px; margin-bottom:10px;"><i class="fas fa-user-circle"></i></div>
-            <div style="font-weight:900; font-size:20px;">FENG PREMIUM</div>
-            <div style="font-size:12px; opacity:0.8;">Server: Lusaka-01</div>
+        <div class="auth-box">
+            <div style="font-size:12px; margin-bottom:10px; color:var(--main);">LOGIN / REGISTER</div>
+            <input type="email" placeholder="Email" style="width:100%; padding:10px; margin-bottom:8px; background:#000; border:1px solid #333; color:#fff;">
+            <button style="width:100%; padding:10px; background:var(--main); border:none; font-weight:bold;">CONTINUE</button>
         </div>
-
-        <div class="menu-item">
-            <span><i class="fas fa-moon" id="themeIcon"></i> Dark Mode</span>
-            <label class="switch">
-                <input type="checkbox" id="themeToggle" onchange="toggleTheme()" checked>
-                <span class="slider"></span>
-            </label>
+        <div class="menu-item" onclick="toggleTheme()"><span><i class="fas fa-adjust"></i> Theme</span></div>
+        <div class="menu-item" onclick="requestMovie()" style="background:var(--main); color:#000; font-weight:bold;">
+            <span><i class="fas fa-plus-circle"></i> REQUEST MOVIE</span>
         </div>
-
-        <div class="menu-item" onclick="requestMovie()" style="cursor:pointer; background:var(--main); color:#000; font-weight:bold;">
-            <span><i class="fas fa-plus-circle"></i> Request Movie</span>
-            <i class="fas fa-chevron-right"></i>
+        <div class="menu-item" onclick="alert('Policy: Version 31.0')"><span><i class="fas fa-user-shield"></i> About Us / Policy</span></div>
+        <div class="menu-item" onclick="alert('Report to: +260770605003')"><span><i class="fas fa-exclamation-triangle"></i> Report an Issue</span></div>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <a href="https://wa.me/260770605003" style="flex:1; background:#25D366; color:white; padding:15px; border-radius:12px; text-align:center;"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://instagram.com/felix_nyoka" target="_blank" style="flex:1; background:#E1306C; color:white; padding:15px; border-radius:12px; text-align:center;"><i class="fab fa-instagram"></i></a>
         </div>
-
-        <div style="margin-top:20px; font-size:12px; color:#777; padding-left:5px;">CONTACT</div>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <a href="https://wa.me/260772719702" style="flex:1; background:#25D366; color:white; padding:15px; border-radius:12px; text-align:center; text-decoration:none;"><i class="fab fa-whatsapp fa-lg"></i></a>
-            <a href="https://instagram.com/felix_nyoka" target="_blank" style="flex:1; background:#E1306C; color:white; padding:15px; border-radius:12px; text-align:center; text-decoration:none;"><i class="fab fa-instagram fa-lg"></i></a>
-        </div>
+        <div class="vision-text"><b>THE VISION OF FENG</b><br>To become the premier global hub for cinematic accessibility in Zambia and beyond.</div>
     </div>
 
     <footer>
-        <div class="active" onclick="render(movieDB)"><i class="fas fa-home"></i>Home</div>
-        <div onclick="openSets()"><i class="fas fa-cog"></i>Settings</div>
+        <div onclick="closeSets()"><i class="fas fa-home"></i><br>Home</div>
+        <div onclick="openSets()"><i class="fas fa-user-circle"></i><br>Account</div>
     </footer>
 
     <script>
         const movieDB = [
-            // BATCH #8 & PREVIOUS
-            {id: 420634, title: "Scream 7", year: 2026, type: "movie", img: "https://image.tmdb.org/t/p/w500/fT0X.jpg"},
-            {id: 609681, title: "Avatar 3: Fire and Ash", year: 2025, type: "movie", img: "https://image.tmdb.org/t/p/w500/6968y.jpg"},
-            {id: 111110, title: "Stranger Things 5", year: 2026, type: "tv", img: "https://image.tmdb.org/t/p/w500/x2LSRm21uTEx2PqYmS3u9mS.jpg"},
-            {id: 1184918, title: "The Wild Robot", year: 2024, type: "movie", img: "https://image.tmdb.org/t/p/w500/7I90.jpg"},
-            {id: 933260, title: "The Substance", year: 2024, type: "movie", img: "https://image.tmdb.org/t/p/w500/78R9.jpg"},
-            {id: 533535, title: "Deadpool & Wolverine", year: 2024, type: "movie", img: "https://image.tmdb.org/t/p/w500/8cdclPkS1fSgtHd96YvFhX7U93v.jpg"},
-            {id: 502356, title: "Super Mario Galaxy", year: 2026, type: "movie", img: "https://image.tmdb.org/t/p/w500/m0S.jpg"},
-            {id: 111110, title: "Daredevil: Born Again", year: 2025, type: "tv", img: "https://image.tmdb.org/t/p/w500/689V8.jpg"}
+            // Batch 10 (2026 Hits)
+            {title: "Crime 101", year: 2026, img: "https://image.tmdb.org/t/p/w500/m0S.jpg"},
+            {title: "Wuthering Heights", year: 2026, img: "https://image.tmdb.org/t/p/w500/78R9.jpg"},
+            {title: "GOAT (Animated)", year: 2026, img: "https://image.tmdb.org/t/p/w500/6968y.jpg"},
+            {title: "Scream 7", year: 2026, img: "https://image.tmdb.org/t/p/w500/fT0X.jpg"}
         ];
 
-        function render(data) {
-            const grid = document.getElementById('mainGrid');
-            grid.innerHTML = '';
-            data.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.innerHTML = `<img src="${item.img}"><div class="card-info"><div class="meta">${item.year} • ${item.type.toUpperCase()}</div><span class="card-title">${item.title}</span></div>`;
-                grid.appendChild(div);
+        const trendingDB = [
+            {img: "https://image.tmdb.org/t/p/w500/or06vSqzWBFscv1qCG76uC1fsR6.jpg"},
+            {img: "https://image.tmdb.org/t/p/w500/lC9ih_S.jpg"},
+            {img: "https://image.tmdb.org/t/p/w500/8cdclPkS1fSgtHd96YvFhX7U93v.jpg"},
+            {img: "https://image.tmdb.org/t/p/w500/7I90.jpg"},
+            {img: "https://image.tmdb.org/t/p/w500/vZloY0Cc8pPTMvS3v1wZ94Ydn94.jpg"}
+        ];
+
+        function render() {
+            const grid = document.getElementById('mainGrid'); grid.innerHTML = '';
+            movieDB.forEach(m => {
+                grid.innerHTML += `<div class="card"><img src="${m.img}"><div style="padding:10px; font-size:11px;">${m.title} (${m.year})</div></div>`;
+            });
+            const tGrid = document.getElementById('trendingGrid'); tGrid.innerHTML = '';
+            trendingDB.forEach(t => {
+                tGrid.innerHTML += `<div class="t-card"><img src="${t.img}"></div>`;
             });
         }
 
-        function filterLib() {
-            const q = document.getElementById('sInp').value.toLowerCase();
-            const y = document.getElementById('yInp').value;
-            const res = movieDB.filter(m => m.title.toLowerCase().includes(q) && (y === 'All' || m.year == y));
-            render(res);
-        }
-
-        function toggleTheme() {
-            const body = document.documentElement;
-            const isDark = document.getElementById('themeToggle').checked;
-            body.setAttribute('data-theme', isDark ? 'dark' : 'light');
-            document.getElementById('themeIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
-        }
-
-        function requestMovie() {
-            const m = prompt("Movie/Series name?");
-            if(m) window.location.href = `https://wa.me/260772719702?text=Request:%20${m}`;
-        }
-
+        let s = 0;
+        function startCarousel() { setInterval(() => { s = (s + 1) % 2; document.getElementById('track').style.transform = `translateX(-${s * 100}%)`; }, 4000); }
+        function toggleTheme() { const h = document.documentElement; h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+        function requestMovie() { const m = prompt("Movie Name?"); if(m) window.location.href = `https://wa.me/260770605003?text=Request:%20${m}`; }
         function openSets() { document.getElementById('setModal').style.display = 'block'; }
         function closeSets() { document.getElementById('setModal').style.display = 'none'; }
     </script>
