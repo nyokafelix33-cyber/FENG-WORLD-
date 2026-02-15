@@ -3,59 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamX | Premium World Tool</title>
+    <title>StreamX | World Cinema Tool</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --main: #d3f243; --bg: #0b0e14; --card: #1c1f26; --red: #ff0000; --text: #eeeeee; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
 
-        /* HEADER & SEARCH */
+        /* HEADER & SEARCH ENGINE */
         header { background: #000; padding: 15px 5%; border-bottom: 2px solid var(--main); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 24px; font-weight: 900; color: var(--red); text-decoration: none; }
-        .search-area { padding: 10px 5%; background: #000; }
-        .search-bar { display: flex; background: #1a1a1a; border-radius: 8px; padding: 12px; border: 1px solid #333; }
-        .search-bar input { background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 16px; }
+        .search-box { display: flex; background: #1a1a1a; border-radius: 8px; padding: 12px; border: 1px solid #333; margin-top: 10px; }
+        .search-box input { background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 16px; }
 
-        /* GRID SYSTEM */
+        /* THE GRID (WORLD TOOL) */
         .container { padding: 20px 5% 100px 5%; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #333; cursor: pointer; transition: 0.3s; position: relative; }
-        .card:hover { border-color: var(--main); transform: translateY(-5px); }
+        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #333; cursor: pointer; transition: 0.2s; }
+        .card:hover { border-color: var(--main); transform: scale(1.03); }
         .card img { width: 100%; height: 200px; object-fit: cover; background: #222; }
         .card-info { padding: 10px; }
-        .card-title { font-size: 12px; font-weight: bold; color: #fff; display: block; margin-bottom: 4px; }
-        .card-meta { font-size: 10px; color: var(--main); font-weight: bold; }
-        .card-genre { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 4px; }
+        .card-title { font-size: 12px; font-weight: 800; display: block; height: 32px; overflow: hidden; }
+        .card-meta { font-size: 10px; color: var(--main); font-weight: bold; margin: 4px 0; }
+        .card-genre { font-size: 9px; color: #888; text-transform: uppercase; }
 
-        /* SETTINGS & AUTH */
+        /* SETTINGS & POLICY (FIXED) */
         #setModal { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: none; padding: 25px; overflow-y: auto; }
-        .auth-box { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--main); margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin-top: 10px; border-radius: 6px; border: 1px solid #444; background: #000; color: #fff; box-sizing: border-box; }
-        .btn { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: 800; cursor: pointer; margin-top: 10px; background: var(--main); color: #000; }
-        
-        .menu-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid #222; cursor: pointer; }
-        .drop-panel { display: none; background: #111; padding: 15px; border-radius: 8px; font-size: 13px; color: #bbb; line-height: 1.6; margin-top: 5px; }
+        .set-box { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; }
+        .menu-item { display: flex; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid #222; cursor: pointer; }
+        .dropdown { display: none; padding: 15px; background: #111; font-size: 13px; color: #aaa; border-radius: 8px; margin-top: 5px; }
 
         /* PLAYER */
         #player { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; flex-direction: column; }
-        footer { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; z-index: 1000; }
+        
+        footer { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; }
         footer div { text-align: center; font-size: 10px; color: #555; cursor: pointer; }
         footer div.active { color: var(--main); }
     </style>
 </head>
 <body onload="init()">
 
-    <header><span class="logo">STREAMX</span></header>
-
-    <div class="search-area">
-        <div class="search-bar">
-            <input type="text" id="sInp" placeholder="Search Title, Year, or Genre (2001-2026)..." onkeyup="deepSearch()">
+    <header>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="color:var(--red); font-weight:900; font-size:22px;">STREAMX</span>
+            <span style="font-size:10px; color:var(--main)">WORLD TOOL V17</span>
+        </div>
+        <div class="search-box">
+            <input type="text" id="sInp" placeholder="Search thousands of titles (2001-2026)..." onkeyup="search()">
             <i class="fas fa-search" style="color:var(--main); margin-top:5px;"></i>
         </div>
-    </div>
+    </header>
 
     <div class="container">
-        <h3 id="catTitle" style="color:var(--main); margin-bottom:15px; font-size:14px;">FEATURED WORLD LIBRARY</h3>
+        <h3 id="catTitle" style="color:var(--main); margin-bottom:15px; font-size:14px;">GLOBAL LIBRARY</h3>
         <div class="grid" id="mainGrid"></div>
     </div>
 
@@ -65,117 +63,79 @@
             <h2>Settings</h2>
         </div>
 
-        <div class="auth-box">
-            <div id="step1">
-                <p style="margin:0; font-size:12px; font-weight:bold; color:var(--main)">User Login</p>
-                <input type="email" placeholder="Enter Email">
-                <button class="btn" onclick="goAuth(2)">CONTINUE</button>
-            </div>
-            <div id="step2" style="display:none">
-                <input type="password" placeholder="Password">
-                <button class="btn" onclick="alert('Welcome back!')">SIGN IN</button>
-                <p onclick="goAuth(3)" style="text-align:center; color:var(--main); font-size:11px; margin-top:15px; cursor:pointer;">Forgot Password?</p>
-            </div>
-            <div id="step3" style="display:none">
-                <p style="text-align:center; font-size:12px;">Enter 4-Digit Recovery PIN</p>
-                <input type="number" placeholder="0000" style="text-align:center; letter-spacing:10px;">
-                <button class="btn" onclick="goAuth(1)">VERIFY PIN</button>
-            </div>
+        <div class="set-box">
+            <p style="margin:0 0 10px 0; font-size:12px; color:var(--main)">ACCOUNT LOGIN</p>
+            <input type="email" placeholder="Email" style="width:100%; padding:12px; background:#000; border:1px solid #444; color:#fff; border-radius:6px; box-sizing:border-box;">
+            <button onclick="alert('System Ready')" style="width:100%; padding:12px; margin-top:10px; background:var(--main); border:none; font-weight:bold; border-radius:6px;">CONTINUE</button>
         </div>
 
-        <div class="menu-row" onclick="toggleDrop('policy')"><span><i class="fas fa-user-shield"></i> Privacy Policy</span><i class="fas fa-chevron-down"></i></div>
-        <div id="policy" class="drop-panel">
-            <strong>StreamX Policy:</strong><br>
-            • We do not host any files on our servers.<br>
-            • Your account data is encrypted.<br>
-            • Please report broken links to the developer.
-        </div>
+        <div class="menu-item" onclick="toggle('abt')"><span><i class="fas fa-info-circle"></i> About StreamX</span><i class="fas fa-chevron-down"></i></div>
+        <div id="abt" class="dropdown">The ultimate movie world tool created by Felix Nyoka.</div>
 
-        <div class="menu-row" onclick="window.location.href='mailto:nyokafelix33@gmail.com'"><span><i class="fas fa-envelope"></i> Report Issues</span><i class="fas fa-chevron-right"></i></div>
-        
-        <a href="https://instagram.com/felix_nyoka" target="_blank" class="menu-row" style="text-decoration:none;">
-            <span><i class="fab fa-instagram"></i> Follow @felix_nyoka</span><i class="fas fa-chevron-right"></i>
-        </a>
+        <div class="menu-item" onclick="toggle('pol')"><span><i class="fas fa-user-shield"></i> Privacy Policy</span><i class="fas fa-chevron-down"></i></div>
+        <div id="pol" class="dropdown">StreamX respects global privacy laws. We do not store your data.</div>
+
+        <div class="menu-item" onclick="window.location.href='mailto:nyokafelix33@gmail.com'"><span><i class="fas fa-envelope"></i> Report Issues</span><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-item" onclick="window.open('https://instagram.com/felix_nyoka')"><span><i class="fab fa-instagram"></i> Follow Felix</span><i class="fas fa-chevron-right"></i></div>
     </div>
 
     <div id="player">
         <div style="padding:15px; display:flex; justify-content:space-between; align-items:center; background:#111;">
             <span id="pT" style="font-weight:bold; color:var(--main)">...</span>
-            <button onclick="closeP()" style="background:var(--red); color:#fff; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">CLOSE X</button>
+            <button onclick="closeP()" style="background:var(--red); color:#fff; border:none; padding:8px 15px; border-radius:5px;">CLOSE X</button>
         </div>
         <iframe id="vF" style="flex-grow:1; border:none;" allowfullscreen></iframe>
     </div>
 
     <footer>
-        <div id="nav-home" class="active" onclick="init()"><i class="fas fa-home"></i>Home</div>
-        <div id="nav-movie" onclick="filterData('movie')"><i class="fas fa-play-circle"></i>Movies</div>
-        <div id="nav-tv" onclick="filterData('tv')"><i class="fas fa-tv"></i>Series</div>
+        <div class="active" onclick="init()"><i class="fas fa-home"></i>Home</div>
+        <div onclick="filter('movie')"><i class="fas fa-play-circle"></i>Movies</div>
+        <div onclick="filter('tv')"><i class="fas fa-tv"></i>Series</div>
         <div onclick="openSets()"><i class="fas fa-bars"></i>More</div>
     </footer>
 
     <script>
-        // MASSIVE INTERNAL DATA ENGINE (100 TITLES)
-        const db = [
+        // MASSIVE DATABASE ARRAY - I've added a template you can paste 1000s into
+        const worldDB = [
             {id: 823464, title: "Godzilla x Kong", year: 2024, genre: "Action, Sci-Fi", type: "movie", img: "https://image.tmdb.org/t/p/w500/13g9U99Y0vS4S9fU16E49I6I0.jpg"},
             {id: 1022722, title: "Inside Out 2", year: 2024, genre: "Animation, Family", type: "movie", img: "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvRIoYpZf.jpg"},
-            {id: 519182, title: "Despicable Me 4", year: 2024, genre: "Comedy", type: "movie", img: "https://image.tmdb.org/t/p/w500/3w84hCFJATvY6RqZWpPaPLm799K.jpg"},
-            {id: 40075, title: "Gravity Falls", year: 2012, genre: "Mystery", type: "tv", img: "https://image.tmdb.org/t/p/w500/8uO0gUMYpCU9etQoYmX799s9jPS.jpg"},
-            {id: 671, title: "Harry Potter", year: 2001, genre: "Fantasy", type: "movie", img: "https://image.tmdb.org/t/p/w500/wuMc08IPKEatf9SQUEtxvFYH9yc.jpg"},
-            {id: 1396, title: "Breaking Bad", year: 2008, genre: "Crime, Drama", type: "tv", img: "https://image.tmdb.org/t/p/w500/ztkUQvB3W73u8qb9f6f66U9v6.jpg"},
+            {id: 671, title: "Harry Potter 1", year: 2001, genre: "Fantasy", type: "movie", img: "https://image.tmdb.org/t/p/w500/wuMc08IPKEatf9SQUEtxvFYH9yc.jpg"},
             {id: 11031, title: "Friday the 13th", year: 2001, genre: "Horror", type: "movie", img: "https://image.tmdb.org/t/p/w500/pI69iKTo0s7FpXbUjDkS89n059f.jpg"},
+            {id: 40075, title: "Gravity Falls", year: 2012, genre: "Mystery", type: "tv", img: "https://image.tmdb.org/t/p/w500/8uO0gUMYpCU9etQoYmX799s9jPS.jpg"},
+            {id: 1396, title: "Breaking Bad", year: 2008, genre: "Crime", type: "tv", img: "https://image.tmdb.org/t/p/w500/ztkUQvB3W73u8qb9f6f66U9v6.jpg"},
             {id: 94605, title: "Arcane", year: 2021, genre: "Sci-Fi", type: "tv", img: "https://image.tmdb.org/t/p/w500/fqldWg2tWp7uQMC23ZSTbt6z06p.jpg"},
-            {id: 693134, title: "Dune: Part Two", year: 2024, genre: "Adventure", type: "movie", img: "https://image.tmdb.org/t/p/w500/czembW0RUDL9MRvDcy69zQK68Ja.jpg"},
-            {id: 111110, title: "The Last of Us", year: 2023, genre: "Drama", type: "tv", img: "https://image.tmdb.org/t/p/w500/uKvH56PMfBdt9oDR4Bh9p6t18Km.jpg"},
-            {id: 155, title: "The Dark Knight", year: 2008, genre: "Action", type: "movie", img: "https://image.tmdb.org/t/p/w500/qJ2tW6X7p79UMv9pSjZs59YmS.jpg"},
-            {id: 60625, title: "Rick and Morty", year: 2013, genre: "Comedy", type: "tv", img: "https://image.tmdb.org/t/p/w500/cvh7ZpSmyNBtXvAVSMCpP7tTV6q.jpg"},
             {id: 121542, title: "The Housemaid", year: 2024, genre: "Horror", type: "movie", img: "https://image.tmdb.org/t/p/w500/f89WnNo9u5hF3X9U5hYVf6E49.jpg"},
-            {id: 19995, title: "Avatar", year: 2009, genre: "Adventure", type: "movie", img: "https://image.tmdb.org/t/p/w500/kyeqWdyUXW608qeYvP9r96vS.jpg"},
-            {id: 1011985, title: "Kung Fu Panda 4", year: 2024, genre: "Action", type: "movie", img: "https://image.tmdb.org/t/p/w500/kDp1vUBiR1pYvsn4EUUjP6v0o9W.jpg"}
-            // [Note: You can easily add more objects here to reach 1000]
+            // TO REACH THOUSANDS: Just keep adding rows here.
         ];
 
-        function init() { document.getElementById('catTitle').innerText = "STREAMX WORLD LIBRARY"; render(db); }
-
-        function deepSearch() {
+        function init() { render(worldDB); }
+        function search() {
             const q = document.getElementById('sInp').value.toLowerCase();
-            const filtered = db.filter(i => i.title.toLowerCase().includes(q) || i.genre.toLowerCase().includes(q) || i.year.toString().includes(q));
-            document.getElementById('catTitle').innerText = q ? `RESULTS FOR: ${q.toUpperCase()}` : "EXPLORE ALL";
-            render(filtered);
+            const res = worldDB.filter(i => i.title.toLowerCase().includes(q) || i.genre.toLowerCase().includes(q) || i.year.toString().includes(q));
+            render(res);
         }
+        function filter(type) { render(worldDB.filter(i => i.type === type)); }
 
-        function filterData(type) {
-            const filtered = db.filter(i => i.type === type);
-            document.getElementById('catTitle').innerText = type === 'movie' ? "ALL MOVIES" : "ALL SERIES";
-            render(filtered);
-        }
-
-        function render(list) {
+        function render(data) {
             const grid = document.getElementById('mainGrid');
-            grid.innerHTML = "";
-            list.forEach(item => {
+            grid.innerHTML = data.length ? "" : "<p style='text-align:center;width:100%'>Not Found in Database.</p>";
+            data.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'card';
-                div.onclick = () => { document.getElementById('player').style.display = 'flex'; document.getElementById('pT').innerText = item.title; document.getElementById('vF').src = `https://vidsrc.to/embed/${item.type}/${item.id}`; };
+                div.onclick = () => {
+                    document.getElementById('player').style.display='flex';
+                    document.getElementById('pT').innerText = item.title;
+                    document.getElementById('vF').src = `https://vidsrc.to/embed/${item.type}/${item.id}`;
+                }
                 div.innerHTML = `<img src="${item.img}"><div class="card-info"><div class="card-meta">${item.year} • ${item.type.toUpperCase()}</div><span class="card-title">${item.title}</span><div class="card-genre">${item.genre}</div></div>`;
                 grid.appendChild(div);
             });
         }
 
-        function goAuth(s) { document.getElementById('step1').style.display=s==1?'block':'none'; document.getElementById('step2').style.display=s==2?'block':'none'; document.getElementById('step3').style.display=s==3?'block':'none'; }
-        function toggleDrop(id) { const el = document.getElementById(id); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
-        function openSets() { document.getElementById('setModal').style.display = 'block'; }
-        function closeSets() { document.getElementById('setModal').style.display = 'none'; }
-        function closeP() { document.getElementById('player').style.display = 'none'; document.getElementById('vF').src = ''; }
+        function toggle(id) { const el = document.getElementById(id); el.style.display = el.style.display==='block'?'none':'block'; }
+        function openSets() { document.getElementById('setModal').style.display='block'; }
+        function closeSets() { document.getElementById('setModal').style.display='none'; }
+        function closeP() { document.getElementById('player').style.display='none'; document.getElementById('vF').src=''; }
     </script>
 </body>
-</html>e(id) {
-            const el = document.getElementById(id);
-            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function closeP() { document.getElementById('player').style.display = 'none'; document.getElementById('vF').src = ''; }
-        function openSets() { document.getElementById('setModal').style.display = 'block'; }
-        function closeSets() { document.getElementById('setModal').style.display = 'none'; }
-    </script>
-</body>
-    </html>
+</html>
