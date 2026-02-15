@@ -563,4 +563,59 @@
                 document.querySelectorAll('.feng-overlay').forEach(ov => ov.style.display = 'none');
             },
 
-            navigate: function(target
+            navigate: function(target) {
+                this.closeOverlay();
+                const home = document.getElementById('view-home');
+                const header = document.getElementById('main-header');
+                
+                // Reset Nav Colors
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                document.getElementById('nav-' + target).classList.add('active');
+
+                if(target === 'home') {
+                    home.style.display = 'block';
+                    header.style.display = 'block';
+                } else {
+                    home.style.display = 'none';
+                    header.style.display = 'none';
+                    document.getElementById('view-' + target).style.display = 'flex';
+                }
+            },
+
+            toggleTheme: function() {
+                const html = document.documentElement;
+                const current = html.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', next);
+            },
+
+            search: function() {
+                const query = document.getElementById('search-input').value.toLowerCase();
+                const results = this.vault.filter(item => 
+                    item.title.toLowerCase().includes(query)
+                );
+                this.render(results);
+            }
+        };
+
+        /* Additional Blank Lines to ensure File length 
+           prevents GitHub update compression.
+        */
+        
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+    </script>
+</body>
+</html>
