@@ -1,91 +1,167 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>FENG WORLD</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>🎬 FENG WORLD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: #0b0e14;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
 
-<style>
-body {
-  background:#0b0e14;
-  color:white;
-  font-family:Arial;
-  margin:0;
-}
+        header {
+            padding: 15px;
+            background: #111;
+            font-size: 24px;
+            font-weight: bold;
+            border-bottom: 2px solid #1c1f26;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-header {
-  padding:10px;
-  background:#111;
-  font-size:22px;
-  font-weight:bold;
-}
+        h2 {
+            margin: 20px 15px 10px;
+            font-size: 1.2rem;
+            color: #e5e5e5;
+        }
 
-#grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(140px,1fr));
-  gap:10px;
-  padding:10px;
-}
+        /* Netflix-style Horizontal Row */
+        .row {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding: 0 15px 20px;
+            scrollbar-width: none; /* Firefox */
+        }
 
-.card {
-  background:#1c1f26;
-  border-radius:10px;
-  overflow:hidden;
-  cursor:pointer;
-}
+        .row::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
 
-.card img {
-  width:100%;
-  height:200px;
-  object-fit:cover;
-}
+        .card {
+            flex: 0 0 140px; /* Fixed width for horizontal scrolling */
+            background: #1c1f26;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
 
-.card div {
-  padding:5px;
-  font-size:12px;
-}
-</style>
+        .card:hover {
+            transform: scale(1.05);
+        }
 
+        .card img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card div {
+            padding: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Fullscreen Player Container */
+        #player-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: black;
+            z-index: 1000;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 1001;
+        }
+    </style>
 </head>
 <body>
 
+<div id="player-container">
+    <button class="back-btn" onclick="closePlayer()">✕ Back</button>
+    <div id="video-wrapper"></div>
+</div>
+
 <header>🎬 FENG WORLD</header>
 
-<div id="grid"></div>
+<div id="rows"></div>
 
 <script>
 const TMDB_KEY = "ea593c3fa4d4942ece315977cd7e32c9";
 const IMG = "https://image.tmdb.org/t/p/w500";
 
-async function loadTrending() {
-  const res = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_KEY}`);
-  const data = await res.json();
+// 1. Unified Function to Load Rows (from the image)
+async function loadRow(title, url) {
+    const res = await fetch(url);
+    const data = await res.json();
 
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
+    let html = `<h2>${title}</h2><div class="row">`;
 
-  data.results.forEach(item => {
-    const title = item.title || item.name;
-    const poster = item.poster_path ? IMG + item.poster_path : "";
+    data.results.forEach(m => {
+        const name = m.title || m.name;
+        const poster = m.poster_path ? IMG + m.poster_path : "https://via.placeholder.com/140x210?text=No+Image";
+        const mediaType = m.media_type || (title.includes("Series") ? "tv" : "movie");
 
-    grid.innerHTML += `
-      <div class="card" onclick="play('${item.media_type}','${item.id}')">
-        <img src="${poster}">
-        <div>${title}</div>
-      </div>
-    `;
-  });
+        html += `
+            <div class="card" onclick="play('${mediaType}', '${m.id}')">
+                <img src="${poster}" alt="${name}">
+                <div>${name}</div>
+            </div>
+        `;
+    });
+
+    html += "</div>";
+    document.getElementById("rows").innerHTML += html;
 }
 
-function play(type,id){
-  if(type=="movie"){
-    window.open(`https://vidsrc.to/embed/movie/${id}`);
-  } else {
-    window.open(`https://vidsrc.to/embed/tv/${id}`);
-  }
+// 2. Fullscreen Play Logic
+function play(type, id) {
+    const player = document.getElementById("player-container");
+    const wrapper = document.getElementById("video-wrapper");
+    
+    // Using the embed URL from the image
+    wrapper.innerHTML = `
+        <iframe src="https://vidsrc.to/embed/${type}/${id}" 
+        style="width:100%; height:100vh; border:none" 
+        allowfullscreen></iframe>`;
+    
+    player.style.display = "block";
+    document.body.style.overflow = "hidden"; // Prevent scrolling behind player
 }
 
-loadTrending();
+function closePlayer() {
+    document.getElementById("player-container").style.display = "none";
+    document.getElementById("video-wrapper").innerHTML = ""; // Stop video audio
+    document.body.style.overflow = "auto";
+}
+
+// 3. Initialize Rows (Netflix Style)
+loadRow("🔥 Trending", `https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_KEY}`);
+loadRow("🎬 Popular Movies", `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}`);
+loadRow("📺 Popular Series", `https://api.themoviedb.org/3/tv/popular?api_key=${TMDB_KEY}`);
+
 </script>
 
 </body>
