@@ -46,7 +46,6 @@ header{padding:20px 5%;background:var(--bg);position:sticky;top:0;z-index:2000;b
 .info-genres{font-size:11px;color:#ccc;margin:5px 0;}
 .info-overview{font-size:14px;margin:10px 0;color:#ddd;}
 .download-btn{padding:10px 15px;background:var(--primary);color:#000;font-weight:900;border:none;border-radius:8px;cursor:pointer;width:max-content;}
-
 footer{position:fixed;bottom:0;width:100%;background:#000;display:flex;padding:15px 0 35px;border-top:1px solid #1c1f26;z-index:3000;}
 .tab{flex:1;text-align:center;color:#555;cursor:pointer;}
 .tab.active{color:var(--primary);}
@@ -86,7 +85,7 @@ footer{position:fixed;bottom:0;width:100%;background:#000;display:flex;padding:1
 <i class="fas fa-sync-alt"></i>
 </div>
 <div class="set-item">
-<div><b>App Version</b><br><small>Vision Web 2.1</small></div>
+<div><b>Web App Vision</b><br><small>Version 1.0</small></div>
 <i class="fas fa-code-branch"></i>
 </div>
 <div class="set-item" onclick="window.location.href='https://wa.me/260770605003'">
@@ -160,7 +159,7 @@ loadShelf: async function(path,id){
 openInfo: async function(type,id){
     this.hideDrawers();
     document.getElementById('pane-info').style.display='flex';
-    const r=await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${KEY}`);
+    const r=await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${KEY}&append_to_response=videos`);
     const d=await r.json(); 
     const grid=document.getElementById('info-grid'); 
     const backdrop=document.getElementById('info-backdrop');
@@ -171,12 +170,25 @@ openInfo: async function(type,id){
     let overview=d.overview||'No description available.';
     let date=d.release_date||d.first_air_date||'Unknown';
     let rating=d.vote_average||'N/A';
+
+    // Trailer button if available
+    let trailer = '';
+    if(d.videos && d.videos.results.length>0){
+        let vid = d.videos.results.find(v=>v.type==='Trailer' && v.site==='YouTube');
+        if(vid) trailer = `<button class="download-btn" onclick="window.open('https://www.youtube.com/watch?v=${vid.key}','_blank')">TRAILER</button>`;
+    }
+
     grid.innerHTML=`<img src="https://image.tmdb.org/t/p/w500${d.poster_path}">
     <div class="info-title">${d.title||d.name}</div>
     <div class="info-sub">${date} • ⭐ ${rating}</div>
     <div class="info-genres"><b>Genres:</b> ${genres}</div>
     <div class="info-overview">${overview}</div>
-    <button class="download-btn" onclick="alert('Download feature coming soon!')">DOWNLOAD</button>`;
+    <div style="display:flex;gap:10px;">
+        <button class="download-btn" onclick="FENG.play('${type}','${d.id}','${d.title||d.name}')">WATCH</button>
+        <button class="download-btn" onclick="alert('Download feature coming soon!')">DOWNLOAD</button>
+        ${trailer}
+    </div>`;
+
     if(type==='tv'){this.openTVSeasons(d);}
 },
 openTVSeasons:function(tv){
@@ -195,7 +207,8 @@ loadEpisodes: async function(tvId,season,title){
     const r=await fetch(`https://api.themoviedb.org/3/tv/${tvId}/season/${season}?api_key=${KEY}`);
     const d=await r.json();
     d.episodes.forEach(ep=>{
-        grid.innerHTML+=`<div style="background:#252830;padding:15px;text-align:center;border-radius:10px;font-weight:900;" onclick="FENG.play('tv','${tvId}/${season}/${ep.episode_number}','${title} E${ep.episode_number}')">${ep.episode_number}</div>`;
+        grid.innerHTML+=`<div style="background:#252830;padding:15px;text-align:center;border-radius:10px;font-weight:900;"
+        onclick="FENG.play('tv','${tvId}/${season}/${ep.episode_number}','${title} E${ep.episode_number}')">${ep.episode_number}</div>`;
     });
 },
 search: async function(query){if(query.length<3)return;
