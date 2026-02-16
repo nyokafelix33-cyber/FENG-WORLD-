@@ -1,335 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Feng Vision 68.1.1</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #d3f243;
-            --bg: #0b0e14;
-            --card: #1c1f26;
-            --text: #ffffff;
-            --nav: #080a0f;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Feng Vision 68.1.1</title>
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-        /* HEADER */
-        header {
-            padding: 15px 5%;
-            background: var(--bg);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+<style>
+:root {
+    --primary: #d3f243;
+    --bg: #0b0e14;
+    --card: #1c1f26;
+    --text: #ffffff;
+    --nav: #080a0f;
+}
 
-        .logo-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+/* HEADER */
+header {
+    padding: 15px 5%;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-        .f-box {
-            background: var(--primary);
-            color: #000;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 20px;
-        }
+.logo-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
 
-        .search-bar {
-            background: var(--card);
-            border: 1px solid rgba(211, 242, 67, 0.4);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-        }
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-        .search-bar input {
-            background: transparent;
-            border: none;
-            color: white;
-            margin-left: 10px;
-            width: 100%;
-            outline: none;
-        }
+.f-box {
+    background: var(--primary);
+    color: #000;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-weight: 900;
+    font-size: 20px;
+}
 
-        /* GRID SYSTEM */
-        .shelf {
-            padding: 20px 5% 5px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--primary);
-            font-weight: bold;
-        }
+.search-bar {
+    background: var(--card);
+    border: 1px solid rgba(211, 242, 67, 0.4);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+}
 
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 10px 5% 100px;
-        }
+.search-bar input {
+    background: transparent;
+    border: none;
+    color: white;
+    margin-left: 10px;
+    width: 100%;
+    outline: none;
+}
 
-        .item-card {
-            background: var(--card);
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-            position: relative;
-        }
+/* GRID */
+.shelf {
+    padding: 20px 5% 5px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--primary);
+    font-weight: bold;
+}
 
-        .item-card img {
-            width: 100%;
-            aspect-ratio: 2/3;
-            object-fit: cover;
-            display: block;
-        }
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 10px 5% 160px;
+}
 
-        .item-info {
-            padding: 8px;
-        }
+.item-card {
+    background: var(--card);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer;
+}
 
-        .item-info b {
-            font-size: 11px;
-            display: block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+.item-card img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+}
 
-        /* EPISODE SELECTOR OVERLAY */
-        #details-panel {
-            position: fixed;
-            inset: 0;
-            background: var(--bg);
-            z-index: 2000;
-            display: none;
-            flex-direction: column;
-        }
+.item-info {
+    padding: 8px;
+}
 
-        .panel-header {
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid #222;
-        }
+.item-info b {
+    font-size: 11px;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-        .selector-box {
-            padding: 20px;
-            overflow-y: auto;
-        }
+/* DETAILS PANEL */
+#details-panel {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+}
 
-        .pill-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
+.panel-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #222;
+}
 
-        .pill {
-            background: var(--card);
-            padding: 8px 20px;
-            border-radius: 20px;
-            white-space: nowrap;
-            border: 1px solid #333;
-        }
+.selector-box {
+    padding: 20px;
+    overflow-y: auto;
+}
 
-        .pill.active {
-            background: var(--primary);
-            color: black;
-            font-weight: bold;
-        }
+.pill-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
 
-        .ep-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
+.pill {
+    background: var(--card);
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1px solid #333;
+}
 
-        .ep-btn {
-            background: #252830;
-            padding: 15px 5px;
-            text-align: center;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 14px;
-        }
+.pill.active {
+    background: var(--primary);
+    color: black;
+    font-weight: bold;
+}
 
-        /* BOTTOM NAV */
-        footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: var(--nav);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0 30px;
-            border-top: 1px solid #1c1f26;
-        }
+.ep-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
 
-        .nav-link {
-            text-align: center;
-            color: #555;
-            font-size: 10px;
-        }
+.ep-btn {
+    background: #252830;
+    padding: 15px 5px;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .nav-link.active { color: var(--primary); }
-        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
-    </style>
+/* BOTTOM NAV */
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: var(--nav);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1px solid #1c1f26;
+    z-index: 9999;
+    pointer-events: auto;
+}
+
+.nav-link {
+    text-align: center;
+    color: #555;
+    font-size: 10px;
+}
+
+.nav-link.active {
+    color: var(--primary);
+}
+
+.nav-link i {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 4px;
+}
+</style>
 </head>
+
 <body onload="render()">
 
-    <header>
-        <div class="logo-row">
-            <div class="logo">
-                <div class="f-box">F</div>
-                <span class="brand">FENG <span style="color:var(--primary)">WORLD</span></span>
-            </div>
-            <i class="fas fa-user-circle fa-lg"></i>
+<header>
+    <div class="logo-row">
+        <div class="logo">
+            <div class="f-box">F</div>
+            <span>FENG <span style="color:var(--primary)">WORLD</span></span>
         </div>
-        <div class="search-bar">
-            <i class="fas fa-search" style="color:var(--primary)"></i>
-            <input type="text" placeholder="Search movies, series...">
-        </div>
-    </header>
-
-    <div class="shelf">Trending Series</div>
-    <div class="content-grid" id="main-grid"></div>
-
-    <div id="details-panel">
-        <div class="panel-header">
-            <i class="fas fa-arrow-left fa-lg" onclick="closeDetails()"></i>
-            <h2 id="det-title" style="margin:0; font-size:18px;"></h2>
-        </div>
-        <div class="selector-box">
-            <div class="pill-row">
-                <div class="pill active">Season 1</div>
-                <div class="pill">Season 2</div>
-                <div class="pill">Season 3</div>
-            </div>
-            <p style="color:#777; font-size: 13px;">Episodes</p>
-            <div class="ep-grid" id="ep-list">
-                </div>
-        </div>
+        <i class="fas fa-user-circle fa-lg"></i>
     </div>
 
-    <footer>
-        <div class="nav-link active"><i class="fas fa-home"></i><span>Home</span></div>
-        <div class="nav-link"><i class="fas fa-play-circle"></i><span>Movies</span></div>
-        <div class="nav-link"><i class="fas fa-tv"></i><span>Series</span></div>
-        <div class="nav-link"><i class="fas fa-history"></i><span>History</span></div>
-    </footer>
+    <div class="search-bar">
+        <i class="fas fa-search" style="color:var(--primary)"></i>
+        <input type="text" placeholder="Search movies, series...">
+    </div>
+</header>
 
-    <script>
-        const FENG_CORE = {
+<div class="shelf">Trending Series</div>
+<div class="content-grid" id="main-grid"></div>
 
-            /* SECURE DATA VAULT 
-               Fixed Poster Links using direct Image CDN
-            */
-            archive: [
-                // SERIES (20)
-                { id: "66732", title: "Stranger Things", type: "tv", year: "2016", s: 4, img: "https://image.tmdb.org/t/p/w500/49WfTJs0vSzMG26Y3otR9C3qOQn.jpg" },
-                { id: "1396", title: "Breaking Bad", type: "tv", year: "2008", s: 5, img: "https://image.tmdb.org/t/p/w500/ztkUQ09o9h969Re6S9vDUs9GKV3.jpg" },
-                { id: "71446", title: "Money Heist", type: "tv", year: "2017", s: 5, img: "https://image.tmdb.org/t/p/w500/reEMJA1uzpG3SZky9cyuQzvm0bz.jpg" },
-                { id: "76479", title: "The Boys", type: "tv", year: "2019", s: 4, img: "https://image.tmdb.org/t/p/w500/77v7mBoi5Y9PeG9jk3vIq9oYv9f.jpg" },
-                { id: "94605", title: "Squid Game", type: "tv", year: "2021", s: 2, img: "https://image.tmdb.org/t/p/w500/d99NoS58vOtm8v6pEqMvS8YvS6O.jpg" },
-                { id: "60625", title: "Rick and Morty", type: "tv", year: "2013", s: 7, img: "https://image.tmdb.org/t/p/w500/8Cl9hLqcTjU8Z2vun3P3u6pXn66.jpg" },
-                { id: "82856", title: "The Mandalorian", type: "tv", year: "2019", s: 3, img: "https://image.tmdb.org/t/p/w500/eU1i6eHXlzhHH7qOpxfs6YpYaZt.jpg" },
-                { id: "1402", title: "The Walking Dead", type: "tv", year: "2010", s: 11, img: "https://image.tmdb.org/t/p/w500/n7vEV1686SxvYvY66S1Dpx977S.jpg" },
-                { id: "60735", title: "The Flash", type: "tv", year: "2014", s: 9, img: "https://image.tmdb.org/t/p/w500/l99NoS58vOtm8v6pEqMvS8YvS6O.jpg" },
-                { id: "119051", title: "Wednesday", type: "tv", year: "2022", s: 1, img: "https://image.tmdb.org/t/p/w500/99NoS58vOtm8v6pEqMvS8YvS6O.jpg" },
-                { id: "1403", title: "Prison Break", type: "tv", year: "2005", s: 5, img: "https://image.tmdb.org/t/p/w500/p9pe988u89965S8vOtm8v6pEqMv.jpg" },
-                { id: "1399", title: "Game of Thrones", type: "tv", year: "2011", s: 8, img: "https://image.tmdb.org/t/p/w500/7WsyChvRStvS09I7099688zYp9L.jpg" },
-                { id: "19191", title: "Peaky Blinders", type: "tv", year: "2013", s: 6, img: "https://image.tmdb.org/t/p/w500/v99NoS58vOtm8v6pEqMvS8YvS6O.jpg" },
-                { id: "1406", title: "Dexter", type: "tv", year: "2006", s: 8, img: "https://image.tmdb.org/t/p/w500/6oom89uP.jpg" },
-                { id: "456", title: "The Simpsons", type: "tv", year: "1989", s: 35, img: "https://image.tmdb.org/t/p/w500/vHqe988u89965S8vOtm8v6pEqMv.jpg" },
-                { id: "1434", title: "Modern Family", type: "tv", year: "2009", s: 11, img: "https://image.tmdb.org/t/p/w500/f49WfTJs0vSzMG26Y3otR9C3qOQn.jpg" },
-                { id: "4607", title: "Lost", type: "tv", year: "2004", s: 6, img: "https://image.tmdb.org/t/p/w500/og6S0aT97j7vYvY66S1Dpx977S.jpg" },
-                { id: "62560", title: "Mr. Robot", type: "tv", year: "2015", s: 4, img: "https://image.tmdb.org/t/p/w500/o77v7mBoi5Y9PeG9jk3vIq9oYv9f.jpg" },
-                { id: "1412", title: "Arrow", type: "tv", year: "2012", s: 8, img: "https://image.tmdb.org/t/p/w500/g9pe988u89965S8vOtm8v6pEqMv.jpg" },
-                { id: "67198", title: "Picard", type: "tv", year: "2020", s: 3, img: "https://image.tmdb.org/t/p/w500/sp.jpg" },
+<!-- DETAILS PANEL -->
+<div id="details-panel">
+    <div class="panel-header">
+        <i class="fas fa-arrow-left fa-lg" onclick="closeDetails()"></i>
+        <h2 id="det-title"></h2>
+    </div>
 
-                // MOVIES (30+)
-                { id: "299534", title: "Avengers: Endgame", type: "movie", year: "2019", img: "https://image.tmdb.org/t/p/w500/or06vSqzWBFscv1qCG76uC1fsR6.jpg" },
-                { id: "671", title: "Harry Potter 1", type: "movie", year: "2001", img: "https://image.tmdb.org/t/p/w500/wuMc08IPKEatf9SqvTXpws7vSht.jpg" },
-                { id: "157336", title: "Interstellar", type: "movie", year: "2014", img: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlSabaC.jpg" },
-                { id: "27205", title: "Inception", type: "movie", year: "2010", img: "https://image.tmdb.org/t/p/w500/9gk7Fn9sVAsOX79p2G93STH3uS3.jpg" },
-                { id: "155", title: "The Dark Knight", type: "movie", year: "2008", img: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDr9p1vJJnSfbE9L9uP.jpg" },
-                { id: "603", title: "The Matrix", type: "movie", year: "1999", img: "https://image.tmdb.org/t/p/w500/f89U3Y9L9uP.jpg" },
-                { id: "550", title: "Fight Club", type: "movie", year: "1999", img: "https://image.tmdb.org/t/p/w500/pB8BM79uP.jpg" },
-                { id: "120", title: "Lord of the Rings 1", type: "movie", year: "2001", img: "https://image.tmdb.org/t/p/w500/6oom89uP.jpg" },
-                { id: "507089", title: "Five Nights At Freddys", type: "movie", year: "2023", img: "https://image.tmdb.org/t/p/w500/790.jpg" },
-                { id: "533535", title: "Deadpool & Wolverine", type: "movie", year: "2024", img: "https://image.tmdb.org/t/p/w500/dp3.jpg" },
-                { id: "693134", title: "Dune: Part Two", type: "movie", year: "2024", img: "https://image.tmdb.org/t/p/w500/du2.jpg" },
-                { id: "889737", title: "Joker: Folie à Deux", type: "movie", year: "2024", img: "https://image.tmdb.org/t/p/w500/jk2.jpg" },
-                { id: "634649", title: "Spider-Man: No Way Home", type: "movie", year: "2021", img: "https://image.tmdb.org/t/p/w500/sm.jpg" },
-                { id: "10195", title: "Thor", type: "movie", year: "2011", img: "https://image.tmdb.org/t/p/w500/th.jpg" },
-                { id: "1726", title: "Iron Man", type: "movie", year: "2008", img: "https://image.tmdb.org/t/p/w500/im.jpg" },
-                { id: "100402", title: "Winter Soldier", type: "movie", year: "2014", img: "https://image.tmdb.org/t/p/w500/ca2.jpg" },
-                { id: "118340", title: "Guardians of Galaxy", type: "movie", year: "2014", img: "https://image.tmdb.org/t/p/w500/gg.jpg" },
-                { id: "383498", title: "Deadpool 2", type: "movie", year: "2018", img: "https://image.tmdb.org/t/p/w500/dp2.jpg" },
-                { id: "335983", title: "Venom", type: "movie", year: "2018", img: "https://image.tmdb.org/t/p/w500/vn1.jpg" },
-                { id: "438631", title: "Dune", type: "movie", year: "2021", img: "https://image.tmdb.org/t/p/w500/du1.jpg" },
-                { id: "475557", title: "Joker", type: "movie", year: "2019", img: "https://image.tmdb.org/t/p/w500/jk1.jpg" },
-                { id: "1366", title: "Rocky", type: "movie", year: "1976", img: "https://image.tmdb.org/t/p/w500/rk.jpg" },
-                { id: "76341", title: "Mad Max", type: "movie", year: "2015", img: "https://image.tmdb.org/t/p/w500/mm.jpg" },
-                { id: "862", title: "Toy Story", type: "movie", year: "1995", img: "https://image.tmdb.org/t/p/w500/ts1.jpg" },
-                { id: "808", title: "Shrek", type: "movie", year: "2001", img: "https://image.tmdb.org/t/p/w500/sh1.jpg" }
-        ];
+    <div class="selector-box">
+        <div class="pill-row">
+            <div class="pill active">Season 1</div>
+            <div class="pill">Season 2</div>
+            <div class="pill">Season 3</div>
+        </div>
 
-        function render() {
-            const grid = document.getElementById('main-grid');
-            data.forEach(item => {
-                grid.innerHTML += `
-                    <div class="item-card" onclick="openDetails('${item.title}', '${item.type}')">
-                        <img src="${item.img}">
-                        <div class="item-info">
-                            <b>${item.title}</b>
-                            <span>${item.year}</span>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+        <p style="color:#777;font-size:13px;">Episodes</p>
+        <div class="ep-grid" id="ep-list"></div>
+    </div>
+</div>
 
-        function openDetails(title, type) {
-            if(type === 'movie') {
-                alert("Opening Movie Player...");
-                return;
-            }
-            document.getElementById('det-title').innerText = title;
-            const epList = document.getElementById('ep-list');
-            epList.innerHTML = '';
-            for(let i=1; i<=12; i++) {
-                epList.innerHTML += `<div class="ep-btn" onclick="alert('Playing Ep ${i}')">${i}</div>`;
-            }
-            document.getElementById('details-panel').style.display = 'flex';
-        }
+<footer>
+    <div class="nav-link active"><i class="fas fa-home"></i>Home</div>
+    <div class="nav-link"><i class="fas fa-play-circle"></i>Movies</div>
+    <div class="nav-link"><i class="fas fa-tv"></i>Series</div>
+    <div class="nav-link"><i class="fas fa-history"></i>History</div>
+</footer>
 
-        function closeDetails() {
-            document.getElementById('details-panel').style.display = 'none';
-        }
-    </script>
+<script>
+// DATA
+const FENG_CORE = {
+    archive: [
+        { title: "Stranger Things", type: "tv", year: "2016", img: "https://image.tmdb.org/t/p/w500/49WfTJs0vSzMG26Y3otR9C3qOQn.jpg" },
+        { title: "Breaking Bad", type: "tv", year: "2008", img: "https://image.tmdb.org/t/p/w500/ztkUQ09o9h969Re6S9vDUs9GKV3.jpg" },
+        { title: "Money Heist", type: "tv", year: "2017", img: "https://image.tmdb.org/t/p/w500/reEMJA1uzpG3SZky9cyuQzvm0bz.jpg" },
+        { title: "The Boys", type: "tv", year: "2019", img: "https://image.tmdb.org/t/p/w500/77v7mBoi5Y9PeG9jk3vIq9oYv9f.jpg" },
+        { title: "Avengers Endgame", type: "movie", year: "2019", img: "https://image.tmdb.org/t/p/w500/or06vSqzWBFscv1qCG76uC1fsR6.jpg" },
+        { title: "Interstellar", type: "movie", year: "2014", img: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlSabaC.jpg" }
+    ]
+};
+
+// RENDER GRID
+function render() {
+    const grid = document.getElementById("main-grid");
+    grid.innerHTML = "";
+
+    FENG_CORE.archive.forEach(item => {
+        grid.innerHTML += `
+        <div class="item-card" onclick="openDetails('${item.title}', '${item.type}')">
+            <img src="${item.img}" loading="lazy">
+            <div class="item-info">
+                <b>${item.title}</b>
+                <span>${item.year}</span>
+            </div>
+        </div>
+        `;
+    });
+}
+
+// OPEN DETAILS
+function openDetails(title, type) {
+    if (type === "movie") {
+        alert("Opening Movie Player...");
+        return;
+    }
+
+    document.getElementById("det-title").innerText = title;
+    const epList = document.getElementById("ep-list");
+    epList.innerHTML = "";
+
+    for (let i = 1; i <= 12; i++) {
+        epList.innerHTML += `<div class="ep-btn" onclick="alert('Playing Episode ${i}')">${i}</div>`;
+    }
+
+    document.getElementById("details-panel").style.display = "flex";
+}
+
+// CLOSE DETAILS
+function closeDetails() {
+    document.getElementById("details-panel").style.display = "none";
+}
+</script>
+
 </body>
 </html>
