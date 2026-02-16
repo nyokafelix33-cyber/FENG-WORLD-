@@ -1,288 +1,298 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Feng Vision 68.1.1</title>
+    <title>FENG WORLD V68.1.1 - PLATINUM ULTRA</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
+        /* FENG WORLD DESIGN SYSTEM V68.1.1 
+           ARCHITECTURE RESTORED FROM V54.0 
+        */
         :root {
-            --primary: #d3f243;
-            --bg: #0b0e14;
-            --card: #1c1f26;
-            --text: #ffffff;
-            --nav: #080a0f;
+            --feng-primary: #d3f243;
+            --feng-bg: #0b0e14;
+            --feng-card: #1c1f26;
+            --feng-text: #eeeeee;
+            --feng-header: #000000;
+            --feng-border: rgba(255, 255, 255, 0.08);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --transition-speed: 0.4s;
         }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
+        body { 
+            background-color: var(--feng-bg); 
+            color: var(--feng-text); 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; padding: 0; 
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* HEADER */
+        /* HEADER UI - V68 UPGRADE */
         header {
-            padding: 15px 5%;
-            background: var(--bg);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background-color: var(--feng-header);
+            padding: 35px 6% 25px 6%;
+            position: sticky; top: 0; z-index: 2000;
+            border-bottom: 4px solid var(--feng-primary);
+            box-shadow: 0px 20px 50px rgba(0,0,0,0.7);
         }
 
-        .logo-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .brand-logo {
+            font-size: 38px; font-weight: 900; letter-spacing: -3px;
+            color: var(--feng-text); text-transform: uppercase; text-decoration: none;
         }
 
-        .f-box {
-            background: var(--primary);
-            color: #000;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 20px;
+        .brand-logo span { color: var(--feng-primary); }
+
+        .search-box {
+            background-color: rgba(255, 255, 255, 0.07);
+            border: 2px solid var(--feng-border);
+            border-radius: 18px; display: flex; align-items: center;
+            padding: 16px 22px; gap: 18px;
         }
 
-        .search-bar {
-            background: var(--card);
-            border: 1px solid rgba(211, 242, 67, 0.4);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
+        .search-box input {
+            background: transparent; border: none; color: #ffffff;
+            width: 100%; outline: none; font-size: 17px; font-weight: 600;
         }
 
-        .search-bar input {
-            background: transparent;
-            border: none;
-            color: white;
-            margin-left: 10px;
-            width: 100%;
-            outline: none;
-        }
-
-        /* GRID SYSTEM */
-        .shelf {
-            padding: 20px 5% 5px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .content-grid {
+        /* GRID SYSTEM (ONSTREAM STYLE - 3 COLUMNS) */
+        .catalog-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 10px 5% 100px;
+            gap: 12px;
+            padding: 0 6%;
         }
 
-        .item-card {
-            background: var(--card);
-            border-radius: 10px;
+        .media-card {
+            background-color: var(--feng-card);
+            border-radius: var(--radius-md);
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid var(--feng-border);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
         }
 
-        .item-card img {
-            width: 100%;
-            aspect-ratio: 2/3;
-            object-fit: cover;
-            display: block;
+        .media-card:active { transform: scale(0.92); }
+
+        .image-host {
+            width: 100%; aspect-ratio: 2/3;
+            background-color: #1a1a1a; position: relative; overflow: hidden;
         }
 
-        .item-info {
-            padding: 8px;
+        .image-host img { width: 100%; height: 100%; object-fit: cover; }
+
+        .media-info {
+            padding: 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
         }
 
-        .item-info b {
-            font-size: 11px;
-            display: block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .media-info b {
+            font-size: 11px; display: block; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis; color: var(--feng-text);
         }
 
-        /* EPISODE SELECTOR OVERLAY */
-        #details-panel {
-            position: fixed;
-            inset: 0;
-            background: var(--bg);
-            z-index: 2000;
-            display: none;
-            flex-direction: column;
+        .media-info span {
+            font-size: 9px; color: var(--feng-primary); font-weight: 900;
+            text-transform: uppercase;
         }
 
-        .panel-header {
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid #222;
+        /* ONSTREAM EPISODE OVERLAY */
+        .full-overlay {
+            position: fixed; inset: 0; background-color: var(--feng-bg);
+            z-index: 9999; display: none; flex-direction: column;
         }
 
-        .selector-box {
-            padding: 20px;
-            overflow-y: auto;
+        .modal-top {
+            padding: 30px 6%; background-color: var(--feng-header);
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 4px solid var(--feng-primary);
         }
 
-        .pill-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 5px;
+        .season-pills {
+            display: flex; gap: 12px; padding: 20px 6%; overflow-x: auto;
         }
 
         .pill {
-            background: var(--card);
-            padding: 8px 20px;
-            border-radius: 20px;
-            white-space: nowrap;
-            border: 1px solid #333;
+            background: var(--feng-card); padding: 10px 25px; border-radius: 30px;
+            font-weight: 900; border: 1px solid var(--feng-border); white-space: nowrap;
         }
 
-        .pill.active {
-            background: var(--primary);
-            color: black;
-            font-weight: bold;
-        }
+        .pill.active { background: var(--feng-primary); color: #000; border: none; }
 
         .ep-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 12px; padding: 20px 6% 100px;
         }
 
         .ep-btn {
-            background: #252830;
-            padding: 15px 5px;
-            text-align: center;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 14px;
+            background: #252830; padding: 20px 5px; text-align: center;
+            border-radius: 12px; font-weight: 900; font-size: 16px;
+            border: 1px solid var(--feng-border);
         }
 
-        /* BOTTOM NAV */
+        /* PLAYER */
+        .video-container { width: 100%; height: 100%; border: none; background: #000; }
+
+        /* FOOTER NAV */
         footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: var(--nav);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0 30px;
-            border-top: 1px solid #1c1f26;
+            position: fixed; bottom: 0; width: 100%;
+            background-color: var(--feng-header); display: flex;
+            padding: 20px 0 45px 0; border-top: 1px solid var(--feng-border);
+            z-index: 1500; box-shadow: 0 -15px 40px rgba(0,0,0,0.6);
         }
 
-        .nav-link {
-            text-align: center;
-            color: #555;
-            font-size: 10px;
-        }
-
-        .nav-link.active { color: var(--primary); }
-        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
+        .tab { flex: 1; text-align: center; color: #777; cursor: pointer; }
+        .tab.active { color: var(--feng-primary); }
+        .tab i { font-size: 26px; display: block; margin-bottom: 10px; }
+        .tab span { font-size: 11px; text-transform: uppercase; font-weight: 900; }
     </style>
 </head>
-<body onload="render()">
 
-    <header>
-        <div class="logo-row">
-            <div class="logo">
-                <div class="f-box">F</div>
-                <span class="brand">FENG <span style="color:var(--primary)">WORLD</span></span>
-            </div>
-            <i class="fas fa-user-circle fa-lg"></i>
+<body onload="FENG.boot()">
+
+    <header id="app-header">
+        <div class="header-top">
+            <a href="#" class="brand-logo">FE<span>NG</span></a>
+            <div style="background:var(--feng-primary); color:#000; padding:5px 12px; border-radius:8px; font-weight:900; font-size:11px;">VISION 68.1.1</div>
         </div>
-        <div class="search-bar">
-            <i class="fas fa-search" style="color:var(--primary)"></i>
-            <input type="text" placeholder="Search movies, series...">
+        <div class="search-box">
+            <i class="fas fa-search" style="color:var(--feng-primary)"></i>
+            <input type="text" id="search-input" placeholder="Search titles..." onkeyup="FENG.filter()">
         </div>
     </header>
 
-    <div class="shelf">Trending Series</div>
-    <div class="content-grid" id="main-grid"></div>
+    <main class="viewport" id="pane-home">
+        <div class="section-title">
+            <h2>📺 Series Grid</h2>
+            <div style="flex-grow:1; height:3px; background:linear-gradient(90deg, var(--feng-primary), transparent);"></div>
+        </div>
+        <div class="catalog-grid" id="box-series"></div>
 
-    <div id="details-panel">
-        <div class="panel-header">
-            <i class="fas fa-arrow-left fa-lg" onclick="closeDetails()"></i>
-            <h2 id="det-title" style="margin:0; font-size:18px;"></h2>
+        <div class="section-title">
+            <h2>🎬 Movie Archive</h2>
+            <div style="flex-grow:1; height:3px; background:linear-gradient(90deg, var(--feng-primary), transparent);"></div>
         </div>
-        <div class="selector-box">
-            <div class="pill-row">
-                <div class="pill active">Season 1</div>
-                <div class="pill">Season 2</div>
-                <div class="pill">Season 3</div>
-            </div>
-            <p style="color:#777; font-size: 13px;">Episodes</p>
-            <div class="ep-grid" id="ep-list">
-                </div>
+        <div class="catalog-grid" id="box-movies"></div>
+    </main>
+
+    <div class="full-overlay" id="pane-episodes">
+        <div class="modal-top">
+            <h2 id="show-title" style="margin:0; color:var(--feng-primary); font-size: 18px;">SEASONS</h2>
+            <i class="fas fa-times fa-2x" onclick="FENG.hideOverlays()"></i>
         </div>
+        <div class="season-pills">
+            <div class="pill active">Season 1</div>
+            <div class="pill">Season 2</div>
+            <div class="pill">Season 3</div>
+        </div>
+        <div style="padding: 10px 6%; color: #777; font-weight: 900; font-size: 12px;">SELECT EPISODE</div>
+        <div class="ep-grid" id="box-episodes"></div>
+    </div>
+
+    <div class="full-overlay" id="pane-player">
+        <div class="modal-top">
+            <span id="playing-now" style="font-weight:900;">READY</span>
+            <button onclick="FENG.closePlayer()" style="background:red; color:#fff; border:none; padding:10px 20px; border-radius:12px; font-weight:900;">EXIT</button>
+        </div>
+        <iframe id="feng-player" class="video-container" allowfullscreen></iframe>
     </div>
 
     <footer>
-        <div class="nav-link active"><i class="fas fa-home"></i><span>Home</span></div>
-        <div class="nav-link"><i class="fas fa-play-circle"></i><span>Movies</span></div>
-        <div class="nav-link"><i class="fas fa-tv"></i><span>Series</span></div>
-        <div class="nav-link"><i class="fas fa-history"></i><span>History</span></div>
+        <div class="tab active" onclick="FENG.view('home')"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="tab" onclick="FENG.view('settings')"><i class="fas fa-microchip"></i><span>System</span></div>
+        <div class="tab" onclick="FENG.view('about')"><i class="fas fa-info-circle"></i><span>About</span></div>
     </footer>
 
     <script>
-        const data = [
-            { id: "76479", title: "The Boys", type: "tv", year: "2024", img: "https://image.tmdb.org/t/p/w500/7I90.jpg" },
-            { id: "66732", title: "Stranger Things", type: "tv", year: "2022", img: "https://image.tmdb.org/t/p/w500/x2LSRm2RzL6tYwcI3YmC9n767PA.jpg" },
-            { id: "1396", title: "Breaking Bad", type: "tv", year: "2013", img: "https://image.tmdb.org/t/p/w500/ggFHUXNuqzmgp7vny71oYFjUIp9.jpg" },
-            { id: "94605", title: "Squid Game", type: "tv", year: "2021", img: "https://image.tmdb.org/t/p/w500/689V8.jpg" },
-            { id: "299534", title: "Avengers", type: "movie", year: "2019", img: "https://image.tmdb.org/t/p/w500/or06vSqzWBFscv1qCG76uC1fsR6.jpg" },
-            { id: "157336", title: "Interstellar", type: "movie", year: "2014", img: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlSabaC.jpg" }
-        ];
+        const FENG = {
+            /* MASSIVE DATABASE RESTORED & EXPANDED */
+            archive: [
+                { id: "66732", title: "Stranger Things", type: "tv", year: "2016", s: 4, e: 8, img: "https://image.tmdb.org/t/p/w500/49WfTJs0vSzMG26Y3otR9C3qOQn.jpg" },
+                { id: "1396", title: "Breaking Bad", type: "tv", year: "2008", s: 5, e: 13, img: "https://image.tmdb.org/t/p/w500/ztkUQ09o9h969Re6S9vDUs9GKV3.jpg" },
+                { id: "71446", title: "Money Heist", type: "tv", year: "2017", s: 5, e: 10, img: "https://image.tmdb.org/t/p/w500/reEMJA1uzpG3SZky9cyuQzvm0bz.jpg" },
+                { id: "76479", title: "The Boys", type: "tv", year: "2019", s: 4, e: 8, img: "https://image.tmdb.org/t/p/w500/77v7mBoi5Y9PeG9jk3vIq9oYv9f.jpg" },
+                { id: "94605", title: "Squid Game", type: "tv", year: "2021", s: 2, e: 9, img: "https://image.tmdb.org/t/p/w500/d99NoS58vOtm8v6pEqMvS8YvS6O.jpg" },
+                { id: "299534", title: "Avengers: Endgame", type: "movie", year: "2019", img: "https://image.tmdb.org/t/p/w500/or06vSqzWBFscv1qCG76uC1fsR6.jpg" },
+                { id: "157336", title: "Interstellar", type: "movie", year: "2014", img: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlSabaC.jpg" },
+                { id: "155", title: "The Dark Knight", type: "movie", year: "2008", img: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDr9p1vJJnSfbE9L9uP.jpg" },
+                { id: "939243", title: "Sonic 3", type: "movie", year: "2026", img: "https://image.tmdb.org/t/p/w500/1908.jpg" },
+                { id: "533535", title: "Deadpool & Wolverine", type: "movie", year: "2024", img: "https://image.tmdb.org/t/p/w500/8cdcl3e6e6e.jpg" },
+                { id: "693134", title: "Dune: Part Two", type: "movie", year: "2024", img: "https://image.tmdb.org/t/p/w500/du2.jpg" },
+                { id: "889737", title: "Joker 2", type: "movie", year: "2024", img: "https://image.tmdb.org/t/p/w500/jk2.jpg" }
+                /* Add more batches here... */
+            ],
 
-        function render() {
-            const grid = document.getElementById('main-grid');
-            data.forEach(item => {
-                grid.innerHTML += `
-                    <div class="item-card" onclick="openDetails('${item.title}', '${item.type}')">
-                        <img src="${item.img}">
-                        <div class="item-info">
-                            <b>${item.title}</b>
-                            <span>${item.year}</span>
+            boot: function() { this.render(this.archive); },
+
+            render: function(data) {
+                const sBox = document.getElementById('box-series');
+                const mBox = document.getElementById('box-movies');
+                sBox.innerHTML = ''; mBox.innerHTML = '';
+
+                data.forEach(item => {
+                    const html = `
+                        <div class="media-card" onclick="FENG.open('${item.type}','${item.id}','${item.title}',${item.e || 0})">
+                            <div class="image-host"><img src="${item.img}" loading="lazy"></div>
+                            <div class="media-info">
+                                <b>${item.title}</b>
+                                <span>${item.year} • ${item.type}</span>
+                            </div>
                         </div>
-                    </div>
-                `;
-            });
-        }
+                    `;
+                    if(item.type === 'tv') sBox.innerHTML += html;
+                    else mBox.innerHTML += html;
+                });
+            },
 
-        function openDetails(title, type) {
-            if(type === 'movie') {
-                alert("Opening Movie Player...");
-                return;
-            }
-            document.getElementById('det-title').innerText = title;
-            const epList = document.getElementById('ep-list');
-            epList.innerHTML = '';
-            for(let i=1; i<=12; i++) {
-                epList.innerHTML += `<div class="ep-btn" onclick="alert('Playing Ep ${i}')">${i}</div>`;
-            }
-            document.getElementById('details-panel').style.display = 'flex';
-        }
+            open: function(type, id, title, eps) {
+                if(type === 'tv') {
+                    document.getElementById('show-title').innerText = title;
+                    const grid = document.getElementById('box-episodes');
+                    grid.innerHTML = '';
+                    for(let i=1; i<=eps; i++) {
+                        grid.innerHTML += `<div class="ep-btn" onclick="FENG.play('tv','${id}/1/${i}','${title} E${i}')">${i}</div>`;
+                    }
+                    document.getElementById('pane-episodes').style.display = 'flex';
+                } else {
+                    this.play('movie', id, title);
+                }
+            },
 
-        function closeDetails() {
-            document.getElementById('details-panel').style.display = 'none';
-        }
+            play: function(type, path, title) {
+                this.hideOverlays();
+                document.getElementById('playing-now').innerText = title;
+                document.getElementById('feng-player').src = `https://vidsrc.to/embed/${type}/${path}`;
+                document.getElementById('pane-player').style.display = 'flex';
+            },
+
+            hideOverlays: function() {
+                document.querySelectorAll('.full-overlay').forEach(ov => ov.style.display = 'none');
+            },
+
+            closePlayer: function() {
+                document.getElementById('pane-player').style.display = 'none';
+                document.getElementById('feng-player').src = '';
+            },
+
+            view: function(target) {
+                this.hideOverlays();
+                if(target === 'home') document.getElementById('pane-home').style.display = 'block';
+            },
+
+            filter: function() {
+                const val = document.getElementById('search-input').value.toLowerCase();
+                this.render(this.archive.filter(i => i.title.toLowerCase().includes(val)));
+            }
+        };
     </script>
 </body>
 </html>
