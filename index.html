@@ -1,191 +1,217 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FENG WORLD V68.1.1 - API AUTOMATED</title>
-    
+    <title>FENG WORLD - ONSTREAM EDITION</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         :root {
-            --feng-primary: #d3f243;
-            --feng-bg: #0b0e14;
-            --feng-card: #1c1f26;
-            --feng-text: #eeeeee;
-            --feng-header: #000000;
-            --feng-border: rgba(255, 255, 255, 0.08);
-            --radius-md: 16px;
+            --primary: #d3f243;
+            --bg: #0b0e14;
+            --card: #1c1f26;
+            --text: #ffffff;
+            --header: #000000;
         }
 
         body { 
-            background-color: var(--feng-bg); 
-            color: var(--feng-text); 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; padding: 0; 
-            overflow-x: hidden;
+            background: var(--bg); color: var(--text); 
+            font-family: 'Inter', sans-serif; margin: 0; padding: 0;
+            overflow-x: hidden; -webkit-tap-highlight-color: transparent;
         }
 
-        /* HEADER */
+        /* ONSTREAM HEADER */
         header {
-            background-color: var(--feng-header);
-            padding: 35px 6% 25px;
-            position: sticky; top: 0; z-index: 2000;
-            border-bottom: 4px solid var(--feng-primary);
+            padding: 20px 5%; display: flex; justify-content: space-between;
+            align-items: center; position: sticky; top: 0; z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
         }
 
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .brand { font-size: 32px; font-weight: 900; letter-spacing: -2px; }
-        .brand span { color: var(--feng-primary); }
+        .logo { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 22px; }
+        .logo span { color: var(--primary); }
+        .f-box { background: var(--primary); color: #000; padding: 2px 10px; border-radius: 6px; }
 
-        .search-box {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--feng-border);
-            border-radius: 15px; padding: 12px 20px;
-            display: flex; align-items: center; gap: 15px;
+        /* HERO SECTION */
+        #hero {
+            width: 100%; height: 45vh; background-size: cover; background-position: center;
+            position: relative; display: flex; align-items: flex-end; padding: 0 5% 30px;
+            box-sizing: border-box;
         }
-        .search-box input { background: transparent; border: none; color: #fff; width: 100%; outline: none; }
-
-        /* ONSTREAM 3-COLUMN GRID */
-        .catalog-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 12px; padding: 0 6% 100px;
+        #hero::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to top, var(--bg) 10%, transparent);
         }
+        .hero-meta { position: relative; z-index: 2; max-width: 80%; }
+        .hero-meta h1 { margin: 0; font-size: 28px; font-weight: 900; }
 
-        .media-card {
-            background: var(--feng-card); border-radius: 12px;
-            overflow: hidden; transition: 0.3s;
+        /* HORIZONTAL SHELVES */
+        .shelf { padding: 20px 0 10px 5%; font-weight: 800; color: var(--primary); text-transform: uppercase; font-size: 13px; letter-spacing: 1px; }
+        .row { 
+            display: flex; overflow-x: auto; gap: 12px; padding: 0 5% 20px;
+            scrollbar-width: none;
         }
-        .media-card:active { transform: scale(0.95); }
-        .image-host { width: 100%; aspect-ratio: 2/3; background: #1a1a1a; }
-        .image-host img { width: 100%; height: 100%; object-fit: cover; }
+        .row::-webkit-scrollbar { display: none; }
 
-        .media-info { padding: 8px; }
-        .media-info b { font-size: 11px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* EPISODE OVERLAY */
-        .overlay {
-            position: fixed; inset: 0; background: var(--feng-bg);
-            z-index: 9999; display: none; flex-direction: column;
+        .item { 
+            min-width: 120px; transition: 0.3s; 
+            background: var(--card); border-radius: 10px; overflow: hidden;
         }
-        .modal-top { padding: 25px 6%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
-        
-        .ep-grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); 
-            gap: 10px; padding: 20px 6%; overflow-y: auto; 
-        }
-        .ep-btn { background: #252830; padding: 15px 0; text-align: center; border-radius: 10px; font-weight: 900; }
+        .item:active { transform: scale(0.95); }
+        .item img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+        .item-info { padding: 8px; font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* FOOTER */
+        /* EPISODE DRAWER (SLIDE UP) */
+        .drawer {
+            position: fixed; inset: 0; background: var(--bg); z-index: 5000;
+            display: none; flex-direction: column; animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .drawer-head { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #222; }
+        .season-tabs { display: flex; gap: 10px; padding: 15px 20px; overflow-x: auto; border-bottom: 1px solid #111; }
+        .s-pill { background: var(--card); padding: 8px 18px; border-radius: 20px; font-size: 13px; white-space: nowrap; border: 1px solid #333; }
+        .s-pill.active { background: var(--primary); color: #000; font-weight: bold; border-color: var(--primary); }
+
+        .ep-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 20px; overflow-y: auto; }
+        .ep-card { background: #252830; padding: 18px 0; text-align: center; border-radius: 10px; font-weight: 900; border: 1px solid rgba(255,255,255,0.05); }
+
+        /* PLAYER */
+        #player-box { position: fixed; inset: 0; background: #000; z-index: 6000; display: none; }
+
+        /* FOOTER NAV */
         footer {
-            position: fixed; bottom: 0; width: 100%;
-            background: var(--feng-header); display: flex;
-            padding: 15px 0 35px; border-top: 1px solid var(--feng-border);
+            position: fixed; bottom: 0; width: 100%; background: rgba(8,10,15,0.95);
+            backdrop-filter: blur(10px); display: flex; padding: 15px 0 35px;
+            border-top: 1px solid #1c1f26; z-index: 1000;
         }
-        .tab { flex: 1; text-align: center; color: #555; }
-        .tab.active { color: var(--feng-primary); }
-        .tab i { font-size: 24px; display: block; margin-bottom: 5px; }
+        .nav-item { flex: 1; text-align: center; color: #555; font-size: 10px; font-weight: 800; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 22px; display: block; margin-bottom: 4px; }
     </style>
 </head>
-<body onload="FENG.init()">
+<body onload="ONSTREAM.boot()">
 
     <header>
-        <div class="header-top">
-            <div class="brand">FE<span>NG</span></div>
-            <div style="font-size:10px; background:var(--feng-primary); color:#000; padding:4px 8px; border-radius:5px; font-weight:900;">LIVE API</div>
-        </div>
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search live database..." id="search-in">
-        </div>
+        <div class="logo"><div class="f-box">F</div> FENG<span>WORLD</span></div>
+        <i class="fas fa-search fa-lg"></i>
     </header>
 
-    <div style="padding: 20px 6% 10px; color:var(--feng-primary); font-weight:900; font-size:14px;">TRENDING NOW</div>
-    <div class="catalog-grid" id="main-grid"></div>
-
-    <div class="overlay" id="ep-modal">
-        <div class="modal-top">
-            <h2 id="modal-title" style="margin:0; font-size:18px;"></h2>
-            <i class="fas fa-times fa-2x" onclick="FENG.close()"></i>
+    <div id="hero">
+        <div class="hero-meta">
+            <h1 id="hero-title">Loading...</h1>
+            <p style="color:var(--primary); font-weight:bold; font-size:12px;">#1 IN MOVIES TODAY</p>
         </div>
-        <div id="season-selector" style="padding: 15px 6%; overflow-x: auto; display: flex; gap: 10px;"></div>
-        <div class="ep-grid" id="ep-container"></div>
     </div>
 
-    <div class="overlay" id="player-modal">
-        <div class="modal-top">
-            <span id="playing-title">PLAYER</span>
-            <button onclick="FENG.close()" style="background:red; color:white; border:none; padding:8px 15px; border-radius:8px;">EXIT</button>
+    <div class="shelf">Trending Now</div>
+    <div class="row" id="trending-row"></div>
+
+    <div class="shelf">Popular Series</div>
+    <div class="row" id="series-row"></div>
+
+    <div class="shelf">Action Movies</div>
+    <div class="row" id="action-row"></div>
+
+    <div class="drawer" id="content-drawer">
+        <div class="drawer-head">
+            <i class="fas fa-chevron-left fa-lg" onclick="ONSTREAM.closeDrawer()"></i>
+            <h2 id="drawer-title" style="margin:0; font-size:18px;">Show Details</h2>
         </div>
-        <iframe id="feng-iframe" style="width:100%; height:100%; border:none; background:#000;" allowfullscreen></iframe>
+        <div class="season-tabs" id="season-pills"></div>
+        <div style="padding:10px 20px; font-size:11px; color:#555; font-weight:900;">SELECT EPISODE</div>
+        <div class="ep-grid" id="episode-grid"></div>
+    </div>
+
+    <div id="player-box">
+        <div style="padding: 20px; display: flex; justify-content: space-between;">
+            <span id="playing-now" style="font-weight:900; font-size:12px;">STREAMING</span>
+            <i class="fas fa-times fa-lg" onclick="ONSTREAM.closePlayer()"></i>
+        </div>
+        <iframe id="video-frame" style="width:100%; height:80%; border:none;" allowfullscreen></iframe>
     </div>
 
     <footer>
-        <div class="tab active"><i class="fas fa-home"></i><span>Home</span></div>
-        <div class="tab" onclick="FENG.loadType('movie')"><i class="fas fa-film"></i><span>Movies</span></div>
-        <div class="tab" onclick="FENG.loadType('tv')"><i class="fas fa-tv"></i><span>Series</span></div>
+        <div class="nav-item active"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="nav-item"><i class="fas fa-play-circle"></i><span>Movies</span></div>
+        <div class="nav-item"><i class="fas fa-tv"></i><span>Series</span></div>
+        <div class="nav-item"><i class="fas fa-user"></i><span>Me</span></div>
     </footer>
 
     <script>
-        const API_KEY = 'ea593c3fa4d4942ece315977cd7e32c9'; // Your Key Integrated
-        const FENG = {
-            init: function() { this.fetchTrending(); },
-
-            fetchTrending: async function() {
-                const res = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`);
-                const data = await res.json();
-                this.render(data.results);
+        const KEY = 'ea593c3fa4d4942ece315977cd7e32c9';
+        const ONSTREAM = {
+            boot: function() {
+                this.loadHero();
+                this.loadShelf('trending/all/week', 'trending-row');
+                this.loadShelf('tv/popular', 'series-row');
+                this.loadShelf('discover/movie', 'action-row');
             },
 
-            render: function(items) {
-                const grid = document.getElementById('main-grid');
-                grid.innerHTML = '';
-                items.forEach(item => {
+            loadHero: async function() {
+                const r = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${KEY}`);
+                const d = await r.json();
+                const top = d.results[0];
+                document.getElementById('hero').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${top.backdrop_path})`;
+                document.getElementById('hero-title').innerText = top.title;
+            },
+
+            loadShelf: async function(path, elementId) {
+                const r = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${KEY}`);
+                const d = await r.json();
+                const container = document.getElementById(elementId);
+                d.results.forEach(item => {
                     const title = item.title || item.name;
-                    const type = item.media_type;
-                    if(!item.poster_path) return;
-                    
-                    grid.innerHTML += `
-                        <div class="media-card" onclick="FENG.open('${type}', '${item.id}', '${title.replace(/'/g, "")}')">
-                            <div class="image-host">
-                                <img src="https://image.tmdb.org/t/p/w500${item.poster_path}">
-                            </div>
-                            <div class="media-info">
-                                <b>${title}</b>
-                            </div>
+                    const type = item.media_type || (item.name ? 'tv' : 'movie');
+                    container.innerHTML += `
+                        <div class="item" onclick="ONSTREAM.action('${type}', '${item.id}', '${title.replace(/'/g, "")}')">
+                            <img src="https://image.tmdb.org/t/p/w500${item.poster_path}">
+                            <div class="item-info">${title}</div>
                         </div>
                     `;
                 });
             },
 
-            open: async function(type, id, title) {
+            action: async function(type, id, title) {
                 if(type === 'tv') {
-                    document.getElementById('modal-title').innerText = title;
-                    const res = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${API_KEY}`);
+                    document.getElementById('drawer-title').innerText = title;
+                    const res = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${KEY}`);
                     const data = await res.json();
                     
-                    const container = document.getElementById('ep-container');
-                    container.innerHTML = '';
-                    // Generate episodes for Season 1
-                    for(let i=1; i<=15; i++) {
-                        container.innerHTML += `<div class="ep-btn" onclick="FENG.play('tv', '${id}/1/${i}', '${title}')">${i}</div>`;
-                    }
-                    document.getElementById('ep-modal').style.display = 'flex';
+                    // Build Seasons
+                    const sPills = document.getElementById('season-pills');
+                    sPills.innerHTML = '';
+                    data.seasons.forEach(s => {
+                        if(s.season_number === 0) return;
+                        sPills.innerHTML += `<div class="s-pill ${s.season_number === 1 ? 'active' : ''}" onclick="ONSTREAM.loadEpisodes('${id}', '${s.season_number}', '${title}')">Season ${s.season_number}</div>`;
+                    });
+
+                    this.loadEpisodes(id, 1, title);
+                    document.getElementById('content-drawer').style.display = 'flex';
                 } else {
                     this.play('movie', id, title);
                 }
             },
 
-            play: function(type, path, title) {
-                this.close();
-                document.getElementById('playing-title').innerText = title;
-                document.getElementById('feng-iframe').src = `https://vidsrc.to/embed/${type}/${path}`;
-                document.getElementById('player-modal').style.display = 'flex';
+            loadEpisodes: async function(id, sNum, title) {
+                const res = await fetch(`https://api.themoviedb.org/3/tv/${id}/season/${sNum}?api_key=${KEY}`);
+                const data = await res.json();
+                const grid = document.getElementById('episode-grid');
+                grid.innerHTML = '';
+                data.episodes.forEach(ep => {
+                    grid.innerHTML += `<div class="ep-card" onclick="ONSTREAM.play('tv', '${id}/${sNum}/${ep.episode_number}', '${title} E${ep.episode_number}')">${ep.episode_number}</div>`;
+                });
             },
 
-            close: function() {
-                document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none');
-                document.getElementById('feng-iframe').src = '';
+            play: function(type, path, title) {
+                document.getElementById('playing-now').innerText = title;
+                document.getElementById('video-frame').src = `https://vidsrc.to/embed/${type}/${path}`;
+                document.getElementById('player-box').style.display = 'block';
+            },
+
+            closeDrawer: function() { document.getElementById('content-drawer').style.display = 'none'; },
+            closePlayer: function() { 
+                document.getElementById('player-box').style.display = 'none'; 
+                document.getElementById('video-frame').src = '';
             }
         };
     </script>
