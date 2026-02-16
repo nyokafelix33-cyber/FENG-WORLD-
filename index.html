@@ -3,211 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FENG WORLD PLATINUM V68.3.0</title>
+    <title>Feng Vision 68.1.1</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --titan: #d3f243; --bg: #05070a; --surface: #0d1117; --card: #161b22; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: #fff; padding-bottom: 110px; overflow-x: hidden; }
+        :root {
+            --primary: #d3f243;
+            --bg: #0b0e14;
+            --card: #1c1f26;
+            --text: #ffffff;
+            --nav: #080a0f;
+        }
 
-        /* HEADER & SEARCH */
-        header { background: #000; padding: 25px 5% 15px; border-bottom: 2px solid var(--titan); position: sticky; top: 0; z-index: 2000; }
-        .logo { font-size: 26px; font-weight: 900; display: flex; justify-content: space-between; align-items: center; }
-        .logo span { color: var(--titan); }
-        .search-wrapper { position: relative; margin-top: 15px; }
-        .search-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--titan); }
-        .main-search { width: 100%; padding: 14px 45px; background: var(--surface); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; outline: none; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
 
-        /* COMPACT 4x4 GRID SYSTEM */
-        .section-tag { padding: 30px 5% 10px; font-size: 11px; color: var(--titan); font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
-        .titan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 5%; }
-        .card { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
-        .card:active { transform: scale(0.96); }
-        .card img { width: 100%; height: 110px; object-fit: cover; background: #111; }
-        .card-info { padding: 6px; text-align: center; }
-        .card-title { font-size: 8px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-year { font-size: 6px; color: var(--titan); font-weight: 700; margin-top: 2px; }
+        /* HEADER */
+        header {
+            padding: 15px 5%;
+            background: var(--bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-        /* DETAIL SHEET & RESTORED BACK BUTTON */
-        .sheet { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; overflow-y: auto; }
-        .sheet.active { display: block; }
-        .sheet-nav { background: #000; padding: 15px 5%; border-bottom: 2px solid var(--titan); display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 10; }
-        .back-btn { color: var(--titan); font-size: 24px; cursor: pointer; }
-        .back-label { font-size: 12px; font-weight: 900; letter-spacing: 1px; }
+        .logo-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
 
-        .detail-content { padding: 25px 5% 120px; text-align: center; }
-        .poster-main { width: 160px; height: 230px; border-radius: 12px; border: 2px solid var(--titan); margin: 0 auto 20px; object-fit: cover; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
-        .m-title { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
-        .m-meta { color: var(--titan); font-size: 13px; font-weight: 800; margin-bottom: 15px; }
-        .m-desc { background: var(--surface); padding: 18px; border-radius: 12px; font-size: 13px; line-height: 1.6; text-align: left; border-left: 4px solid var(--titan); color: #ccc; }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-        /* SEASON/EPISODE CONTROLS */
-        .pick-label { font-size: 10px; font-weight: 900; color: #555; text-transform: uppercase; margin: 25px 0 10px; text-align: left; }
-        .pick-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-        .pick-item { background: #1a1e26; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 900; border: 1px solid rgba(255,255,255,0.1); }
-        .pick-item.active { background: var(--titan); color: #000; border-color: var(--titan); }
+        .f-box {
+            background: var(--primary);
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 20px;
+        }
 
-        /* SETTINGS & ABOUT US (IMMEDIATE VIEW) */
-        .settings-view { display: none; padding: 35px 5% 120px; }
-        .contact-box { display: flex; align-items: center; gap: 18px; background: var(--surface); padding: 18px; border-radius: 15px; text-decoration: none; color: #fff; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
-        .contact-box i { font-size: 26px; color: var(--titan); }
-        .about-card { background: #000; padding: 25px; border-radius: 15px; border: 1px solid var(--titan); margin-top: 30px; }
-        .about-card h3 { color: var(--titan); margin-bottom: 10px; font-size: 18px; }
-        .about-card p { font-size: 12px; color: #888; line-height: 1.6; }
+        .search-bar {
+            background: var(--card);
+            border: 1px solid rgba(211, 242, 67, 0.4);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+        }
 
-        /* FOOTER NAVIGATION */
-        nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; padding: 15px 0 30px; border-top: 1px solid #111; z-index: 4000; }
-        .tab { flex: 1; text-align: center; color: #444; font-size: 10px; font-weight: 900; cursor: pointer; }
-        .tab.active { color: var(--titan); }
-        .tab i { display: block; font-size: 22px; margin-bottom: 5px; }
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            margin-left: 10px;
+            width: 100%;
+            outline: none;
+        }
 
-        .btn-stream { width: 100%; padding: 20px; background: var(--titan); color: #000; border: none; border-radius: 12px; font-weight: 900; font-size: 16px; margin-top: 30px; }
+        /* GRID SYSTEM */
+        .shelf {
+            padding: 20px 5% 5px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 10px 5% 100px;
+        }
+
+        .item-card {
+            background: var(--card);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+
+        .item-card img {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            display: block;
+        }
+
+        .item-info {
+            padding: 8px;
+        }
+
+        .item-info b {
+            font-size: 11px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* EPISODE SELECTOR OVERLAY */
+        #details-panel {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #222;
+        }
+
+        .selector-box {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .pill-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .pill {
+            background: var(--card);
+            padding: 8px 20px;
+            border-radius: 20px;
+            white-space: nowrap;
+            border: 1px solid #333;
+        }
+
+        .pill.active {
+            background: var(--primary);
+            color: black;
+            font-weight: bold;
+        }
+
+        .ep-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .ep-btn {
+            background: #252830;
+            padding: 15px 5px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* BOTTOM NAV */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--nav);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 30px;
+            border-top: 1px solid #1c1f26;
+        }
+
+        .nav-link {
+            text-align: center;
+            color: #555;
+            font-size: 10px;
+        }
+
+        .nav-link.active { color: var(--primary); }
+        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
     </style>
 </head>
-<body onload="CORE.init()">
+<body onload="render()">
 
-    <div id="view-home">
-        <header>
-            <div class="logo">FENG <span>WORLD</span> <i class="fas fa-crown" style="color:var(--titan); font-size:18px;"></i></div>
-            <div class="search-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" class="main-search" id="search-input" placeholder="Search 2026 Platinum Archive..." onkeyup="CORE.filter(this.value)">
+    <header>
+        <div class="logo-row">
+            <div class="logo">
+                <div class="f-box">F</div>
+                <span class="brand">FENG <span style="color:var(--primary)">WORLD</span></span>
             </div>
-        </header>
-
-        <div class="section-tag">Unified Series (4x4 Matrix)</div>
-        <div class="titan-grid" id="grid-series"></div>
-
-        <div class="section-tag">Movie Archive</div>
-        <div class="titan-grid" id="grid-movies"></div>
-    </div>
-
-    <div id="view-settings" class="settings-view">
-        <h1 style="font-weight:900; font-size:32px; margin-bottom:30px;">TITAN <span>SYSTEM</span></h1>
-        
-        <a href="https://wa.me/260770605003" class="contact-box">
-            <i class="fab fa-whatsapp"></i>
-            <div><strong style="display:block">Support Center</strong><small style="color:#666">WhatsApp: +260770605003</small></div>
-        </a>
-
-        <a href="https://instagram.com/felix_ny10" class="contact-box">
-            <i class="fab fa-instagram"></i>
-            <div><strong style="display:block">Developer</strong><small style="color:#666">Instagram: @felix_ny10</small></div>
-        </a>
-
-        <div class="about-card">
-            <h3>About Platinum</h3>
-            <p>
-                <strong>Build:</strong> V68.3.0 Stable<br>
-                <strong>Date:</strong> February 16, 2026<br>
-                <strong>Status:</strong> All Systems Functional<br>
-                <strong>Security:</strong> AES-256 Platinum Encryption Active
-            </p>
+            <i class="fas fa-user-circle fa-lg"></i>
         </div>
-        
-        <button class="btn-stream" style="background:#161b22; color:#fff;" onclick="CORE.tab('home')">RETURN TO LIBRARY</button>
-    </div>
-
-    <div id="detail-sheet" class="sheet">
-        <div class="sheet-nav">
-            <i class="fas fa-arrow-left back-btn" onclick="CORE.close()"></i>
-            <span class="back-label">RETURN TO EXPLORE</span>
+        <div class="search-bar">
+            <i class="fas fa-search" style="color:var(--primary)"></i>
+            <input type="text" placeholder="Search movies, series...">
         </div>
-        <div class="detail-content">
-            <img id="m-img" class="poster-main" src="">
-            <h1 id="m-title" class="m-title"></h1>
-            <p id="m-meta" class="m-meta"></p>
-            <div id="m-desc" class="m-desc"></div>
-            
-            <div id="tv-logic" style="display:none">
-                <p class="pick-label">Select Season</p>
-                <div class="pick-grid" id="s-grid"></div>
-                <p class="pick-label">Select Episode</p>
-                <div class="pick-grid" id="e-grid"></div>
+    </header>
+
+    <div class="shelf">Trending Series</div>
+    <div class="content-grid" id="main-grid"></div>
+
+    <div id="details-panel">
+        <div class="panel-header">
+            <i class="fas fa-arrow-left fa-lg" onclick="closeDetails()"></i>
+            <h2 id="det-title" style="margin:0; font-size:18px;"></h2>
+        </div>
+        <div class="selector-box">
+            <div class="pill-row">
+                <div class="pill active">Season 1</div>
+                <div class="pill">Season 2</div>
+                <div class="pill">Season 3</div>
             </div>
-
-            <button class="btn-stream" onclick="CORE.play()"><i class="fas fa-play"></i> START STREAMING</button>
+            <p style="color:#777; font-size: 13px;">Episodes</p>
+            <div class="ep-grid" id="ep-list">
+                </div>
         </div>
     </div>
 
-    <nav>
-        <div class="tab active" id="nav-home" onclick="CORE.tab('home')"><i class="fas fa-home"></i>HOME</div>
-        <div class="tab" id="nav-set" onclick="CORE.tab('set')"><i class="fas fa-cog"></i>SETTINGS</div>
-    </nav>
+    <footer>
+        <div class="nav-link active"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="nav-link"><i class="fas fa-play-circle"></i><span>Movies</span></div>
+        <div class="nav-link"><i class="fas fa-tv"></i><span>Series</span></div>
+        <div class="nav-link"><i class="fas fa-history"></i><span>History</span></div>
+    </footer>
 
     <script>
-        const CORE = {
-            /* MANUALLY TYPED EXTENDED DATABASE */
-            db: [
-                { id: "1010639", t: "The Night Agent", y: "2023", g: "Action", c: "tv", s: 2, e: 10, i: "/night_agent_s3.jpg", d: "A low-level FBI agent is plunged into a deadly conspiracy." },
-                { id: "113962", t: "Bridgerton", y: "2020", g: "Drama", c: "tv", s: 3, e: 8, i: "/bridgerton4.jpg", d: "Wealth, lust, and betrayal in Regency-era London." },
-                { id: "94605", t: "Arcane", y: "2021", g: "Animation", c: "tv", s: 2, e: 9, i: "/arcane2.jpg", d: "The origins of two iconic League champions." },
-                { id: "215431", t: "Knight 7 Kingdoms", y: "2026", g: "Fantasy", c: "tv", s: 1, e: 6, i: "/knight.jpg", d: "A new legend begins in the world of Westeros." },
-                { id: "2288", t: "Prison Break", y: "2005", g: "Crime", c: "tv", s: 5, e: 22, i: "/pb.jpg", d: "The ultimate prison escape masterpiece." },
-                { id: "1396", t: "Breaking Bad", y: "2008", g: "Crime", c: "tv", s: 5, e: 16, i: "/bb.jpg", d: "A teacher turns into a drug kingpin." },
-                { id: "71446", t: "Money Heist", y: "2017", g: "Crime", c: "tv", s: 5, e: 10, i: "/mh.jpg", d: "Eight thieves take hostages in the Royal Mint." },
-                { id: "66732", t: "Stranger Things", y: "2016", g: "Sci-Fi", c: "tv", s: 4, e: 9, i: "/st.jpg", d: "Mysterious disappearances in a small town." },
-                { id: "1402", t: "The Walking Dead", y: "2010", g: "Horror", c: "tv", s: 11, e: 24, i: "/twd.jpg", d: "Survival in a zombie-infested world." },
-                { id: "10834", t: "Anaconda 2", y: "2004", g: "Horror", c: "mov", i: "/ana2.jpg", d: "The search for the Blood Orchid." },
-                { id: "1399", t: "Superman", y: "1978", g: "Action", c: "mov", i: "/super1.jpg", d: "The original Man of Steel story." },
-                { id: "155", t: "The Dark Knight", y: "2008", g: "Action", c: "mov", i: "/tdk.jpg", d: "Batman faces his greatest challenge." },
-                { id: "671", t: "Harry Potter", y: "2001", g: "Fantasy", c: "mov", i: "/hp1.jpg", d: "The boy who lived begins his journey." },
-                { id: "19995", t: "Avatar", y: "2009", g: "Sci-Fi", c: "mov", i: "/avatar.jpg", d: "A paraplegic Marine on Pandora." }
-            ],
-            active: null, s: 1, e: 1,
+        const data = [
+            { id: "76479", title: "The Boys", type: "tv", year: "2024", img: "https://image.tmdb.org/t/p/w500/7I90.jpg" },
+            { id: "66732", title: "Stranger Things", type: "tv", year: "2022", img: "https://image.tmdb.org/t/p/w500/x2LSRm2RzL6tYwcI3YmC9n767PA.jpg" },
+            { id: "1396", title: "Breaking Bad", type: "tv", year: "2013", img: "https://image.tmdb.org/t/p/w500/ggFHUXNuqzmgp7vny71oYFjUIp9.jpg" },
+            { id: "94605", title: "Squid Game", type: "tv", year: "2021", img: "https://image.tmdb.org/t/p/w500/689V8.jpg" },
+            { id: "299534", title: "Avengers", type: "movie", year: "2019", img: "https://image.tmdb.org/t/p/w500/or06vSqzWBFscv1qCG76uC1fsR6.jpg" },
+            { id: "157336", title: "Interstellar", type: "movie", year: "2014", img: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlSabaC.jpg" }
+        ];
 
-            init: function() { this.render(this.db); },
+        function render() {
+            const grid = document.getElementById('main-grid');
+            data.forEach(item => {
+                grid.innerHTML += `
+                    <div class="item-card" onclick="openDetails('${item.title}', '${item.type}')">
+                        <img src="${item.img}">
+                        <div class="item-info">
+                            <b>${item.title}</b>
+                            <span>${item.year}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
 
-            render: function(data) {
-                const sg = document.getElementById('grid-series'); const mg = document.getElementById('grid-movies');
-                sg.innerHTML = ''; mg.innerHTML = '';
-                data.forEach(item => {
-                    const html = `
-                        <div class="card" onclick="CORE.open('${item.id}')">
-                            <img src="https://image.tmdb.org/t/p/w300${item.i}" onerror="this.src='https://via.placeholder.com/150x225/111/fff?text=${item.t}'">
-                            <div class="card-info">
-                                <div class="card-title">${item.t}</div>
-                                <div class="card-year">${item.y} • ${item.g}</div>
-                            </div>
-                        </div>`;
-                    item.c === 'tv' ? sg.innerHTML += html : mg.innerHTML += html;
-                });
-            },
+        function openDetails(title, type) {
+            if(type === 'movie') {
+                alert("Opening Movie Player...");
+                return;
+            }
+            document.getElementById('det-title').innerText = title;
+            const epList = document.getElementById('ep-list');
+            epList.innerHTML = '';
+            for(let i=1; i<=12; i++) {
+                epList.innerHTML += `<div class="ep-btn" onclick="alert('Playing Ep ${i}')">${i}</div>`;
+            }
+            document.getElementById('details-panel').style.display = 'flex';
+        }
 
-            open: function(id) {
-                this.active = this.db.find(x => x.id == id);
-                document.getElementById('m-img').src = "https://image.tmdb.org/t/p/w500" + this.active.i;
-                document.getElementById('m-title').innerText = this.active.t;
-                document.getElementById('m-meta').innerText = `${this.active.y} • ${this.active.g.toUpperCase()} • PLATINUM`;
-                document.getElementById('m-desc').innerText = this.active.d;
-                
-                const ctrl = document.getElementById('tv-logic');
-                if(this.active.c === 'tv') { ctrl.style.display = 'block'; this.s=1; this.e=1; this.draw(); }
-                else { ctrl.style.display = 'none'; }
-                document.getElementById('detail-sheet').classList.add('active');
-            },
-
-            draw: function() {
-                const sg = document.getElementById('s-grid'); const eg = document.getElementById('e-grid');
-                sg.innerHTML = ''; eg.innerHTML = '';
-                for(let i=1; i<=this.active.s; i++) sg.innerHTML += `<div class="pick-item ${i==this.s?'active':''}" onclick="CORE.s=${i};CORE.draw()">${i}</div>`;
-                for(let i=1; i<=this.active.e; i++) eg.innerHTML += `<div class="pick-item ${i==this.e?'active':''}" onclick="CORE.e=${i};CORE.draw()">${i}</div>`;
-            },
-
-            tab: function(t) {
-                document.getElementById('view-home').style.display = t==='home'?'block':'none';
-                document.getElementById('view-settings').style.display = t==='set'?'block':'none';
-                document.getElementById('nav-home').classList.toggle('active', t==='home');
-                document.getElementById('nav-set').classList.toggle('active', t==='set');
-            },
-
-            filter: function(q) { this.render(this.db.filter(x => x.t.toLowerCase().includes(q.toLowerCase()))); },
-            play: function() {
-                const url = this.active.c === 'tv' ? `tv/${this.active.id}/${this.s}/${this.e}` : `movie/${this.active.id}`;
-                window.open(`https://vidsrc.to/embed/${url}`, '_blank');
-            },
-            close: function() { document.getElementById('detail-sheet').classList.remove('active'); }
-        };
+        function closeDetails() {
+            document.getElementById('details-panel').style.display = 'none';
+        }
     </script>
 </body>
 </html>
