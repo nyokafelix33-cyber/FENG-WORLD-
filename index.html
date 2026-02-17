@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FENG WORLD Vision 12.1</title>
+<title>FENG WORLD Vision 12.2</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 <style>
 :root{
 --primary:#d3f243;
@@ -15,33 +14,18 @@
 --radius:12px;
 --accent:#25d366;
 }
-
-/* BASIC RESET */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
 
 /* SPLASH */
-#splash{
-position:fixed;inset:0;background:black;z-index:9999;
-display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:white;
-filter:drop-shadow(0 0 20px var(--primary));
-animation:fade 3s forwards;
-}
+#splash{position:fixed;inset:0;background:black;z-index:9999;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:white;filter:drop-shadow(0 0 20px var(--primary));animation:fade 3s forwards;}
 @keyframes fade{to{opacity:0;visibility:hidden}}
 
 /* LOADER */
-#loader{
-position:fixed;inset:0;background:#000a;z-index:9000;
-display:none;align-items:center;justify-content:center;font-size:20px;
-}
+#loader{position:fixed;inset:0;background:#000a;z-index:9000;display:none;align-items:center;justify-content:center;font-size:20px}
 
 /* HEADER */
-header{
-padding:10px 5%;
-background:var(--bg);
-border-bottom:2px solid var(--primary);
-position:sticky;top:0;z-index:1000;
-}
+header{padding:10px 5%;background:var(--bg);border-bottom:2px solid var(--primary);position:sticky;top:0;z-index:1000}
 .logo{font-size:22px;font-weight:900}
 .logo span{color:var(--primary)}
 .search-box{display:flex;gap:8px;background:rgba(255,255,255,0.07);padding:10px;border-radius:12px;margin-top:10px}
@@ -95,13 +79,16 @@ footer{position:fixed;bottom:0;width:100%;background:#000;display:flex;padding:1
 #info-backdrop{height:200px;background-size:cover;background-position:center;margin-bottom:10px}
 #info-grid{padding:15px}
 .download-btn{width:100%;padding:10px;margin-top:10px;background:var(--primary);border:none;border-radius:8px;color:#000;font-weight:900;cursor:pointer}
+
+/* SETTINGS PROFESSIONAL */
+#pane-settings div.setting-item{border-bottom:1px solid #222;padding:12px 0;display:flex;justify-content:space-between;align-items:center}
+#pane-settings div.setting-item b{color:var(--primary)}
 </style>
 </head>
-
 <body onload="FENG.boot()">
 
 <!-- SPLASH -->
-<div id="splash">Welcome to <span>FENG WORLD</span><br><small>Vision 12.1</small></div>
+<div id="splash">Welcome to <span>FENG WORLD</span><br><small>Vision 12.2</small></div>
 
 <!-- LOADER -->
 <div id="loader">⏳ Loading content...</div>
@@ -127,9 +114,6 @@ footer{position:fixed;bottom:0;width:100%;background:#000;display:flex;padding:1
 
 <!-- HOME MAIN -->
 <main id="pane-home">
-<div class="shelf-title">Continue Watching</div>
-<div class="row" id="row-continue"></div>
-
 <div class="shelf-title">Trending Movies</div>
 <div class="row" id="row-movies"></div>
 
@@ -158,11 +142,11 @@ footer{position:fixed;bottom:0;width:100%;background:#000;display:flex;padding:1
 <i class="fas fa-times fa-2x" onclick="FENG.hideDrawers()"></i>
 </div>
 <div style="padding:20px;">
-<p>Web App Vision: <b>12.1</b></p>
-<p>Player Engine: Cloud Embed</p>
-<p>Developer: Felix Nyoka</p>
-<p>Support: fengsupport@example.com</p>
-<p>About Us: FENG WORLD is your ultimate movie & series platform</p>
+<div class="setting-item"><span>Web App Version</span><b>12.2</b></div>
+<div class="setting-item"><span>Player Engine</span><b>Cloud Embed</b></div>
+<div class="setting-item"><span>Developer</span><b>Felix Nyoka</b></div>
+<div class="setting-item"><span>Support</span><b>fengsupport@example.com</b></div>
+<div class="setting-item"><span>About Us</span><b>FENG WORLD is your ultimate movie & series platform</b></div>
 </div>
 </div>
 
@@ -205,22 +189,16 @@ footer{position:fixed;bottom:0;width:100%;background:#000;display:flex;padding:1
 
 <script>
 const KEY="ea593c3fa4d4942ece315977cd7e32c9";
-let currentSlide=0;
 let userName=localStorage.getItem("fengUser")||null;
-let continueList=JSON.parse(localStorage.getItem("fengContinue")||"[]");
 
 const FENG={
-
 boot: async function(){
 this.showLogin();
-this.loadGenres();
-this.loadHero();
+await this.loadGenres();
 this.loadShelf("movie/popular","row-movies");
 this.loadShelf("tv/top_rated","row-series");
-this.loadContinue();
 },
 
-/* LOGIN */
 showLogin:function(){
 if(!userName){
 document.getElementById("login-box").style.display="flex";
@@ -235,13 +213,10 @@ if(name.length<2)return alert("Enter a name");
 localStorage.setItem("fengUser",name);
 location.reload();
 },
-logout:function(){
-localStorage.clear();
-location.reload();
-},
+logout:function(){localStorage.clear();location.reload();},
 
-/* GENRES */
 loadGenres: async function(){
+try{
 const r=await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${KEY}`);
 const d=await r.json();
 const gcontainer=document.getElementById("genre-filters");
@@ -253,38 +228,18 @@ pill.innerText=g.name;
 pill.onclick=()=>this.filterGenre(g.id);
 gcontainer.appendChild(pill);
 });
+}catch(e){console.error(e);}
 },
-filterGenre:function(id){
+
+filterGenre: function(id){
 this.loadShelf(`discover/movie?with_genres=${id}`,"row-movies");
 this.loadShelf(`discover/tv?with_genres=${id}`,"row-series");
 },
 
-/* HERO */
-loadHero: async function(){
-const r=await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${KEY}`);
-const d=await r.json();
-const slider=document.getElementById("hero-slider");
-if(!slider) return;
-slider.innerHTML="";
-d.results.slice(0,5).forEach((item,i)=>{
-let title=item.title||item.name;
-slider.innerHTML+=`
-<div class="slide ${i==0?"active":""}" onclick="FENG.openInfo('${item.media_type}','${item.id}')" style="background-image:url(https://image.tmdb.org/t/p/original${item.backdrop_path})">
-<div class="slide-content"><span class="badge">TRENDING</span><h2>${title}</h2></div></div>`;
-});
-setInterval(()=>this.nextSlide(),5000);
-},
-nextSlide:function(){
-let slides=document.querySelectorAll(".slide");
-if(slides.length<2) return;
-slides[currentSlide].classList.remove("active");
-currentSlide=(currentSlide+1)%slides.length;
-slides[currentSlide].classList.add("active");
-},
-
-/* LOAD CONTENT */
 loadShelf: async function(path,id){
-const r=await fetch(`https://api.themoviedb.org/3/${path}?api_key=${KEY}`);
+try{
+document.getElementById("loader").style.display="flex";
+const r=await fetch(`https://api.themoviedb.org/3/${path}&api_key=${KEY}`);
 const d=await r.json();
 const container=document.getElementById(id);
 container.innerHTML="";
@@ -297,27 +252,16 @@ container.innerHTML+=`
 <img src="https://image.tmdb.org/t/p/w500${item.poster_path}">
 <div class="item-meta"><b>${title}</b><span>${type}</span></div></div>`;
 });
+document.getElementById("loader").style.display="none";
+}catch(e){console.error(e);document.getElementById("loader").style.display="none";}
 },
 
-/* CONTINUE WATCHING */
-saveContinue:function(type,id,title,poster){
-continueList.unshift({type,id,title,poster});
-continueList=continueList.slice(0,10);
-localStorage.setItem("fengContinue",JSON.stringify(continueList));
-this.loadContinue();
-},
-loadContinue:function(){
-const row=document.getElementById("row-continue");
-row.innerHTML="";
-continueList.forEach(c=>{
-row.innerHTML+=`
-<div class="item" onclick="FENG.play('${c.type}','${c.id}','${c.title}','${c.poster}')">
-<img src="https://image.tmdb.org/t/p/w500${c.poster}">
-<div class="item-meta"><b>${c.title}</b><span>Continue</span></div></div>`;
-});
+search: async function(query){
+if(query.length<2) return;
+this.loadShelf(`search/movie?query=${query}`,"row-movies");
+this.loadShelf(`search/tv?query=${query}`,"row-series");
 },
 
-/* INFO PANEL */
 openInfo: async function(type,id){
 this.hideDrawers();
 document.getElementById("pane-info").style.display="flex";
@@ -332,7 +276,6 @@ document.getElementById("info-grid").innerHTML=`
 ${type==='tv'?`<button class="download-btn" onclick="FENG.showEpisodes(${id})">EPISODES</button>`:''}`;
 },
 
-/* EPISODES */
 showEpisodes: async function(id){
 this.hideDrawers();
 document.getElementById("pane-episodes").style.display="flex";
@@ -362,38 +305,34 @@ onclick="FENG.play('tv','${id}/${season}/${ep.episode_number}','Episode ${ep.epi
 });
 },
 
-/* PLAYER */
-play:function(type,path,title,poster){
-this.saveContinue(type,path,title,poster);
+play:function(type,path,title){
 this.hideDrawers();
 document.getElementById("now-playing").innerText=title;
-document.getElementById("video-frame").src=`https://vidsrc.to/embed/${type}/${path}`;
 document.getElementById("pane-player").style.display="flex";
+document.getElementById("video-frame").src=`https://vidsrc.to/embed/${type}/${path}`;
 },
 
-/* UI */
 view:function(pane,tab){
 this.hideDrawers();
-if(tab){
-document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-tab.classList.add("active");
-}
+if(tab){document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));tab.classList.add("active");}
 if(pane!=="home") document.getElementById("pane-"+pane).style.display="flex";
 },
+
 loadType:function(type,tab){
 this.view("home",tab);
 this.loadShelf(`discover/${type}`,(type==="movie"?"row-movies":"row-series"));
 },
+
 hideDrawers:function(){
 document.querySelectorAll(".drawer").forEach(d=>d.style.display="none");
 },
+
 stopPlayer:function(){
 this.hideDrawers();
 document.getElementById("video-frame").src="";
 }
 };
 
-// SPLASH HIDE
 window.addEventListener("load",()=>setTimeout(()=>document.getElementById("splash").style.display="none",3000));
 </script>
 
