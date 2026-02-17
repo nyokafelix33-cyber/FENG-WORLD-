@@ -2,207 +2,65 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>FENG WORLD Vision 3.0</title>
+<title>FENG WORLD Cinema</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="manifest" href="manifest.json">
-
 <style>
-body{margin:0;background:#000;color:#fff;font-family:Arial}
-header{background:#111;padding:10px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:10}
-input,select,button{padding:8px;border-radius:6px;border:none}
-button{background:red;color:white;font-weight:bold}
-#hero{height:260px;background-size:cover;background-position:center;padding:20px}
-#hero h1{margin-top:160px;font-size:28px;text-shadow:2px 2px 10px black}
-.tabs{display:flex;gap:10px;padding:10px}
-.tab{background:#222;padding:8px 16px;border-radius:6px;cursor:pointer}
-.tab.active{background:red}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;padding:10px}
-.card img{width:100%;border-radius:10px}
-.card{cursor:pointer}
-#info{position:fixed;bottom:-100%;left:0;width:100%;height:70%;background:#111;padding:15px;transition:.3s;overflow:auto;z-index:99}
-#infoBackdrop{height:160px;background-size:cover;background-position:center;border-radius:10px}
-video{width:100%;background:black;border-radius:10px}
-#settings{position:fixed;right:-100%;top:0;width:260px;height:100%;background:#111;padding:15px;transition:.3s;z-index:99}
+body{background:#000;color:white;font-family:Arial;margin:0}
+header{background:#111;padding:10px;position:sticky;top:0}
+h2{margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:10px}
+.card{background:#111;padding:5px;border-radius:8px;cursor:pointer}
+.card img{width:100%;border-radius:6px}
+.playerBox{position:fixed;bottom:-100%;left:0;width:100%;height:60%;background:#000;padding:10px;transition:.3s}
+video{width:100%;height:100%}
 </style>
 </head>
 
 <body>
 
 <header>
-<h2>🎬 FENG WORLD</h2>
-<input id="search" placeholder="Search...">
-<select id="genreFilter"></select>
-<button onclick="openSettings()">⚙</button>
+<h2>🎬 FENG WORLD Cinema</h2>
 </header>
-
-<div id="hero"><h1 id="heroTitle">Loading...</h1></div>
-
-<div class="tabs">
-<div class="tab active" onclick="loadMovies()">Movies</div>
-<div class="tab" onclick="loadSeries()">Series</div>
-<div class="tab" onclick="showHistory()">History</div>
-</div>
 
 <div id="grid" class="grid"></div>
 
-<!-- INFO PANEL -->
-<div id="info">
-<div id="infoBackdrop"></div>
-<h2 id="infoTitle"></h2>
-<p id="infoMeta"></p>
-<p id="infoGenres"></p>
-<p id="infoOverview"></p>
-
-<div id="episodeBox"></div>
-
-<h3>▶ FENG Player</h3>
-<video id="fengPlayer" controls></video>
-<button onclick="closeInfo()">Close</button>
-</div>
-
-<!-- SETTINGS -->
-<div id="settings">
-<h3>⚙ FENG WORLD Vision 3.0</h3>
-<p>Profiles, Watch History, Offline Mode, Cloudflare CDN ready.</p>
-
-<button onclick="createProfile()">Create Profile</button>
-<p id="profileName"></p>
-
-<button onclick="closeSettings()">Close</button>
+<div id="playerBox" class="playerBox">
+<button onclick="playerBox.style.bottom='-100%'" style="background:red;color:white;padding:8px">Close</button>
+<video id="player" controls></video>
 </div>
 
 <script>
-// TMDB KEY
-const API_KEY="ea593c3fa4d4942ece315977cd7e32c9";
-const IMG="https://image.tmdb.org/t/p/w500";
-const BACKDROP="https://image.tmdb.org/t/p/original";
+// Public Domain Movie Library
+const movies=[
+{title:"Night of the Living Dead", poster:"https://archive.org/download/night_of_the_living_dead/night_of_the_living_dead.jpg",
+video:"https://archive.org/download/night_of_the_living_dead/night_of_the_living_dead.mp4"},
+
+{title:"Plan 9 from Outer Space", poster:"https://archive.org/download/Plan9FromOuterSpace1959/Plan9FromOuterSpace1959.jpg",
+video:"https://archive.org/download/Plan9FromOuterSpace1959/Plan9FromOuterSpace1959.mp4"},
+
+{title:"The Little Shop of Horrors", poster:"https://archive.org/download/TheLittleShopOfHorrors1960/TheLittleShopOfHorrors1960.jpg",
+video:"https://archive.org/download/TheLittleShopOfHorrors1960/TheLittleShopOfHorrors1960.mp4"},
+
+{title:"His Girl Friday", poster:"https://archive.org/download/HisGirlFriday/HisGirlFriday.jpg",
+video:"https://archive.org/download/HisGirlFriday/HisGirlFriday.mp4"}
+];
 
 const grid=document.getElementById("grid");
+const player=document.getElementById("player");
+const playerBox=document.getElementById("playerBox");
 
-// ================= HERO =================
-fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`)
-.then(r=>r.json()).then(d=>{
-let m=d.results[0];
-document.getElementById("hero").style.backgroundImage=`url(${BACKDROP+m.backdrop_path})`;
-document.getElementById("heroTitle").innerText=m.title;
-});
-
-// ================= GENRES =================
-fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`)
-.then(r=>r.json()).then(d=>{
-genreFilter.innerHTML="<option value=''>All Genres</option>";
-d.genres.forEach(g=>{
-genreFilter.innerHTML+=`<option value="${g.id}">${g.name}</option>`;
-});
-});
-
-// ================= LOAD MOVIES =================
-function loadMovies(){
-fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`)
-.then(r=>r.json()).then(showGrid);
-}
-
-// ================= LOAD SERIES =================
-function loadSeries(){
-fetch(`https://api.themoviedb.org/3/trending/tv/day?api_key=${API_KEY}`)
-.then(r=>r.json()).then(showGrid);
-}
-
-// ================= SHOW GRID =================
-function showGrid(d){
-grid.innerHTML="";
-d.results.forEach(m=>{
+// Load movies automatically
+movies.forEach(m=>{
 let div=document.createElement("div");
 div.className="card";
-div.onclick=()=>showInfo(m);
-div.innerHTML=`<img src="${IMG+m.poster_path}"><p>${m.title||m.name}</p>`;
+div.innerHTML=`<img src="${m.poster}"><p>${m.title}</p>`;
+div.onclick=()=>{
+player.src=m.video;
+playerBox.style.bottom="0";
+player.play();
+};
 grid.appendChild(div);
 });
-}
-
-// ================= SEARCH =================
-search.oninput=function(){
-let q=this.value;
-if(q.length<2)return;
-fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${q}`)
-.then(r=>r.json()).then(showGrid);
-};
-
-// ================= INFO PANEL =================
-function openInfo(){info.style.bottom="0";}
-function closeInfo(){info.style.bottom="-100%";}
-
-function showInfo(m){
-openInfo();
-infoTitle.innerText=m.title||m.name;
-infoMeta.innerText=`⭐ ${m.vote_average} | ${m.release_date||m.first_air_date}`;
-infoOverview.innerText=m.overview;
-infoBackdrop.style.backgroundImage=`url(${BACKDROP+m.backdrop_path})`;
-
-saveHistory(m.title||m.name);
-
-fetch(`https://api.themoviedb.org/3/${m.media_type|| (m.first_air_date?"tv":"movie")}/${m.id}?api_key=${API_KEY}`)
-.then(r=>r.json()).then(d=>{
-infoGenres.innerText="Genres: "+d.genres.map(g=>g.name).join(", ");
-if(d.seasons) loadEpisodes(m.id);
-});
-
-// 🔥 REAL PLAYER STREAM (REPLACE WITH YOUR CDN)
-fengPlayer.src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
-fengPlayer.play();
-}
-
-// ================= EPISODES =================
-function loadEpisodes(tvId){
-episodeBox.innerHTML="<h3>Episodes</h3>";
-fetch(`https://api.themoviedb.org/3/tv/${tvId}?api_key=${API_KEY}`)
-.then(r=>r.json()).then(d=>{
-d.seasons.forEach(s=>{
-if(s.season_number>0){
-episodeBox.innerHTML+=`<b>Season ${s.season_number}</b><br>`;
-for(let e=1;e<=s.episode_count;e++){
-episodeBox.innerHTML+=`<button onclick="playEpisode(${s.season_number},${e})">E${e}</button>`;
-}
-}
-});
-});
-}
-
-function playEpisode(s,e){
-alert("Episode "+s+"x"+e+" (connect your real CDN stream here)");
-}
-
-// ================= WATCH HISTORY =================
-function saveHistory(title){
-let h=JSON.parse(localStorage.getItem("history")||"[]");
-h.unshift({title,date:new Date().toLocaleString()});
-localStorage.setItem("history",JSON.stringify(h.slice(0,20)));
-}
-
-function showHistory(){
-let h=JSON.parse(localStorage.getItem("history")||"[]");
-grid.innerHTML="";
-h.forEach(x=>{
-grid.innerHTML+=`<div class="card"><p>${x.title}<br><small>${x.date}</small></p></div>`;
-});
-}
-
-// ================= PROFILES =================
-function createProfile(){
-let name=prompt("Profile name:");
-if(name){
-localStorage.setItem("profile",name);
-profileName.innerText="Active Profile: "+name;
-}
-}
-
-// ================= SETTINGS =================
-function openSettings(){settings.style.right="0";}
-function closeSettings(){settings.style.right="-100%";}
-
-// INIT
-loadMovies();
 </script>
 
 </body>
