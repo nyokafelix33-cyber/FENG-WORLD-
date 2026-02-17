@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>FENG WORLD Vision 8.0</title>
+<title>FENG WORLD Vision 9.0</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
@@ -14,6 +14,7 @@
 --text:#ffffff;
 --accent:#25d366;
 --radius:12px;
+--drawer-speed:0.35s;
 }
 
 body{
@@ -25,7 +26,7 @@ color:var(--text);
 overflow-x:hidden;
 }
 
-/* LOGO */
+/* FENG LOGO */
 .feng-logo-box{
 width:100%;
 text-align:center;
@@ -149,6 +150,7 @@ display:flex;
 overflow-x:auto;
 gap:12px;
 padding:0 5% 20px;
+scrollbar-width:none;
 }
 .row::-webkit-scrollbar{display:none;}
 .item{
@@ -157,7 +159,9 @@ background:var(--card);
 border-radius:var(--radius);
 overflow:hidden;
 cursor:pointer;
+transition:transform 0.2s;
 }
+.item:hover{transform:scale(1.05);}
 .item img{
 width:100%;
 aspect-ratio:2/3;
@@ -188,6 +192,7 @@ z-index:5000;
 display:none;
 flex-direction:column;
 overflow-y:auto;
+transition:transform var(--drawer-speed) ease-in-out;
 }
 .drawer-head{
 padding:20px 5%;
@@ -203,9 +208,11 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 cursor:pointer;
+transition:0.2s;
 }
+.set-item:hover{background:rgba(211,242,67,0.1);}
 
-/* INFO PAGE */
+/* INFO DRAWER */
 #info-backdrop{
 width:100%;
 height:200px;
@@ -231,7 +238,42 @@ border:none;
 border-radius:8px;
 font-weight:900;
 cursor:pointer;
+margin-top:5px;
 }
+
+/* SEASONS & EPISODES */
+#season-pills{
+display:flex;
+gap:10px;
+overflow-x:auto;
+padding:10px 5%;
+margin-bottom:10px;
+}
+.season-pill{
+padding:5px 12px;
+border-radius:20px;
+background:#222;
+color:#fff;
+cursor:pointer;
+white-space:nowrap;
+}
+.season-pill.active{background:var(--primary);color:#000;}
+#ep-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px;
+padding:15px;
+}
+.episode-item{
+background:#252830;
+padding:10px;
+text-align:center;
+border-radius:10px;
+font-weight:900;
+cursor:pointer;
+transition:0.2s;
+}
+.episode-item:hover{background:var(--primary);color:#000;}
 
 /* PLAYER */
 #video-frame{
@@ -257,6 +299,7 @@ flex:1;
 text-align:center;
 color:#555;
 cursor:pointer;
+transition:0.2s;
 }
 .tab.active{color:var(--primary);}
 .tab i{
@@ -267,11 +310,13 @@ display:block;
 font-size:10px;
 font-weight:800;
 }
+.tab:hover{color:var(--primary);}
 </style>
 </head>
 
 <body onload="FENG.boot()">
 
+<!-- HEADER -->
 <header>
 
 <!-- LOGO TOP -->
@@ -290,7 +335,6 @@ font-weight:800;
 </div>
 
 <div id="genre-filters"></div>
-
 </header>
 
 <main id="pane-home">
@@ -303,33 +347,28 @@ font-weight:800;
 <div class="row" id="row-series"></div>
 </main>
 
-<!-- SETTINGS -->
+<!-- SETTINGS DRAWER -->
 <div class="drawer" id="pane-settings">
 <div class="drawer-head">
 <h2>Settings</h2>
 <i class="fas fa-times fa-2x" onclick="FENG.view('home')"></i>
 </div>
-
 <div class="set-item" onclick="location.reload()">
 <div><b>Sync Database</b><br><small>Refresh Content</small></div>
 <i class="fas fa-sync-alt"></i>
 </div>
-
 <div class="set-item">
-<div><b>Web App Vision</b><br><small>FENG WORLD Vision 8.0</small></div>
+<div><b>Web App Vision</b><br><small>FENG WORLD Vision 9.0</small></div>
 <i class="fas fa-code-branch"></i>
 </div>
-
 <div class="set-item">
 <div><b>Player Engine</b><br><small>Cloud Embed Streaming</small></div>
 <i class="fas fa-play-circle"></i>
 </div>
-
 <div class="set-item">
 <div><b>Developer</b><br><small>Felix Nyoka • FENG Labs</small></div>
 <i class="fas fa-user-secret"></i>
 </div>
-
 <div class="set-item" onclick="window.location.href='https://wa.me/260770605003'">
 <div><b>Support</b><br><small>WhatsApp Developer</small></div>
 <i class="fab fa-whatsapp"></i>
@@ -344,9 +383,12 @@ font-weight:800;
 </div>
 <div id="info-backdrop"></div>
 <div id="info-grid"></div>
+<!-- SEASONS -->
+<div id="season-pills"></div>
+<div id="ep-grid"></div>
 </div>
 
-<!-- PLAYER -->
+<!-- PLAYER DRAWER -->
 <div class="drawer" id="pane-player">
 <div class="drawer-head">
 <span id="now-playing">Loading...</span>
@@ -362,7 +404,6 @@ font-weight:800;
 <div class="tab" onclick="FENG.loadType('tv',this)"><i class="fas fa-tv"></i><span>Series</span></div>
 <div class="tab" onclick="FENG.view('settings',this)"><i class="fas fa-user-cog"></i><span>Settings</span></div>
 </footer>
-
 <script>
 const KEY="ea593c3fa4d4942ece315977cd7e32c9";
 let currentSlide=0;
@@ -439,10 +480,13 @@ container.innerHTML+=`
 });
 },
 
-/* INFO PAGE */
+/* INFO PAGE & SEASONS */
 openInfo: async function(type,id){
 this.hideDrawers();
 document.getElementById("pane-info").style.display="flex";
+document.getElementById("season-pills").innerHTML="";
+document.getElementById("ep-grid").innerHTML="";
+
 const r=await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${KEY}`);
 const d=await r.json();
 document.getElementById("info-title").innerText=d.title||d.name;
@@ -453,9 +497,40 @@ document.getElementById("info-grid").innerHTML=`
 <div class="info-sub">⭐ ${d.vote_average}</div>
 <div class="info-genres">Genres: ${genres}</div>
 <div class="info-overview">${d.overview}</div>
-<button class="download-btn" onclick="FENG.play('${type}','${d.id}','${d.title||d.name}')">WATCH</button>
-<button class="download-btn" onclick="alert('Download coming soon')">DOWNLOAD</button>
 `;
+
+if(type==="tv"){
+// Load seasons
+d.seasons.forEach((s,i)=>{
+let pill=document.createElement("div");
+pill.className="season-pill";
+pill.innerText=s.name;
+if(i===0)pill.classList.add("active");
+pill.onclick=()=>this.loadEpisodes(id,s.season_number);
+document.getElementById("season-pills").appendChild(pill);
+});
+// Auto-load first season
+if(d.seasons.length>0)this.loadEpisodes(id,d.seasons[0].season_number);
+}else{
+// For movies, single play button
+document.getElementById("ep-grid").innerHTML=`<button class="download-btn" onclick="FENG.play('${type}','${id}','${d.title||d.name}')">WATCH MOVIE</button>`;
+}
+},
+
+loadEpisodes: async function(tvId,seasonNum){
+document.getElementById("ep-grid").innerHTML="Loading episodes...";
+const r=await fetch(`https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNum}?api_key=${KEY}`);
+const d=await r.json();
+document.getElementById("ep-grid").innerHTML="";
+d.episodes.forEach(ep=>{
+let epDiv=document.createElement("div");
+epDiv.className="episode-item";
+epDiv.innerText=`${ep.episode_number}. ${ep.name}`;
+epDiv.onclick=()=>FENG.play('tv',ep.id,ep.name);
+document.getElementById("ep-grid").appendChild(epDiv);
+});
+document.querySelectorAll(".season-pill").forEach(p=>p.classList.remove("active"));
+document.querySelector(`.season-pill:nth-child(${seasonNum})`)?.classList.add("active");
 },
 
 /* SEARCH */
@@ -484,7 +559,7 @@ document.getElementById("video-frame").src=`https://vidsrc.to/embed/${type}/${pa
 document.getElementById("pane-player").style.display="flex";
 },
 
-/* UI */
+/* UI CONTROLS */
 view:function(pane,tab){
 this.hideDrawers();
 if(tab){
@@ -508,6 +583,143 @@ this.hideDrawers();
 document.getElementById("video-frame").src="";
 }
 };
+</script>
+<style>
+/* EPISODES GRID */
+#ep-grid{
+display:flex;
+flex-direction:column;
+gap:10px;
+padding:15px;
+}
+.episode-item{
+padding:12px 15px;
+background:#252830;
+border-radius:10px;
+cursor:pointer;
+font-weight:700;
+transition:0.3s;
+}
+.episode-item:hover{
+background:var(--primary);
+color:#000;
+}
+
+/* SEASON PILLS */
+.season-pill{
+padding:6px 14px;
+background:#222;
+border-radius:20px;
+cursor:pointer;
+color:#fff;
+font-size:12px;
+transition:0.3s;
+}
+.season-pill.active{
+background:var(--primary);
+color:#000;
+}
+
+/* SWIPE MOBILE UI */
+.row{
+scroll-snap-type: x mandatory;
+overflow-x:auto;
+display:flex;
+gap:12px;
+padding:0 5% 20px;
+scroll-behavior:smooth;
+}
+.item{
+scroll-snap-align:start;
+}
+
+/* INFO GRID SCROLL */
+#info-grid{
+overflow-y:auto;
+max-height:60vh;
+}
+
+/* PLAYER */
+#pane-player{
+display:flex;
+flex-direction:column;
+justify-content:flex-start;
+padding-top:10px;
+}
+#video-frame{
+border-radius:12px;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+/* BACK BUTTON */
+.back-btn{
+padding:8px 15px;
+border:none;
+background:#333;
+color:#fff;
+border-radius:8px;
+cursor:pointer;
+margin-bottom:10px;
+}
+.back-btn:hover{
+background:var(--primary);
+color:#000;
+}
+</style>
+
+<script>
+/* ENHANCED PLAYER & BACK BUTTON */
+FENG.openPlayerWithBack=function(type,path,title,backDrawer){
+this.hideDrawers();
+document.getElementById("now-playing").innerText=title;
+document.getElementById("pane-player").innerHTML=`
+<div class="drawer-head">
+<span id="now-playing">${title}</span>
+<button class="back-btn" onclick="FENG.view('${backDrawer||'info'}')">BACK</button>
+<button onclick="FENG.stopPlayer()" style="background:red;color:#fff;border:none;padding:8px 15px;border-radius:8px;">EXIT</button>
+</div>
+<iframe id="video-frame" src="https://vidsrc.to/embed/${type}/${path}" allowfullscreen></iframe>`;
+document.getElementById("pane-player").style.display="flex";
+};
+
+/* REPLACE DEFAULT PLAY TO USE BACK BUTTON */
+FENG.play=function(type,path,title){
+FENG.openPlayerWithBack(type,path,title,'info');
+};
+
+/* SWIPE DETECTION FOR HERO SLIDER ON MOBILE */
+let startX=null;
+const slider=document.getElementById("hero-slider");
+slider.addEventListener('touchstart',e=>{
+startX=e.touches[0].clientX;
+});
+slider.addEventListener('touchend',e=>{
+let endX=e.changedTouches[0].clientX;
+if(startX-endX>50)FENG.nextSlide(); // swipe left
+if(endX-startX>50)FENG.prevSlide(); // swipe right
+});
+FENG.prevSlide=function(){
+let slides=document.querySelectorAll(".slide");
+slides[currentSlide].classList.remove("active");
+currentSlide=(currentSlide-1+slides.length)%slides.length;
+slides[currentSlide].classList.add("active");
+};
+
+/* SCROLL SNAP POLISH FOR MOBILE ROWS */
+document.querySelectorAll('.row').forEach(row=>{
+row.addEventListener('scroll',()=>{
+row.scrollLeft=Math.round(row.scrollLeft/137)*137;
+});
+});
+
+/* OPTIONAL: Make footer responsive for mobile swipe */
+document.querySelectorAll('.tab').forEach(tab=>{
+tab.addEventListener('touchstart',()=>{tab.classList.add('active');});
+tab.addEventListener('touchend',()=>{tab.classList.remove('active');});
+});
+</script>
+<script>
+  // ...all your FENG functions (boot, loadHero, loadShelf, openInfo, play, etc.)
 </script>
 
 </body>
