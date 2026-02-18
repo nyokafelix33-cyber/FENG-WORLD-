@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FENG WORLD Vision 16 PRO</title>
+<title>FENG WORLD Vision 12.7</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
@@ -12,7 +12,6 @@
 --bg:#0b0e14;
 --card:#1c1f26;
 --text:#ffffff;
---accent:#25d366;
 --radius:12px;
 }
 
@@ -101,22 +100,13 @@ footer{position:fixed;bottom:0;width:100%;background:#000;display:flex;padding:1
 #info-grid{padding:15px}
 .download-btn{width:100%;padding:10px;margin-top:10px;background:var(--primary);border:none;border-radius:8px;color:#000;font-weight:900;cursor:pointer}
 
-/* CATEGORIES PAGE */
-#pane-categories{display:none;padding:10px 5%}
-.category-item{background:var(--card);padding:15px;border-radius:12px;margin-bottom:10px;cursor:pointer;transition:0.3s}
-.category-item:hover{transform:scale(1.02)}
-
-/* SETTINGS */
-#pane-settings div{padding:20px;}
-#pane-settings b{color:var(--primary);}
-
 </style>
 </head>
 
 <body onload="FENG.boot()">
 
 <!-- SPLASH -->
-<div id="splash">Welcome to <span>FENG WORLD</span><br><small>Vision 16 PRO</small></div>
+<div id="splash">Welcome to <span>FENG WORLD</span><br><small>Vision 12.7</small></div>
 
 <!-- LOADER -->
 <div id="loader">⏳ Loading content...</div>
@@ -169,11 +159,11 @@ footer{position:fixed;bottom:0;width:100%;background:#000;display:flex;padding:1
 <h2>Settings</h2>
 <i class="fas fa-times fa-2x" onclick="FENG.hideDrawers()"></i>
 </div>
-<div>
-<p>Web App Vision: <b>16 PRO</b></p>
+<div style="padding:20px;">
+<p>Web App Vision: <b>12.7</b></p>
 <p>Player Engine: Cloud Embed</p>
 <p>Developer: Felix Nyoka</p>
-<p>Support: <b>felixnyoka19@gmail.com</b></p>
+<p>Support: fengsupport@example.com</p>
 <p>About Us: FENG WORLD is your ultimate movie & series platform</p>
 </div>
 </div>
@@ -207,22 +197,12 @@ footer{position:fixed;bottom:0;width:100%;background:#000;display:flex;padding:1
 <iframe id="video-frame" allowfullscreen></iframe>
 </div>
 
-<!-- CATEGORIES -->
-<div class="drawer" id="pane-categories">
-<div class="drawer-head">
-<h2>Categories</h2>
-<i class="fas fa-times fa-2x" onclick="FENG.hideDrawers()"></i>
-</div>
-<div id="categories-list"></div>
-</div>
-
 <!-- FOOTER -->
 <footer>
 <div class="tab active" onclick="FENG.view('home',this)"><i class="fas fa-home"></i><span>Home</span></div>
 <div class="tab" onclick="FENG.loadType('movie',this)"><i class="fas fa-film"></i><span>Movies</span></div>
 <div class="tab" onclick="FENG.loadType('tv',this)"><i class="fas fa-tv"></i><span>Series</span></div>
 <div class="tab" onclick="FENG.view('settings',this)"><i class="fas fa-cog"></i><span>Settings</span></div>
-<div class="tab" onclick="FENG.view('categories',this)"><i class="fas fa-list"></i><span>Categories</span></div>
 </footer>
 
 <script>
@@ -235,7 +215,6 @@ this.showLogin();
 await this.loadGenres();
 await this.loadShelf("movie/popular","row-movies");
 await this.loadShelf("tv/top_rated","row-series");
-this.loadCategories();
 },
 
 showLogin:function(){
@@ -344,37 +323,6 @@ document.getElementById("video-frame").src=`https://vidsrc.to/embed/${type}/${pa
 document.getElementById("pane-player").style.display="flex";
 },
 
-loadCategories:function(){
-const categories=["Action","Comedy","Drama","Horror","Romance","Thriller","Animation"];
-const list=document.getElementById("categories-list");
-list.innerHTML="";
-categories.forEach(c=>{
-let div=document.createElement("div");
-div.className="category-item";
-div.innerText=c;
-div.onclick=()=>this.filterCategory(c);
-list.appendChild(div);
-});
-},
-
-filterCategory:function(name){
-const genreMap={"Action":28,"Comedy":35,"Drama":18,"Horror":27,"Romance":10749,"Thriller":53,"Animation":16};
-let id=genreMap[name];
-if(id)this.filterGenre(id);
-this.view("home");
-},
-
-search:function(query){
-query=query.toLowerCase();
-if(!query){
-this.loadShelf("movie/popular","row-movies");
-this.loadShelf("tv/top_rated","row-series");
-return;
-}
-this.loadShelf(`search/movie?query=${encodeURIComponent(query)}`,"row-movies");
-this.loadShelf(`search/tv?query=${encodeURIComponent(query)}`,"row-series");
-},
-
 view:function(pane,tab){
 this.hideDrawers();
 if(tab){
@@ -396,6 +344,17 @@ document.querySelectorAll(".drawer").forEach(d=>d.style.display="none");
 stopPlayer:function(){
 this.hideDrawers();
 document.getElementById("video-frame").src="";
+},
+
+search:function(query){
+query=query.toLowerCase();
+if(!query){
+this.loadShelf("movie/popular","row-movies");
+this.loadShelf("tv/top_rated","row-series");
+return;
+}
+this.loadShelf(`search/movie?query=${encodeURIComponent(query)}`,"row-movies");
+this.loadShelf(`search/tv?query=${encodeURIComponent(query)}`,"row-series");
 }
 
 };
