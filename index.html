@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FENG WORLD PLATINUM</title>
+    <title>FENG WORLD Vision 17 PRO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -11,220 +11,342 @@
             --bg: #0b0e14;
             --card: #1c1f26;
             --text: #ffffff;
-            --radius: 14px;
+            --accent: #25d366;
+            --radius: 12px;
         }
 
-        body { 
-            background: var(--bg); color: var(--text); 
-            font-family: 'Inter', sans-serif; margin: 0; padding: 0;
-            overflow-x: hidden;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* SPLASH SCREEN */
+        #splash {
+            position: fixed; inset: 0; background: black; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            font-size: 28px; font-weight: 900; animation: fadeOut 0.5s forwards 3s;
         }
+        #splash span { color: var(--primary); text-shadow: 0 0 20px var(--primary); }
+
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+        /* LOADER */
+        #loader {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9000;
+            display: none; justify-content: center; align-items: center; color: var(--primary);
+        }
+
+        /* LOGIN BOX */
+        #login-box {
+            position: fixed; inset: 0; background: var(--bg); z-index: 8000;
+            display: none; justify-content: center; align-items: center; padding: 20px;
+        }
+        .login-card { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; }
+        .login-card input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 10px; border: none; background: #000; color: #fff; }
+        .login-card button { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 10px; font-weight: 900; }
 
         /* HEADER */
-        header {
-            padding: 20px 5%; background: var(--bg);
-            position: sticky; top: 0; z-index: 2000;
-        }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .logo { font-weight: 900; font-size: 24px; letter-spacing: -1px; }
+        header { padding: 15px 5%; background: var(--bg); position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--primary); }
+        .logo { font-size: 24px; font-weight: 900; margin-bottom: 10px; }
         .logo span { color: var(--primary); }
+        .search-box { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.07); padding: 12px; border-radius: 12px; }
+        .search-box input { flex: 1; background: none; border: none; color: white; outline: none; }
 
-        /* SEARCH BAR FIX */
-        .search-container {
-            background: rgba(255,255,255,0.08); border-radius: 12px;
-            padding: 12px 15px; display: flex; align-items: center; gap: 10px;
-        }
-        .search-container input { 
-            background: transparent; border: none; color: #fff; 
-            width: 100%; outline: none; font-size: 16px;
-        }
+        #genre-filters { display: flex; overflow-x: auto; gap: 10px; padding: 15px 0 5px; scrollbar-width: none; }
+        .genre-pill { padding: 8px 16px; background: #222; border-radius: 20px; font-size: 12px; white-space: nowrap; cursor: pointer; }
+        .genre-pill.active { background: var(--primary); color: #000; font-weight: bold; }
 
-        /* ONSTREAM SLIDESHOW */
-        .slider {
-            width: 100%; height: 40vh; position: relative; overflow: hidden;
-            background: #000;
-        }
-        .slide {
-            position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease;
-            background-size: cover; background-position: center;
-            display: flex; align-items: flex-end; padding: 0 5% 40px;
-        }
+        /* HERO SLIDER */
+        #hero-slider { width: 100%; height: 45vh; position: relative; overflow: hidden; background: #000; }
+        .slide { position: absolute; inset: 0; opacity: 0; transition: 0.8s; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 40px 5%; }
         .slide.active { opacity: 1; }
-        .slide::after { 
-            content: ''; position: absolute; inset: 0; 
-            background: linear-gradient(to top, var(--bg) 15%, transparent); 
-        }
-        .slide-info { position: relative; z-index: 5; }
+        .slide::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 10%, transparent); }
+        .slide-content { position: relative; z-index: 2; }
+        .badge { background: var(--primary); color: #000; padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 900; }
 
-        /* GRID & CARDS */
-        .shelf-title { padding: 25px 5% 10px; color: var(--primary); font-weight: 900; font-size: 14px; text-transform: uppercase; }
-        .grid { 
-            display: grid; grid-template-columns: repeat(3, 1fr); 
-            gap: 12px; padding: 0 5% 100px; 
-        }
-        .card { background: var(--card); border-radius: var(--radius); overflow: hidden; position: relative; }
-        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .card-meta { padding: 8px; }
-        .card-meta b { font-size: 11px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-meta span { font-size: 9px; color: #888; }
-        .rating { 
-            position: absolute; top: 5px; right: 5px; background: var(--primary); 
-            color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px;
-        }
+        /* ROWS */
+        .shelf-title { padding: 20px 5% 10px; color: var(--primary); font-weight: 900; font-size: 14px; text-transform: uppercase; }
+        .row { display: flex; overflow-x: auto; gap: 12px; padding: 0 5% 20px; scrollbar-width: none; }
+        .item { min-width: 130px; background: var(--card); border-radius: var(--radius); overflow: hidden; transition: 0.3s; }
+        .item:active { transform: scale(0.95); }
+        .item img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .item-meta { padding: 8px; font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* OVERLAYS (Settings / Player) */
-        .overlay {
-            position: fixed; inset: 0; background: var(--bg); z-index: 5000;
-            display: none; flex-direction: column;
-        }
-        .overlay-header { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
-        .menu-item { padding: 20px 5%; border-bottom: 1px solid #1a1a1a; display: flex; justify-content: space-between; }
+        /* DRAWERS */
+        .drawer { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; overflow-y: auto; }
+        .drawer-head { padding: 20px 5%; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); z-index: 10; }
+        .btn-action { background: var(--primary); color: #000; padding: 15px; border-radius: 12px; border: none; font-weight: 900; width: 100%; margin: 10px 0; }
 
-        /* NAV */
-        footer {
-            position: fixed; bottom: 0; width: 100%; background: rgba(11, 14, 20, 0.95);
-            backdrop-filter: blur(10px); display: flex; padding: 15px 0 30px; border-top: 1px solid #222; z-index: 3000;
-        }
-        .nav-btn { flex: 1; text-align: center; color: #555; cursor: pointer; }
-        .nav-btn.active { color: var(--primary); }
-        .nav-btn i { font-size: 22px; display: block; margin-bottom: 4px; }
-        .nav-btn span { font-size: 10px; font-weight: bold; }
+        /* FOOTER */
+        footer { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; padding: 10px 0 30px; border-top: 1px solid #222; z-index: 4000; }
+        .tab { flex: 1; text-align: center; color: #555; font-size: 10px; cursor: pointer; }
+        .tab.active { color: var(--primary); }
+        .tab i { font-size: 20px; display: block; margin-bottom: 4px; }
+
+        /* SEASON & EPS */
+        #season-pills { display: flex; gap: 10px; padding: 15px; overflow-x: auto; }
+        .season-pill { padding: 10px 20px; background: #222; border-radius: 10px; white-space: nowrap; }
+        .season-pill.active { background: var(--primary); color: #000; }
+        #ep-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; }
+        .ep-item { background: #222; padding: 15px; border-radius: 10px; text-align: center; font-weight: 900; }
     </style>
 </head>
-<body onload="APP.init()">
+<body onload="FENG.boot()">
 
-    <header>
-        <div class="header-top">
-            <div class="logo">FE<span>NG</span> WORLD</div>
-            <i class="fas fa-bars fa-lg" onclick="APP.show('settings')"></i>
-        </div>
-        <div class="search-container">
-            <i class="fas fa-search"></i>
-            <input type="text" id="query" placeholder="Search movies or series..." oninput="APP.search(this.value)">
-        </div>
-    </header>
+<div id="splash">Welcome to <span>FENG WORLD</span><small>Vision 17 PRO</small></div>
+<div id="loader"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
 
-    <div id="home-view">
-        <div class="slider" id="hero-slider"></div>
-        <div class="shelf-title" id="grid-label">Trending Now</div>
-        <div class="grid" id="main-grid"></div>
+<div id="login-box">
+    <div class="login-card">
+        <h2>FENG FAN LOGIN</h2>
+        <input id="fanName" type="text" placeholder="Enter your fan name">
+        <button onclick="FENG.login()">START STREAMING</button>
     </div>
+</div>
 
-    <div class="overlay" id="view-settings">
-        <div class="overlay-header">
-            <h2>Menu & Settings</h2>
-            <i class="fas fa-times fa-2x" onclick="APP.hide()"></i>
-        </div>
-        <div class="menu-item" onclick="location.reload()">
-            <span>Refresh Content</span><i class="fas fa-sync"></i>
-        </div>
-        <div class="menu-item">
-            <span>Dark Mode</span><i class="fas fa-moon"></i>
-        </div>
-        <div class="menu-item" onclick="window.location.href='https://wa.me/260770605003'">
-            <span>Contact Developer</span><i class="fab fa-whatsapp"></i>
-        </div>
-        <div style="padding: 40px; text-align: center; opacity: 0.3; font-size: 12px;">Vision 68.1.1 Platinum Edition</div>
+<header>
+    <div class="logo">FE<span>NG</span> WORLD</div>
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search movies, series..." onkeyup="FENG.search(this.value)">
     </div>
+    <div id="genre-filters"></div>
+</header>
 
-    <div class="overlay" id="view-player">
-        <div class="overlay-header">
-            <span id="playing-title" style="font-weight:900;">Stream</span>
-            <button onclick="APP.closePlayer()" style="background:red; color:#fff; border:none; padding:8px 12px; border-radius:8px;">CLOSE</button>
-        </div>
-        <iframe id="player-frame" style="width:100%; height:80%; border:none; background:#000;" allowfullscreen></iframe>
+<main id="pane-home">
+    <div id="hero-slider"></div>
+    <div class="shelf-title" id="shelf1-title">Trending Movies</div>
+    <div class="row" id="row-movies"></div>
+    <div class="shelf-title" id="shelf2-title">Popular Series</div>
+    <div class="row" id="row-series"></div>
+</main>
+
+<div class="drawer" id="pane-categories">
+    <div class="drawer-head"><h2>Categories</h2><i class="fas fa-times fa-2x" onclick="FENG.hideDrawers()"></i></div>
+    <div id="categories-grid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:15px; padding:20px;"></div>
+</div>
+
+<div class="drawer" id="pane-info">
+    <div class="drawer-head"><h2 id="info-title"></h2><i class="fas fa-times fa-2x" onclick="FENG.hideDrawers()"></i></div>
+    <div id="info-backdrop" style="height:250px; background-size:cover; background-position:center;"></div>
+    <div style="padding:20px;">
+        <p id="info-desc" style="color:#bbb; line-height:1.5; margin-bottom:20px;"></p>
+        <div id="info-actions"></div>
     </div>
+</div>
 
-    <footer>
-        <div class="nav-btn active" onclick="APP.nav('all', this)"><i class="fas fa-home"></i><span>Home</span></div>
-        <div class="nav-btn" onclick="APP.nav('movie', this)"><i class="fas fa-film"></i><span>Movies</span></div>
-        <div class="nav-btn" onclick="APP.nav('tv', this)"><i class="fas fa-tv"></i><span>Series</span></div>
-        <div class="nav-btn" onclick="APP.show('settings')"><i class="fas fa-user"></i><span>Me</span></div>
-    </footer>
+<div class="drawer" id="pane-episodes">
+    <div class="drawer-head"><h2>Select Episode</h2><i class="fas fa-times fa-2x" onclick="FENG.hideDrawers()"></i></div>
+    <div id="season-pills"></div>
+    <div id="ep-grid"></div>
+</div>
 
-    <script>
-        const API_KEY = 'ea593c3fa4d4942ece315977cd7e32c9';
-        let slideIdx = 0;
+<div class="drawer" id="pane-player">
+    <div class="drawer-head">
+        <span id="now-playing" style="font-weight:900; font-size:14px;"></span>
+        <button onclick="FENG.stopPlayer()" style="background:red; color:#fff; border:none; padding:8px 15px; border-radius:8px;">EXIT</button>
+    </div>
+    <iframe id="video-frame" allowfullscreen style="width:100%; height:80vh; border:none; background:#000;"></iframe>
+</div>
 
-        const APP = {
-            init: function() {
-                this.getSlides();
-                this.fetch('trending/all/week');
-            },
+<div class="drawer" id="pane-settings">
+    <div class="drawer-head"><h2>Settings</h2><i class="fas fa-times fa-2x" onclick="FENG.hideDrawers()"></i></div>
+    <div style="padding:20px;" id="settings-content"></div>
+</div>
 
-            getSlides: async function() {
-                const r = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`);
-                const d = await r.json();
-                const slider = document.getElementById('hero-slider');
-                d.results.slice(0, 5).forEach((m, i) => {
-                    slider.innerHTML += `
-                        <div class="slide ${i===0?'active':''}" style="background-image:url(https://image.tmdb.org/t/p/original${m.backdrop_path})">
-                            <div class="slide-info">
-                                <h1 style="margin:0">${m.title || m.name}</h1>
-                                <p style="color:var(--primary); font-size:12px; font-weight:bold;">NOW TRENDING</p>
-                            </div>
-                        </div>
-                    `;
-                });
-                setInterval(() => {
-                    const slides = document.querySelectorAll('.slide');
-                    slides[slideIdx].classList.remove('active');
-                    slideIdx = (slideIdx + 1) % slides.length;
-                    slides[slideIdx].classList.add('active');
-                }, 5000);
-            },
+<footer>
+    <div class="tab active" onclick="FENG.view('home',this)"><i class="fas fa-home"></i><span>Home</span></div>
+    <div class="tab" onclick="FENG.loadType('movie',this)"><i class="fas fa-film"></i><span>Movies</span></div>
+    <div class="tab" onclick="FENG.loadType('tv',this)"><i class="fas fa-tv"></i><span>Series</span></div>
+    <div class="tab" onclick="FENG.view('categories',this)"><i class="fas fa-th-large"></i><span>Categories</span></div>
+    <div class="tab" onclick="FENG.view('settings',this)"><i class="fas fa-cog"></i><span>Settings</span></div>
+</footer>
 
-            fetch: async function(path) {
-                const r = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${API_KEY}`);
-                const d = await r.json();
-                this.render(d.results);
-            },
+<script>
+const KEY = "ea593c3fa4d4942ece315977cd7e32c9";
+let currentSlide = 0;
+let user = localStorage.getItem("fengUser");
 
-            render: function(data) {
-                const grid = document.getElementById('main-grid');
-                grid.innerHTML = '';
-                data.forEach(item => {
-                    if(!item.poster_path) return;
-                    const title = item.title || item.name;
-                    const date = (item.release_date || item.first_air_date || 'N/A').split('-')[0];
-                    const type = item.media_type || (item.title ? 'movie' : 'tv');
-                    
-                    grid.innerHTML += `
-                        <div class="card" onclick="APP.play('${type}','${item.id}','${title.replace(/'/g,"")}')">
-                            <div class="rating">${item.vote_average.toFixed(1)}</div>
-                            <img src="https://image.tmdb.org/t/p/w500${item.poster_path}">
-                            <div class="card-meta">
-                                <b>${title}</b>
-                                <span>${date} • ${type.toUpperCase()}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-            },
+const FENG = {
+    boot: function() {
+        if(!user) document.getElementById('login-box').style.display = 'flex';
+        this.loadGenres();
+        this.loadHero();
+        this.loadShelf("movie/popular", "row-movies");
+        this.loadShelf("tv/top_rated", "row-series");
+        this.buildSettings();
+        this.loadCategoriesGrid();
+    },
 
-            search: async function(val) {
-                if(val.length < 3) return;
-                document.getElementById('grid-label').innerText = "Search Results";
-                this.fetch(`search/multi?query=${val}`);
-            },
+    login: function() {
+        let name = document.getElementById('fanName').value;
+        if(name.length < 2) return alert("Enter your name");
+        localStorage.setItem("fengUser", name);
+        location.reload();
+    },
 
-            nav: function(type, el) {
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                el.classList.add('active');
-                document.getElementById('grid-label').innerText = type === 'all' ? "Trending Now" : type.toUpperCase() + "S";
-                this.fetch(type === 'all' ? 'trending/all/week' : `discover/${type}`);
-            },
+    showLoader: function(show) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; },
 
-            play: function(type, id, title) {
-                document.getElementById('playing-title').innerText = title;
-                document.getElementById('player-frame').src = `https://vidsrc.to/embed/${type}/${id}`;
-                document.getElementById('view-player').style.display = 'flex';
-            },
+    safeFetch: async function(url) {
+        try {
+            this.showLoader(true);
+            const res = await fetch(url);
+            const data = await res.json();
+            this.showLoader(false);
+            return data;
+        } catch(e) { this.showLoader(false); return null; }
+    },
 
-            show: function(id) { document.getElementById('view-'+id).style.display = 'flex'; },
-            hide: function() { document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); },
-            closePlayer: function() { this.hide(); document.getElementById('player-frame').src = ''; }
-        };
-    </script>
+    loadGenres: async function() {
+        const d = await this.safeFetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${KEY}`);
+        const container = document.getElementById("genre-filters");
+        d.genres.forEach(g => {
+            const p = document.createElement("div");
+            p.className = "genre-pill"; p.innerText = g.name;
+            p.onclick = () => {
+                document.querySelectorAll('.genre-pill').forEach(x => x.classList.remove('active'));
+                p.classList.add('active');
+                this.loadShelf(`discover/movie?with_genres=${g.id}`, "row-movies");
+                this.loadShelf(`discover/tv?with_genres=${g.id}`, "row-series");
+            };
+            container.appendChild(p);
+        });
+    },
+
+    loadHero: async function() {
+        const d = await this.safeFetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${KEY}`);
+        const slider = document.getElementById("hero-slider");
+        d.results.slice(0, 5).forEach((m, i) => {
+            slider.innerHTML += `
+                <div class="slide ${i==0?'active':''}" style="background-image:url(https://image.tmdb.org/t/p/original${m.backdrop_path})">
+                    <div class="slide-content">
+                        <span class="badge">TRENDING</span>
+                        <h2 style="font-size:30px;">${m.title || m.name}</h2>
+                        <button class="btn-action" style="width:auto; padding:10px 30px;" onclick="FENG.openInfo('${m.media_type}','${m.id}')">VIEW INFO</button>
+                    </div>
+                </div>`;
+        });
+        setInterval(() => {
+            const slides = document.querySelectorAll('.slide');
+            if(!slides.length) return;
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 5000);
+    },
+
+    loadShelf: async function(path, elId) {
+        const d = await this.safeFetch(`https://api.themoviedb.org/3/${path}?api_key=${KEY}`);
+        const container = document.getElementById(elId);
+        container.innerHTML = "";
+        d.results.forEach(m => {
+            if(!m.poster_path) return;
+            const type = m.name ? 'tv' : 'movie';
+            container.innerHTML += `
+                <div class="item" onclick="FENG.openInfo('${type}','${m.id}')">
+                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}">
+                    <div class="item-meta"><b>${m.title || m.name}</b><span>${type.toUpperCase()}</span></div>
+                </div>`;
+        });
+    },
+
+    openInfo: async function(type, id) {
+        const d = await this.safeFetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${KEY}`);
+        this.hideDrawers();
+        document.getElementById('info-title').innerText = d.title || d.name;
+        document.getElementById('info-backdrop').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${d.backdrop_path})`;
+        document.getElementById('info-desc').innerText = d.overview;
+        document.getElementById('info-actions').innerHTML = `
+            <button class="btn-action" onclick="FENG.play('${type}','${id}','${d.title || d.name}')"><i class="fas fa-play"></i> WATCH NOW</button>
+            ${type==='tv' ? `<button class="btn-action" style="background:#333; color:#fff;" onclick="FENG.showEpisodes('${id}')">EPISODES</button>` : ''}
+        `;
+        document.getElementById('pane-info').style.display = 'flex';
+    },
+
+    showEpisodes: async function(id) {
+        const d = await this.safeFetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${KEY}`);
+        const pills = document.getElementById('season-pills');
+        pills.innerHTML = "";
+        d.seasons.forEach(s => {
+            if(s.season_number === 0) return;
+            const p = document.createElement('div');
+            p.className = 'season-pill'; p.innerText = s.name;
+            p.onclick = () => this.loadEpisodes(id, s.season_number, p);
+            pills.appendChild(p);
+        });
+        this.hideDrawers();
+        document.getElementById('pane-episodes').style.display = 'flex';
+        pills.firstChild.click();
+    },
+
+    loadEpisodes: async function(id, sNum, pEl) {
+        document.querySelectorAll('.season-pill').forEach(x => x.classList.remove('active'));
+        pEl.classList.add('active');
+        const d = await this.safeFetch(`https://api.themoviedb.org/3/tv/${id}/season/${sNum}?api_key=${KEY}`);
+        const grid = document.getElementById('ep-grid');
+        grid.innerHTML = "";
+        d.episodes.forEach(e => {
+            grid.innerHTML += `<div class="ep-item" onclick="FENG.play('tv','${id}/${sNum}/${e.episode_number}','Episode ${e.episode_number}')">E${e.episode_number}</div>`;
+        });
+    },
+
+    play: function(type, path, title) {
+        this.hideDrawers();
+        document.getElementById('now-playing').innerText = title;
+        document.getElementById('video-frame').src = `https://vidsrc.to/embed/${type}/${path}`;
+        document.getElementById('pane-player').style.display = 'flex';
+    },
+
+    search: async function(q) {
+        if(q.length < 3) return;
+        this.loadShelf(`search/movie?query=${q}`, "row-movies");
+        this.loadShelf(`search/tv?query=${q}`, "row-series");
+        document.getElementById('shelf1-title').innerText = "Movie Results";
+        document.getElementById('shelf2-title').innerText = "Series Results";
+    },
+
+    loadCategoriesGrid: function() {
+        const cats = [
+            {id: 28, name: "Action"}, {id: 35, name: "Comedy"}, {id: 27, name: "Horror"},
+            {id: 878, name: "Sci-Fi"}, {id: 10749, name: "Romance"}, {id: 18, name: "Drama"}
+        ];
+        const grid = document.getElementById('categories-grid');
+        cats.forEach(c => {
+            grid.innerHTML += `<div class="genre-pill" style="text-align:center; padding:20px;" onclick="FENG.filterCat(${c.id},'${c.name}')">${c.name}</div>`;
+        });
+    },
+
+    filterCat: function(id, name) {
+        this.hideDrawers();
+        this.loadShelf(`discover/movie?with_genres=${id}`, "row-movies");
+        this.loadShelf(`discover/tv?with_genres=${id}`, "row-series");
+        document.getElementById('shelf1-title').innerText = name + " Movies";
+    },
+
+    buildSettings: function() {
+        document.getElementById('settings-content').innerHTML = `
+            <div style="background:var(--card); padding:20px; border-radius:15px;">
+                <p><b>User:</b> ${user}</p>
+                <p><b>Version:</b> 17 PRO</p>
+                <p><b>Developer:</b> Felix Nyoka</p>
+                <hr style="margin:15px 0; opacity:0.1;">
+                <button class="btn-action" style="background:red; color:#fff;" onclick="localStorage.clear(); location.reload();">LOGOUT</button>
+            </div>`;
+    },
+
+    view: function(id, tab) {
+        this.hideDrawers();
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        if(id !== 'home') document.getElementById('pane-'+id).style.display = 'flex';
+    },
+
+    loadType: function(type, tab) {
+        this.view('home', tab);
+        this.loadShelf(`discover/${type}`, type === 'movie' ? "row-movies" : "row-series");
+    },
+
+    hideDrawers: function() { document.querySelectorAll('.drawer').forEach(d => d.style.display = 'none'); },
+    stopPlayer: function() { this.hideDrawers(); document.getElementById('video-frame').src = ""; }
+};
+</script>
 </body>
 </html>
