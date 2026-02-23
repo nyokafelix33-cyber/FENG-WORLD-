@@ -62,14 +62,14 @@ header { padding: 15px 5%; background: rgba(11,14,20,0.95); backdrop-filter: blu
 .drawer-head { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; position: sticky; top:0; background: var(--bg); z-index: 10; }
 .btn-action { background: var(--primary); color: #000; padding: 16px; border-radius: 12px; border: none; font-weight: 900; width: 100%; margin: 10px 0; cursor: pointer; }
 
-/* EPISODES */
+/* EPISODES UI */
 #season-pills { display: flex; gap: 10px; padding: 15px 5%; overflow-x: auto; }
 .pill { padding: 10px 20px; background: #222; border-radius: 10px; white-space: nowrap; }
 .pill.active { background: var(--primary); color: #000; font-weight: bold; }
 #ep-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px 5%; }
 .ep-card { background: #222; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; font-size: 14px; }
 
-/* CAST */
+/* CAST UI */
 .cast-card {
     min-width: 100px;
     background: var(--card);
@@ -121,7 +121,7 @@ footer { position: fixed; bottom: 0; width: 100%; background: #000; display: fle
 
 </main>
 
-<!-- DETAILS -->
+<!-- INFO PANEL -->
 <div class="drawer" id="pane-info">
 <div class="drawer-head"><h2>Details</h2><i class="fas fa-times fa-2x" onclick="V18.close()"></i></div>
 <div id="info-backdrop" style="height:250px; background-size:cover; background-position:center;"></div>
@@ -137,11 +137,27 @@ footer { position: fixed; bottom: 0; width: 100%; background: #000; display: fle
 </div>
 </div>
 
+<!-- PLAYER -->
+<div class="drawer" id="pane-player">
+<div class="drawer-head">
+<span id="play-title" style="color:var(--primary)"></span>
+<button onclick="V18.stop()" style="background:red;color:white;border:none;padding:8px 15px;border-radius:8px;">EXIT</button>
+</div>
+<iframe id="video-frame" allowfullscreen style="width:100%; height:80vh; border:none; background:#000;"></iframe>
+</div>
+
+<footer>
+<div class="tab active" onclick="V18.view('home',this)"><i class="fas fa-home"></i>Home</div>
+<div class="tab" onclick="V18.loadType('movie',this)"><i class="fas fa-film"></i>Movies</div>
+<div class="tab" onclick="V18.loadType('tv',this)"><i class="fas fa-tv"></i>Series</div>
+</footer>
+
 <script>
 const KEY = "ea593c3fa4d4942ece315977cd7e32c9";
 let currentSlide = 0;
 
 const V18 = {
+
 boot: function() {
 this.loadHero();
 this.loadShelf("trending/all/week", "row-trending");
@@ -177,9 +193,11 @@ const res = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${KEY}`);
 const data = await res.json();
 const container = document.getElementById(elId);
 container.innerHTML = "";
+
 data.results.forEach(m => {
 if(!m.poster_path) return;
 const type = m.title ? 'movie' : 'tv';
+
 container.innerHTML += `
 <div class="item" onclick="V18.openInfo('${type}','${m.id}')">
 <img src="https://image.tmdb.org/t/p/w500${m.poster_path}">
@@ -205,7 +223,7 @@ document.getElementById('info-btns').innerHTML = `
 
 const castGrid = document.getElementById('cast-grid');
 castGrid.innerHTML = "";
-castData.cast.slice(0, 15).forEach(c => {
+castData.cast.slice(0, 20).forEach(c => {
 if(!c.profile_path) return;
 castGrid.innerHTML += `
 <div class="cast-card">
@@ -218,7 +236,24 @@ document.getElementById('pane-info').style.display = 'flex';
 },
 
 play: function(type, id, title) {
+document.getElementById('play-title').innerText = title;
 document.getElementById('video-frame').src = `https://vidsrc.to/embed/${type}/${id}`;
+document.getElementById('pane-player').style.display = 'flex';
+},
+
+close: function() {
+document.querySelectorAll('.drawer').forEach(d => d.style.display = 'none');
+},
+
+stop: function() {
+document.getElementById('video-frame').src = "";
+this.close();
+},
+
+view: function(id, el) {
+this.close();
+document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+el.classList.add('active');
 }
 };
 </script>
