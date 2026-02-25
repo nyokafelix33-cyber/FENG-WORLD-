@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FENG WORLD - Unavailable</title>
+<title>FENG WORLD - Coming Soon</title>
+
 <style>
 body {
     margin: 0;
@@ -17,19 +18,35 @@ body {
     text-align: center;
 }
 
+/* Glow Animation */
+@keyframes glow {
+    0% { text-shadow: 0 0 5px #00ff99, 0 0 20px #00ff99; }
+    50% { text-shadow: 0 0 20px #00ff99, 0 0 50px #00ff99; }
+    100% { text-shadow: 0 0 5px #00ff99, 0 0 20px #00ff99; }
+}
+
 .container {
-    max-width: 500px;
+    max-width: 600px;
     padding: 20px;
 }
 
 h1 {
+    font-size: 36px;
     color: #00ff99;
-    font-size: 32px;
+    animation: glow 2s infinite alternate;
 }
 
 p {
     font-size: 18px;
-    opacity: 0.8;
+    opacity: 0.85;
+}
+
+#countdown {
+    font-size: 32px;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #ffcc00;
+    animation: glow 1.5s infinite alternate;
 }
 
 .footer {
@@ -39,17 +56,42 @@ p {
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
     <h1>⚠️ FENG WORLD is Unavailable</h1>
     <p>Sorry, FENG WORLD is unavailable right now.</p>
-    <p>The developers are working tirelessly. Thanks for your understanding.Stay tuned.</p>
-    
-    <div class="footer">
-        © 2026 FENG WORLD
-    </div>
+    <p>The developers are working on it. Thanks for your understanding.</p>
+
+    <div id="countdown">Loading countdown...</div>
+    <p>See you soon 🫵</p>
+
+    <div class="footer">© 2026 FENG WORLD</div>
 </div>
+
+<script>
+// Set countdown time (75 hours, 50 minutes, 9 seconds)
+let totalSeconds = (75 * 3600) + (50 * 60) + 9;
+
+function updateCountdown() {
+    let hours = Math.floor(totalSeconds / 3600);
+    let minutes = Math.floor((totalSeconds % 3600) / 60);
+    let seconds = totalSeconds % 60;
+
+    document.getElementById("countdown").innerHTML =
+        `Web app will be live in ${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')} hrs`;
+
+    if (totalSeconds > 0) {
+        totalSeconds--;
+    } else {
+        document.getElementById("countdown").innerHTML = "🎉 FENG WORLD is LIVE!";
+    }
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+</script>
 
 </body>
 </html>
