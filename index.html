@@ -741,10 +741,17 @@ button{font-family:'Inter',sans-serif;}
     <div class="pm-badge" id="pm-badge" style="display:none"></div>
   </div>
   <div id="pm-iframe-wrap">
-    <iframe id="pm-iframe" src="" allowfullscreen allow="autoplay;encrypted-media;picture-in-picture;fullscreen" referrerpolicy="no-referrer" loading="eager"></iframe>
+    <iframe id="pm-iframe" src="" allowfullscreen allow="autoplay;encrypted-media;picture-in-picture;fullscreen" loading="eager" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
   </div>
   <div id="pm-bottombar">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <span style="font-size:.66rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Choose Server</span>
+      <span id="pm-srv-count" style="font-size:.62rem;color:var(--accent);font-weight:700;"></span>
+    </div>
     <div class="pm-srv-row" id="pm-srv-row"></div>
+    <div id="pm-ad-hint" style="font-size:.66rem;color:var(--muted);margin-bottom:8px;display:none;">
+      &#9888;&#65039; Seeing ads or redirects? Tap "Next Server" above — some servers are cleaner than others.
+    </div>
     <div class="pm-actions">
       <button class="pm-btn red" onclick="pmNext()">&#9889; Next Server</button>
       <button class="pm-btn" onclick="pmUnmute()">&#128266; Unmute</button>
@@ -1698,10 +1705,18 @@ function openPlayer(){
   byId('pm-srv-row').innerHTML=SRVN.map(function(n,i){
     return '<button class="pm-srv'+(i===pSrv?' on':'')+'" onclick="switchSrv('+i+')">S'+(i+1)+' '+n+'</button>';
   }).join('');
+  byId('pm-srv-count').textContent=SRVN.length+' servers available';
   byId('pm-eps-btn').style.display=pType==='tv'?'':'none';
   byId('player-modal').classList.add('open');
   document.body.style.overflow='hidden';
   installAB();
+  /* Show the ad-hint after 4s so it doesn't clutter on first load */
+  clearTimeout(window._adHintTmr);
+  byId('pm-ad-hint').style.display='none';
+  window._adHintTmr=setTimeout(function(){
+    var hint=byId('pm-ad-hint');
+    if(hint&&byId('player-modal').classList.contains('open'))hint.style.display='block';
+  },4000);
 }
 function closePlayer(){
   byId('pm-iframe').src='';
@@ -1715,6 +1730,7 @@ function switchSrv(i){
   byId('pm-iframe').src=getSrcs(pType,pId,pEpS,pEpE)[i];
   byId('pm-srv-row').querySelectorAll('.pm-srv').forEach(function(b,j){b.classList.toggle('on',j===i);});
   toast(SRVN[i]+' loading...');
+  byId('pm-ad-hint').style.display='none';
 }
 function pmNext(){switchSrv((pSrv+1)%SRVN.length);}
 function pmUnmute(){
@@ -1838,7 +1854,7 @@ function installAB(){
     });
   }).observe(document.documentElement,{childList:true,subtree:true});
 
-  /* 8. URL watchdog — polls every 250ms */
+   /* 8. URL watchdog — polls every 250ms */
   var _safe=location.href;
   setInterval(function(){
     if(!anyPlayerOpen())return;
