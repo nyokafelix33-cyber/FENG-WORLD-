@@ -109,6 +109,12 @@ button{font-family:'Inter',sans-serif;}
   position:relative;transition:transform .2s;background:var(--card);}
 .pc:active{transform:scale(.96);}
 .pc img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;}
+.pc-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0);opacity:0;transition:all .2s;pointer-events:none;}
+.pc-play svg{width:30px;height:30px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));}
+.pc:active .pc-play{opacity:1;background:rgba(0,0,0,.35);}
+.pc-hd{position:absolute;top:5px;left:5px;background:var(--accent);
+  padding:1px 5px;border-radius:3px;font-size:.52rem;font-weight:800;color:#fff;z-index:2;}
 .pc-bm{position:absolute;top:5px;left:5px;width:24px;height:24px;border-radius:50%;
   background:rgba(0,0,0,.6);border:none;color:#fff;cursor:pointer;display:flex;
   align-items:center;justify-content:center;z-index:2;}
@@ -127,10 +133,16 @@ button{font-family:'Inter',sans-serif;}
 /* GRID */
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px;}
 .gc{border-radius:8px;overflow:hidden;cursor:pointer;background:var(--card);position:relative;}
-.gc:active{opacity:.85;}
-.gc img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;}
+.gc:active{transform:scale(.96);}
+.gc img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;transition:transform .25s;}
+.gc-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0);opacity:0;transition:all .2s;pointer-events:none;}
+.gc-play svg{width:36px;height:36px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));}
+.gc:active .gc-play{opacity:1;background:rgba(0,0,0,.35);}
 .gc-rate{position:absolute;top:5px;right:5px;background:rgba(0,0,0,.75);
-  padding:2px 5px;border-radius:4px;font-size:.6rem;font-weight:700;color:#f6c90e;}
+  padding:2px 5px;border-radius:4px;font-size:.6rem;font-weight:700;color:#f6c90e;z-index:2;}
+.gc-hd{position:absolute;top:5px;left:5px;background:var(--accent);
+  padding:1px 5px;border-radius:3px;font-size:.55rem;font-weight:800;color:#fff;z-index:2;letter-spacing:.03em;}
 .gc-info{padding:5px 6px 7px;}
 .gc-name{font-size:.68rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .gc-year{font-size:.58rem;color:var(--muted);margin-top:2px;}
@@ -906,7 +918,7 @@ var TV_CHANNELS=[
   {n:'Sky Sports',g:'UK',dad:'108',hls:false},
   {n:'Eurosport 1',g:'Sports',dad:'204',hls:false},
   {n:'DAZN 1',g:'Sports',dad:'150',hls:false},
-];;
+];
 
 var tvCurCat='All';
 function openLiveTV(){
@@ -938,9 +950,9 @@ function renderTVChannels(cat){
   if(!items.length){g.innerHTML='<div class="ip-empty" style="grid-column:1/-1"><p>No channels in this category</p></div>';return;}
   items.forEach(function(ch){
     var div=document.createElement('div');div.className='ch-card';
-    div.innerHTML='<img class="ch-logo" src="'+ch.logo+'" alt="'+ch.name+'" onerror="this.style.display=\'none\'">'
-      +'<div class="ch-name">'+ch.name+'</div>';
-    div.addEventListener('click',function(){playLiveChannel(ch.id,ch.name);});
+    var logoHtml=ch.l?'<img src="'+ch.l+'" style="width:48px;height:48px;object-fit:contain;border-radius:6px;margin-bottom:6px;" onerror="this.style.display=\'none\'">':'<div style="font-size:1.8rem;margin-bottom:6px;">📺</div>';
+    div.innerHTML=logoHtml+'<div class="ch-name">'+ch.n+'</div>';
+    div.addEventListener('click',function(){ if(ch.hls&&ch.u){playLiveChannel(ch.n,ch.n,true,ch.u,'');}else if(ch.dad){playLiveChannel(ch.n,ch.n,false,'',ch.dad);} });
     g.appendChild(div);
   });
 }
@@ -1021,7 +1033,7 @@ function renderSportsDay(data,dayIdx){
           +'<div class="sport-arrow">▶</div>';
         div.addEventListener('click',function(){
           if(chs.length){
-            playLiveChannel(chs[0].channel_id,ev.event);
+            playLiveChannel(ev.event,ev.event,false,'',chs[0].channel_id);
           } else {
             toast('No stream available for this event');
           }
@@ -1043,9 +1055,12 @@ function renderFallbackSports(body){
   var grid=document.createElement('div');grid.className='ch-grid';
   sportChannels.forEach(function(ch){
     var div=document.createElement('div');div.className='ch-card';
-    div.innerHTML='<div style="font-size:2rem;margin-bottom:7px;line-height:1">🏆</div>'
-      +'<div class="ch-name">'+ch.n+'</div>';
-    div.addEventListener('click',function(){playLiveChannel(ch.n,ch.n,!!ch.hls,ch.u||'',ch.dad||'');});
+    var sLogo=ch.l?'<img src="'+ch.l+'" style="width:48px;height:48px;object-fit:contain;border-radius:6px;margin-bottom:6px;" onerror="this.style.display=\'none\'">':'<div style="font-size:1.8rem;margin-bottom:6px;">🏆</div>';
+    div.innerHTML=sLogo+'<div class="ch-name">'+ch.n+'</div>';
+    div.addEventListener('click',function(){
+      if(ch.hls&&ch.u) playLiveChannel(ch.n,ch.n,true,ch.u,'');
+      else if(ch.dad) playLiveChannel(ch.n,ch.n,false,'',ch.dad);
+    });
     grid.appendChild(div);
   });
   body.appendChild(grid);
@@ -1186,6 +1201,8 @@ function gcCard(item,type){
   div.className='gc';
   div.innerHTML=(poster?'<img src="'+poster+'" alt="'+title+'" loading="lazy" onerror="this.src=\'\'"/>'
     :'<div style="aspect-ratio:2/3;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--muted);padding:8px;text-align:center">'+title+'</div>')
+    +'<div class="gc-play"><svg viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)" stroke="#fff" stroke-width="1.2"/><path d="M10 8l6 4-6 4V8z"/></svg></div>'
+    +'<div class="gc-hd">HD</div>'
     +(rating?'<div class="gc-rate">★ '+rating+'</div>':'')
     +'<div class="gc-dl-btn" title="Download" style="position:absolute;bottom:36px;right:5px;'
       +'width:26px;height:26px;border-radius:6px;background:rgba(0,0,0,.72);'
@@ -1216,6 +1233,8 @@ function pcCard(item,type){
   var div=document.createElement('div');
   div.className='pc';
   div.innerHTML=(poster?'<img src="'+poster+'" alt="'+title+'" loading="lazy"/>':'')
+    +'<div class="pc-play"><svg viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)" stroke="#fff" stroke-width="1.2"/><path d="M10 8l6 4-6 4V8z"/></svg></div>'
+    +'<div class="pc-hd">HD</div>'
     +(rating?'<div class="pc-rate">★ '+rating+'</div>':'')
     +'<div class="pc-dl" style="position:absolute;bottom:30px;right:5px;'
       +'width:22px;height:22px;border-radius:5px;background:rgba(0,0,0,.72);'
@@ -1750,59 +1769,52 @@ function anyPlayerOpen(){
 }
 
 function installAB(){
-  /* Run every time a player opens — reset the flag each call so
-     visibilitychange listener re-registers fresh */
+  /* Only install listeners once */
   if(window._abOn)return;
   window._abOn=true;
 
-  /* ── 1. Kill window.open completely ── */
+  /* 1. Kill window.open — no new tabs ever */
   window.open=function(){return null;};
 
-  /* ── 2. Kill ad dialogs ── */
+  /* 2. Kill ad dialogs */
   window.alert=function(){};
   window.confirm=function(){return false;};
   window.prompt=function(){return null;};
 
-  /* ── 3. Override location setter ──
-     Catches ads that do: window.top.location = "https://adsite.com" */
+  /* 3. Override location setter — catches window.top.location = adUrl */
   try{
-    var _realLocation=window.location;
+    var _loc=window.location;
     Object.defineProperty(window,'location',{
       configurable:true,
-      get:function(){return _realLocation;},
+      get:function(){return _loc;},
       set:function(v){
         var s=String(v||'');
-        /* Only allow navigation to our own origin */
-        if(s.indexOf(location.hostname)>=0||
-           s.indexOf('vidvault')>=0||
-           s.indexOf('javascript')===0){
-          _realLocation.href=s;
+        if(s.indexOf(location.hostname)>=0||s.indexOf('vidvault')>=0||s.indexOf('javascript')===0){
+          _loc.href=s;
         }
         /* Everything else silently dropped */
       }
     });
   }catch(e){}
 
-  /* ── 4. visibilitychange — fires before browser loads ad page.
-     history.back() with ZERO delay cancels the navigation. ── */
+  /* 4. visibilitychange — NO delay, fires before browser loads ad */
   document.addEventListener('visibilitychange',function(){
     if(document.hidden&&anyPlayerOpen()){
       history.back();
     }
   });
 
-  /* ── 5. pagehide — iOS Safari ── */
+  /* 5. pagehide — iOS Safari */
   window.addEventListener('pagehide',function(){
     if(anyPlayerOpen()){history.back();}
   },true);
 
-  /* ── 6. Block external anchor clicks ── */
+  /* 6. Block ALL external anchor clicks */
   document.addEventListener('click',function(e){
     var a=e.target.closest('a[href]');if(!a)return;
     var h=String(a.href||'');
     if(!h||h.indexOf('javascript')>=0||h.indexOf('#')===0)return;
     if(h.indexOf(location.hostname)>=0)return;
-    /* Allow vidvault download links through */
     if(h.indexOf('vidvault')>=0)return;
     if(h.indexOf('http')===0){
       e.preventDefault();
@@ -1810,33 +1822,32 @@ function installAB(){
     }
   },true);
 
-  /* ── 7. MutationObserver — kills injected iframes & scripts ── */
-  var ALLOWED_IFRAMES=['pm-iframe','lp-iframe','dl-iframe'];
+  /* 7. MutationObserver — kills injected iframes instantly */
+  var SAFE=['pm-iframe','lp-iframe','lp-video','dl-iframe'];
   new MutationObserver(function(muts){
     muts.forEach(function(m){
       m.addedNodes.forEach(function(n){
         if(n.nodeType!==1)return;
-        if(n.tagName==='IFRAME'&&ALLOWED_IFRAMES.indexOf(n.id)<0){
-          n.remove();return;
-        }
+        if(n.tagName==='IFRAME'&&SAFE.indexOf(n.id)<0){n.remove();return;}
         if(n.querySelectorAll){
           n.querySelectorAll('iframe').forEach(function(f){
-            if(ALLOWED_IFRAMES.indexOf(f.id)<0)f.remove();
+            if(SAFE.indexOf(f.id)<0)f.remove();
           });
         }
       });
     });
   }).observe(document.documentElement,{childList:true,subtree:true});
 
-  /* ── 8. URL watchdog — polls every 200ms while a player is open.
-     If URL changed away from our site, immediately go back. ── */
-  var _safeHref=location.href;
+  /* 8. URL watchdog — polls every 250ms */
+  var _safe=location.href;
   setInterval(function(){
     if(!anyPlayerOpen())return;
-    if(location.href!==_safeHref&&location.href.indexOf(location.hostname)<0){
-      location.replace(_safeHref);
-    }
-  },200);
+    try{
+      if(location.href!==_safe&&location.href.indexOf(location.hostname)<0){
+        location.replace(_safe);
+      }
+    }catch(e){}
+  },250);
 }
 
 /* ── DOWNLOAD PAGE ── */
