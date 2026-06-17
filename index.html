@@ -9,8 +9,9 @@
     https://fonts.googleapis.com https://fonts.gstatic.com
     https://daddylive.pw;
   frame-src
-    https://vidsrc.to https://vidsrc.cc https://vidlink.pro
+    https://vidsrc.to https://vidlink.pro https://embed.su
     https://autoembed.cc https://www.2embed.stream
+    https://multiembed.mov
     https://vidsrc.xyz https://vidsrc.me
     https://www.youtube.com https://youtube.com
     https://daddylive.pw
@@ -817,21 +818,23 @@ try{WL=JSON.parse(localStorage.getItem('fw_wl2')||'[]');}catch(e){}
 try{HIST=JSON.parse(localStorage.getItem('fw_hist2')||'[]');}catch(e){}
 
 /* ── SERVERS ── */
-var SRVN=['VidSrc.to','VidSrc.cc','VidLink','AutoEmbed','2Embed'];
+var SRVN=['VidSrc.to','VidLink','Embed.su','2Embed','SuperEmbed','AutoEmbed'];
 function getSrcs(type,id,s,e){
   if(type==='movie')return[
     'https://vidsrc.to/embed/movie/'+id,
-    'https://vidsrc.cc/v2/embed/movie/'+id,
     'https://vidlink.pro/movie/'+id+'?autoplay=true&primaryColor=1db954',
-    'https://autoembed.cc/movie/tmdb-'+id,
+    'https://embed.su/embed/movie/'+id,
     'https://www.2embed.stream/embed/movie/'+id,
+    'https://multiembed.mov/?video_id='+id+'&tmdb=1',
+    'https://autoembed.cc/movie/tmdb-'+id,
   ];
   return[
     'https://vidsrc.to/embed/tv/'+id+'/'+s+'/'+e,
-    'https://vidsrc.cc/v2/embed/tv/'+id+'/'+s+'/'+e,
     'https://vidlink.pro/tv/'+id+'/'+s+'/'+e+'?autoplay=true&primaryColor=1db954',
-    'https://autoembed.cc/tv/tmdb-'+id+'-'+s+'-'+e,
+    'https://embed.su/embed/tv/'+id+'/'+s+'/'+e,
     'https://www.2embed.stream/embed/tv/'+id+'/'+s+'/'+e,
+    'https://multiembed.mov/?video_id='+id+'&tmdb=1&s='+s+'&e='+e,
+    'https://autoembed.cc/tv/tmdb-'+id+'-'+s+'-'+e,
   ];
 }
 
@@ -1853,7 +1856,7 @@ function installAB(){
     }
   },true);
 
-    /* 7. MutationObserver — kills injected iframes instantly */
+  /* 7. MutationObserver — kills injected iframes instantly */
   var SAFE=['pm-iframe','lp-iframe','lp-video','dl-iframe'];
   new MutationObserver(function(muts){
     muts.forEach(function(m){
@@ -1940,4 +1943,4 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 </body>
-</html> 
+</html>
