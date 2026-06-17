@@ -270,8 +270,11 @@ button{font-family:'Inter',sans-serif;}
 .va-head{position:sticky;top:0;background:var(--bg);z-index:1;border-bottom:1px solid var(--border);
   height:var(--nav-h);display:flex;align-items:center;gap:10px;padding:0 14px;}
 .va-head h2{font-size:.95rem;font-weight:700;}
-.back-btn{background:none;border:none;color:#fff;cursor:pointer;
-  display:flex;align-items:center;gap:5px;font-size:.84rem;font-weight:500;padding:6px 0;}
+.back-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;
+  flex-shrink:0;transition:background .15s;}
+.back-btn:active{background:rgba(255,255,255,.2);}
+.back-btn svg{width:18px;height:18px;}
 
 /* INNER PAGES */
 .ip{display:none;position:fixed;inset:0;z-index:800;background:var(--bg);
@@ -610,7 +613,7 @@ button{font-family:'Inter',sans-serif;}
 <div id="va-page">
   <div class="va-head">
     <button class="back-btn" onclick="closeVA()">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <h2 id="va-title"></h2>
   </div>
@@ -741,7 +744,7 @@ button{font-family:'Inter',sans-serif;}
     <div class="pm-badge" id="pm-badge" style="display:none"></div>
   </div>
   <div id="pm-iframe-wrap">
-    <iframe id="pm-iframe" src="" allowfullscreen allow="autoplay;encrypted-media;picture-in-picture;fullscreen" loading="eager" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
+    <iframe id="pm-iframe" src="" allowfullscreen allow="autoplay;encrypted-media;picture-in-picture;fullscreen" loading="eager"></iframe>
   </div>
   <div id="pm-bottombar">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
@@ -778,8 +781,7 @@ button{font-family:'Inter',sans-serif;}
   </div>
   <div class="dl-ifr-body">
     <iframe id="dl-iframe" src="" loading="eager"
-      allow="autoplay;fullscreen"
-      sandbox="allow-scripts allow-same-origin allow-forms allow-downloads allow-popups allow-top-navigation-by-user-activation"></iframe>
+      allow="autoplay;fullscreen"></iframe>
   </div>
 </div>
 
@@ -1825,6 +1827,17 @@ function installAB(){
     if(anyPlayerOpen()){history.back();}
   },true);
 
+  /* 5b. blur — extra early signal some browsers fire before visibilitychange
+     when a popup steals focus or a new tab opens */
+  var _lastBlur=0;
+  window.addEventListener('blur',function(){
+    if(!anyPlayerOpen())return;
+    _lastBlur=Date.now();
+    setTimeout(function(){
+      if(document.hidden&&Date.now()-_lastBlur<600){history.back();}
+    },80);
+  });
+
   /* 6. Block ALL external anchor clicks */
   document.addEventListener('click',function(e){
     var a=e.target.closest('a[href]');if(!a)return;
@@ -1854,7 +1867,7 @@ function installAB(){
     });
   }).observe(document.documentElement,{childList:true,subtree:true});
 
-   /* 8. URL watchdog — polls every 250ms */
+  /* 8. URL watchdog — polls every 250ms */
   var _safe=location.href;
   setInterval(function(){
     if(!anyPlayerOpen())return;
