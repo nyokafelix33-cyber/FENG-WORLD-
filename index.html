@@ -779,6 +779,8 @@ button{font-family:'Inter',sans-serif;}
     <div style="font-size:.62rem;color:var(--accent);font-weight:800;background:rgba(29,185,84,.12);
       border:1px solid rgba(29,185,84,.3);border-radius:4px;padding:2px 8px;flex-shrink:0;">VidVault</div>
   </div>
+  <div id="dl-id-banner" style="background:rgba(29,185,84,.1);border-bottom:1px solid rgba(29,185,84,.25);
+    color:var(--accent);font-size:.74rem;font-weight:600;text-align:center;padding:9px 14px;line-height:1.4;"></div>
   <div class="dl-ifr-body">
     <iframe id="dl-iframe" src="" loading="eager"
       allow="autoplay;fullscreen"></iframe>
@@ -1851,7 +1853,7 @@ function installAB(){
     }
   },true);
 
-  /* 7. MutationObserver — kills injected iframes instantly */
+    /* 7. MutationObserver — kills injected iframes instantly */
   var SAFE=['pm-iframe','lp-iframe','lp-video','dl-iframe'];
   new MutationObserver(function(muts){
     muts.forEach(function(m){
@@ -1890,16 +1892,21 @@ function closeDlPage(){
 }
 function openVidVault(){
   if(!pId)return;
-  var url;
-  if(pType==='movie'){
-    url='https://vidvault.ru/movie/'+pId;
-  } else {
-    url='https://vidvault.ru/tv/'+pId+'/'+pEpS+'/'+pEpE;
-  }
+  /* VidVault is a single-page app: it only works by typing/pasting
+     a TMDb ID into ITS OWN search box. Deep-link URLs like
+     /movie/12345 return a blank page — that's the real bug.
+     Fix: load the real homepage + auto-copy the ID so the user
+     just has to paste it in. */
   byId('dl-ifr-title').textContent=pTitle||'Download';
-  byId('dl-iframe').src=url;
+  byId('dl-id-banner').innerHTML=
+    'TMDb ID <b style="color:var(--accent)">'+pId+'</b> copied — paste it into the search box below';
+  try{
+    navigator.clipboard.writeText(String(pId));
+  }catch(e){}
+  byId('dl-iframe').src='https://vidvault.ru/?autofill='+pId;
   byId('dl-iframe-wrap').classList.add('open');
   document.body.style.overflow='hidden';
+  toast('TMDb ID copied: '+pId);
 }
 function closeVidVault(){
   byId('dl-iframe').src='';
@@ -1933,4 +1940,4 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 </body>
-</html>
+</html> 
