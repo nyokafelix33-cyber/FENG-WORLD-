@@ -1,73 +1,61 @@
-// Feng World Service Worker with Ad Blocking
+/* ═══════════════════════════════════════════════════
+   FengWorld Shield — Service Worker Ad Blocker
+   Intercepts ALL network requests and blocks known
+   ad/redirect domains at the network level.
+═══════════════════════════════════════════════════ */
 var AD_DOMAINS = [
-  'doubleclick.net','googlesyndication.com','adservice.google','adskeeper.co.uk',
-  'adnxs.com','adsrvr.org','popads.net','popcash.net','propellerads.com',
-  'trafficjunky.net','exoclick.com','juicyads.com','revcontent.com',
-  'mgid.com','taboola.com','outbrain.com','adsterra.com','hilltopads.net',
-  'clickadu.com','pushground.com','richpush.co','evadav.com','galaksion.com',
-  'monetag.com','a-ads.com','admaven.com','adcash.com','bidvertiser.com',
-  'clickaine.com','onclicka.com','cpalead.com','cpagrip.com',
-  'popunder.net','roller-ads.com','trackvoluum.com',
-  'go.onclasrv.com','onclkds.com','tsyndicate.com','tstrck.com',
-  'syndication.realsrv','ad-maven.com','ad-score.com','smartadserver.com',
-  'serving-sys.com','moatads.com','zedo.com','undertone.com',
-  'bongacams.com','chaturbate.com','stripchat.com','livejasmin.com',
-  'cam4.com','istripper.com','dating.com',
-  'bet365.com','1xbet.com','betway.com'
+  'bgtee.com','moob.club','b7510.com','afu.php',
+  'adnxs.com','doubleclick.net','googlesyndication.com',
+  'googleadservices.com','ads.google.com','amazon-adsystem.com',
+  'adsrvr.org','outbrain.com','taboola.com','revcontent.com',
+  'zedo.com','adroll.com','advertising.com','ads.yahoo.com',
+  'adsystem.com','popads.net','popcash.net','popunder.net',
+  'trafficjunky.net','juicyads.com','exoclick.com',
+  'hilltopads.net','propellerads.com','adsterra.com',
+  'clickadu.com','adcash.com','yllix.com','adfly.com',
+  'linkbucks.com','adf.ly','bc.vc','j.gs','ceesty.com',
+  'corneey.com','destyy.com','festyy.com','sh.st','ad.fly',
+  'ouo.io','ity.im','qps.ru','cf.ly','pkt.gs','deb.im',
+  'vzturl.com','qpdownload.com','cleanfiles.net',
+  'apichat.online','brtclicks.com','chatmate.tv',
+  'brightadnetwork.com','nectsideaments.com',
+  'wap.moob.club','zm.wap','partitial','gamifun',
+  'newgrounds.com/adngin','adhigh','adlabel',
+  'adskeeper','ad-sterra','pubdirecte','trafftime',
+  'go.ad2up','openx.net','rubiconproject.com',
+  'casalemedia.com','pubmatic.com','appnexus.com',
+  'criteo.com','bidswitch.net','adform.net',
+  'smartadserver.com','lijit.com','sovrn.com',
+  'sharethrough.com','triplelift.com','indexexchange.com',
+  'vidcrunch.com','vidazoo.com','unrulymedia.com',
+  'spotxchange.com','spotx.tv','teads.tv','yieldmo.com',
+  '33across.com','rhythmone.com','undertone.com',
+  'yieldmanager.com','overture.com','valueclick.com',
 ];
 
-function isAdRequest(url) {
-  if (!url) return false;
-  var u = url.toLowerCase();
-  return AD_DOMAINS.some(function(d) { return u.indexOf(d) >= 0; });
-}
-
-self.addEventListener('install', function(e) {
+self.addEventListener('install', function(e){
   self.skipWaiting();
-  e.waitUntil(caches.open('feng-v2').then(function(c) {
-    return c.addAll(['./']);
-  }));
 });
-
-self.addEventListener('activate', function(e) {
-  e.waitUntil(
-    caches.keys().then(function(names) {
-      return Promise.all(
-        names.filter(function(n) { return n !== 'feng-v2'; })
-             .map(function(n) { return caches.delete(n); })
-      );
-    }).then(function() {
-      return self.clients.claim();
-    })
-  );
+self.addEventListener('activate', function(e){
+  e.waitUntil(self.clients.claim());
 });
-
-self.addEventListener('fetch', function(e) {
-  var url = e.request.url;
-
-  // Block ad requests with an empty response
-  if (isAdRequest(url)) {
+self.addEventListener('fetch', function(e){
+  var url = e.request.url.toLowerCase();
+  var blocked = AD_DOMAINS.some(function(d){ return url.indexOf(d) >= 0; });
+  if(blocked){
+    /* Return empty 200 response — the request never reaches the ad server */
     e.respondWith(new Response('', {
       status: 200,
-      statusText: 'Blocked',
-      headers: { 'Content-Type': 'text/plain' }
+      headers: {'Content-Type':'text/plain'}
     }));
     return;
   }
-
-  // Normal caching strategy for everything else
-  e.respondWith(
-    caches.match(e.request).then(function(r) {
-      return r || fetch(e.request).then(function(response) {
-        // Only cache same-origin GET requests
-        if (e.request.method === 'GET' && url.indexOf(self.location.origin) === 0) {
-          var responseClone = response.clone();
-          caches.open('feng-v2').then(function(cache) {
-            cache.put(e.request, responseClone);
-          });
-        }
-        return response;
-      });
-    })
-  );
+  /* Let everything else through normally — never intercept navigation
+     requests, only subresource fetches (img/script/iframe/etc) */
+  if(e.request.mode === 'navigate'){
+    return; /* don't touch page navigations at all */
+  }
+  e.respondWith(fetch(e.request).catch(function(){
+    return new Response('', {status:200});
+  }));
 });
