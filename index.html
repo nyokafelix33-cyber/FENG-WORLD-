@@ -392,13 +392,6 @@ button{font-family:'Inter',sans-serif;}
   border:1px solid rgba(29,185,84,.18);border-radius:8px;
   font-size:.72rem;color:rgba(255,255,255,.55);line-height:1.6;}
 .dl-note strong{color:rgba(255,255,255,.75);}
-.dl-iframe-wrap{display:none;position:fixed;inset:0;z-index:8700;background:#000;flex-direction:column;}
-.dl-iframe-wrap.open{display:flex;}
-.dl-ifr-head{flex:0 0 54px;display:flex;align-items:center;gap:10px;padding:8px 14px;
-  background:rgba(0,0,0,.92);border-bottom:1px solid rgba(255,255,255,.08);}
-.dl-ifr-title{flex:1;font-size:.82rem;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-.dl-ifr-body{flex:1;position:relative;overflow:hidden;background:#111;}
-.dl-ifr-body iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
@@ -668,20 +661,7 @@ if('serviceWorker' in navigator){
 </div>
 
 <!-- VIDVAULT IFRAME OVERLAY -->
-<div class="dl-iframe-wrap" id="dl-iframe-wrap">
-  <div class="dl-ifr-head">
-    <button class="pm-back" onclick="closeVidVault()">&#8592;</button>
-    <div class="dl-ifr-title" id="dl-ifr-title">Download</div>
-    <div style="font-size:.62rem;color:var(--accent);font-weight:800;background:rgba(29,185,84,.12);
-      border:1px solid rgba(29,185,84,.3);border-radius:4px;padding:2px 8px;flex-shrink:0;">VidVault</div>
-  </div>
-  <div id="dl-id-banner" style="background:rgba(29,185,84,.1);border-bottom:1px solid rgba(29,185,84,.25);
-    color:var(--accent);font-size:.74rem;font-weight:600;text-align:center;padding:9px 14px;line-height:1.4;"></div>
-  <div class="dl-ifr-body">
-    <iframe id="dl-iframe" src="" loading="eager"
-      allow="autoplay;fullscreen"></iframe>
-  </div>
-</div>
+
 
 <div id="toast"></div>
 <div id="offline-banner">&#128245; No internet connection</div>
@@ -1434,9 +1414,7 @@ function pmLoadSeas(s,btn){
 
 function anyPlayerOpen(){
   var pm=byId('player-modal');
-  var dl=byId('dl-iframe-wrap');
-  return (pm&&pm.classList.contains('open'))
-      || (dl&&dl.classList.contains('open'));
+  return pm&&pm.classList.contains('open');
 }
 
 function installAB(){
@@ -1538,7 +1516,7 @@ function installAB(){
   }).observe(document.head,{childList:true});
 
   /* 7. MutationObserver — kills injected iframes instantly */
-  var SAFE=['pm-iframe','dl-iframe'];
+  var SAFE=['pm-iframe'];
   new MutationObserver(function(muts){
     muts.forEach(function(m){
       m.addedNodes.forEach(function(n){
@@ -1608,51 +1586,31 @@ function installAB(){
 
 /* ── DOWNLOAD PAGE ── */
 function openDlPage(){
-  /* Go straight to VidVault — no quality picker */
   if(!pId)return;
   openVidVault();
 }
-function closeDlPage(){
-  closeVidVault();
-}
+function closeDlPage(){}
 function openVidVault(){
   if(!pId)return;
-  /* VidVault is a single-page app: it only reads from its own internal
-     search box state, not from URL query params. ?autofill=ID does
-     nothing on their end — that's a VidVault limitation, not ours.
-     Best we can do: copy the ID to clipboard and tell the user clearly
-     to paste it, with a visible fallback if clipboard copy fails. */
-  byId('dl-ifr-title').textContent=pTitle||'Download';
-  byId('dl-iframe').src='https://vidvault.ru/';
-  byId('dl-iframe-wrap').classList.add('open');
-  document.body.style.overflow='hidden';
-
-  var banner=byId('dl-id-banner');
-  var copyOk=false;
+  /* VidVault refuses to be displayed in an iframe (sets X-Frame-Options/CSP
+     frame-ancestors that block embedding) — that's what was causing the
+     blank black screen. No client-side code can override a server's own
+     refusal to be framed, so the only real fix is opening it as a normal
+     tab instead of embedding it.
+     Uses a real <a> click (not window.open) since the ad-blocker
+     deliberately kills window.open — anchor clicks to vidvault are
+     already whitelisted in the click-blocker layer. */
   try{
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(String(pId)).then(function(){
-        copyOk=true;
-        banner.innerHTML='&#10003; TMDb ID <b style="color:var(--accent)">'+pId+'</b> copied — paste it into the search box below';
-        toast('TMDb ID copied: '+pId);
-      }).catch(function(){
-        showManualCopy();
-      });
-    }else{
-      showManualCopy();
-    }
-  }catch(e){
-    showManualCopy();
-  }
-  function showManualCopy(){
-    banner.innerHTML='Copy this TMDb ID and paste it below: '+
-      '<b style="color:var(--accent);user-select:all;cursor:text;" id="dl-id-manual">'+pId+'</b>';
-  }
-}
-function closeVidVault(){
-  byId('dl-iframe').src='';
-  byId('dl-iframe-wrap').classList.remove('open');
-  document.body.style.overflow='';
+    navigator.clipboard&&navigator.clipboard.writeText&&navigator.clipboard.writeText(String(pId));
+  }catch(e){}
+  toast('Opening VidVault — paste TMDb ID '+pId+' if it doesn\'t autofill');
+  var a=document.createElement('a');
+  a.href='https://vidvault.ru/';
+  a.target='_blank';
+  a.rel='noopener';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 }
 
 /* ── SHARE ── */
