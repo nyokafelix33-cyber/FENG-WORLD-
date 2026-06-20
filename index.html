@@ -9,7 +9,7 @@
     https://fonts.googleapis.com https://fonts.gstatic.com
     https://daddylive.pw;
   frame-src
-    https://vidlink.pro https://player.vidplus.to
+    https://vidlink.pro
     https://www.youtube.com https://youtube.com
     https://daddylive.pw
     https://vidvault.ru;
@@ -66,27 +66,41 @@ button{font-family:'Inter',sans-serif;}
 /* HERO */
 .hero-wrap{position:relative;width:100%;background:var(--surface);overflow:hidden;
   height:90vw;max-height:560px;}
-.hero-img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+.hero-img{width:100%;height:100%;object-fit:cover;object-position:center top;
+  opacity:0;transition:opacity 1s ease;animation:heroZoom 7s ease-out forwards;}
+.hero-img.show{opacity:1;}
+@keyframes heroZoom{from{transform:scale(1.08);}to{transform:scale(1);}}
 .hero-grad{position:absolute;inset:0;background:linear-gradient(to bottom,
-  rgba(13,13,13,.1) 0%,rgba(13,13,13,0) 20%,rgba(13,13,13,.6) 55%,rgba(13,13,13,1) 100%);}
+  rgba(13,13,13,.1) 0%,rgba(13,13,13,0) 20%,rgba(13,13,13,.6) 55%,rgba(13,13,13,1) 100%),
+  linear-gradient(to right,rgba(13,13,13,.55) 0%,rgba(13,13,13,0) 45%);}
 .hero-body{position:absolute;bottom:0;left:0;right:0;padding:0 14px 18px;}
 .hero-type{font-size:.68rem;font-weight:700;color:var(--accent);text-transform:uppercase;
-  letter-spacing:.15em;margin-bottom:6px;}
+  letter-spacing:.15em;margin-bottom:6px;opacity:0;transform:translateY(10px);
+  animation:heroIn .6s ease .15s forwards;}
 .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,9vw,3.5rem);
-  line-height:.95;letter-spacing:1px;margin-bottom:8px;}
-.hero-meta{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--muted);margin-bottom:10px;}
+  line-height:.95;letter-spacing:1px;margin-bottom:8px;text-shadow:0 2px 18px rgba(0,0,0,.5);
+  opacity:0;transform:translateY(14px);animation:heroIn .6s ease .25s forwards;}
+.hero-meta{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--muted);margin-bottom:10px;
+  opacity:0;transform:translateY(10px);animation:heroIn .6s ease .35s forwards;}
 .hero-meta .str{color:#f6c90e;font-weight:700;}
 .hero-synopsis{font-size:.78rem;line-height:1.6;color:rgba(255,255,255,.65);margin-bottom:14px;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.hero-btns{display:flex;gap:9px;}
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  opacity:0;transform:translateY(10px);animation:heroIn .6s ease .45s forwards;}
+.hero-btns{display:flex;gap:9px;opacity:0;transform:translateY(10px);animation:heroIn .6s ease .55s forwards;}
+@keyframes heroIn{to{opacity:1;transform:translateY(0);}}
 .hbtn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:8px;
-  font-size:.82rem;font-weight:700;border:none;cursor:pointer;transition:opacity .2s;font-family:inherit;}
+  font-size:.82rem;font-weight:700;border:none;cursor:pointer;transition:transform .15s,opacity .2s;font-family:inherit;}
 .hbtn-play{background:#fff;color:#000;}
-.hbtn-info{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);}
-.hbtn:active{opacity:.8;}
-.hero-dots{position:absolute;bottom:72px;right:14px;display:flex;gap:5px;}
-.hdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:.3s;}
-.hdot.on{background:var(--accent);width:18px;border-radius:3px;}
+.hbtn-info{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.25);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.hbtn:active{transform:scale(.96);opacity:.85;}
+.hero-dots{position:absolute;bottom:72px;right:14px;display:flex;gap:6px;}
+.hdot{width:18px;height:3px;border-radius:3px;background:rgba(255,255,255,.25);cursor:pointer;
+  position:relative;overflow:hidden;}
+.hdot.on{background:rgba(255,255,255,.25);}
+.hdot.on::after{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent);
+  animation:heroProg 6s linear forwards;}
+@keyframes heroProg{to{width:100%;}}
 
 /* SECTION */
 .sec{padding:18px 0 6px;}
@@ -339,78 +353,14 @@ button{font-family:'Inter',sans-serif;}
   font-size:.76rem;font-weight:500;opacity:0;transition:all .28s;z-index:11000;
   white-space:nowrap;border:1px solid var(--border);}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-/* ── LIVE TV / SPORTS PAGES ── */
-.live-page{display:none;position:fixed;inset:0;z-index:8200;
-  background:var(--bg);overflow-y:auto;padding-bottom:var(--bot-h);}
-.live-page.open{display:block;}
-.live-head{position:sticky;top:0;z-index:2;background:var(--bg);
-  display:flex;align-items:center;gap:10px;padding:0 14px;
-  height:var(--nav-h);border-bottom:1px solid var(--border);}
-.live-head h2{font-size:.95rem;font-weight:700;flex:1;}
-.live-cats{display:flex;gap:8px;overflow-x:auto;padding:12px 14px 8px;scrollbar-width:none;}
-.live-cats::-webkit-scrollbar{display:none;}
-.lcat{flex-shrink:0;padding:7px 16px;border-radius:20px;font-size:.73rem;font-weight:700;
-  cursor:pointer;border:none;font-family:inherit;transition:all .2s;background:var(--card);
-  color:var(--muted);border:1px solid var(--border);}
-.lcat.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:10px 14px 20px;}
-.ch-card{background:var(--card);border:1px solid var(--border);border-radius:10px;
-  cursor:pointer;transition:all .2s;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:14px 8px;text-align:center;min-height:90px;}
-.ch-card:active{border-color:var(--accent);background:rgba(29,185,84,.1);}
-.ch-logo{width:52px;height:52px;object-fit:contain;margin-bottom:7px;border-radius:6px;}
-.ch-name{font-size:.62rem;font-weight:600;line-height:1.3;
-  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
-
-/* SPORTS SCHEDULE */
-.sport-event{display:flex;align-items:center;gap:12px;padding:12px 14px;
-  border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
-.sport-event:active{background:rgba(29,185,84,.08);}
-.sport-time{font-size:.68rem;font-weight:800;color:var(--accent);
-  min-width:48px;text-align:center;flex-shrink:0;}
-.sport-info{flex:1;min-width:0;}
-.sport-cat{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;
-  letter-spacing:.08em;margin-bottom:3px;}
-.sport-name{font-size:.8rem;font-weight:700;line-height:1.3;
-  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-.sport-chs{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
-.sport-ch-badge{font-size:.6rem;font-weight:600;background:var(--card);
-  border:1px solid var(--border);border-radius:4px;padding:2px 7px;color:var(--muted);}
-.sport-arrow{color:var(--muted);font-size:.9rem;flex-shrink:0;}
-.sport-day-pills{display:flex;gap:8px;overflow-x:auto;padding:10px 14px 6px;
-  scrollbar-width:none;border-bottom:1px solid var(--border);}
-.sport-day-pills::-webkit-scrollbar{display:none;}
-.dpill{flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:.72rem;font-weight:700;
-  cursor:pointer;border:none;font-family:inherit;background:var(--card);
-  border:1px solid var(--border);color:var(--muted);}
-.dpill.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-.sport-sec-title{font-size:.72rem;font-weight:800;letter-spacing:.08em;
-  color:var(--muted);text-transform:uppercase;padding:14px 14px 6px;
-  border-bottom:1px solid rgba(255,255,255,.04);}
-
-/* LIVE PLAYER overlay */
-#live-player{display:none;position:fixed;inset:0;z-index:9500;
-  background:#000;flex-direction:column;}
-#live-player.open{display:flex;}
-#lp-topbar{flex:0 0 54px;display:flex;align-items:center;gap:10px;
-  padding:8px 14px;background:rgba(0,0,0,.92);border-bottom:1px solid rgba(255,255,255,.08);}
-#lp-iframe-wrap{flex:1;position:relative;overflow:hidden;background:#000;min-height:0;}
-#lp-iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#000;}
-#lp-bottombar{flex:0 0 auto;padding:10px 14px 18px;
-  background:rgba(0,0,0,.92);border-top:1px solid rgba(255,255,255,.08);}
-.lp-srv-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;}
-.lp-srv-row::-webkit-scrollbar{display:none;}
-.lp-srv{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:.72rem;font-weight:700;
-  cursor:pointer;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
-  color:rgba(255,255,255,.85);font-family:inherit;transition:all .2s;}
-.lp-srv.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-
+#offline-banner{position:fixed;top:0;left:0;right:0;z-index:12000;
+  background:#c0392b;color:#fff;font-size:.78rem;font-weight:700;text-align:center;
+  padding:10px 14px;transform:translateY(-100%);transition:transform .3s ease;
+  padding-top:calc(10px + env(safe-area-inset-top,0px));}
+#offline-banner.show{transform:translateY(0);}
 /* MORE PANEL UPDATE */
 #more-panel{background:#1a1a1a!important;}
 .mi-sep{height:1px;background:var(--border);margin:4px 0;}
-.mi-live{color:var(--accent)!important;}
-.mi-live svg{color:var(--accent)!important;}
 
 /* DOWNLOAD PAGE */
 .dl-head{position:sticky;top:0;background:var(--bg);z-index:1;border-bottom:1px solid var(--border);
@@ -453,17 +403,13 @@ button{font-family:'Inter',sans-serif;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
 <script>
-/* Register Service Worker Ad Blocker — blocks ad domains at network level */
+/* Register Service Worker Ad Blocker — blocks ad domains at network level.
+   Requires sw.js to be uploaded alongside this file in the repo root. */
 if('serviceWorker' in navigator){
-  var SW_CODE="\n/* ═══════════════════════════════════════════════════\n   FengWorld Shield — Service Worker Ad Blocker\n   Intercepts ALL network requests and blocks known\n   ad/redirect domains at the network level.\n   This is what Lucky Patcher does for Android apps.\n═══════════════════════════════════════════════════ */\nvar AD_DOMAINS = [\n  'bgtee.com','moob.club','b7510.com','afu.php',\n  'adnxs.com','doubleclick.net','googlesyndication.com',\n  'googleadservices.com','ads.google.com','amazon-adsystem.com',\n  'adsrvr.org','outbrain.com','taboola.com','revcontent.com',\n  'zedo.com','adroll.com','advertising.com','ads.yahoo.com',\n  'adsystem.com','popads.net','popcash.net','popunder.net',\n  'trafficjunky.net','juicyads.com','exoclick.com',\n  'hilltopads.net','propellerads.com','adsterra.com',\n  'clickadu.com','adcash.com','yllix.com','adfly.com',\n  'linkbucks.com','adf.ly','bc.vc','j.gs','ceesty.com',\n  'corneey.com','destyy.com','festyy.com','sh.st','ad.fly',\n  'ouo.io','ity.im','qps.ru','cf.ly','pkt.gs','deb.im',\n  'vzturl.com','qpdownload.com','cleanfiles.net',\n  'apichat.online','brtclicks.com','chatmate.tv',\n  'brightadnetwork.com','nectsideaments.com',\n  'wap.moob.club','zm.wap','partitial','gamifun',\n  'newgrounds.com/adngin','adhigh','adlabel',\n  'adskeeper','ad-sterra','pubdirecte','trafftime',\n  'go.ad2up','openx.net','rubiconproject.com',\n  'casalemedia.com','pubmatic.com','appnexus.com',\n  'criteo.com','bidswitch.net','adform.net',\n  'smartadserver.com','lijit.com','sovrn.com',\n  'sharethrough.com','triplelift.com','indexexchange.com',\n  'vidcrunch.com','vidazoo.com','unrulymedia.com',\n  'spotxchange.com','spotx.tv','teads.tv','yieldmo.com',\n  '33across.com','rhythmone.com','undertone.com',\n  'yieldmanager.com','overture.com','valueclick.com',\n];\n\nself.addEventListener('install', function(e){\n  self.skipWaiting();\n});\nself.addEventListener('activate', function(e){\n  e.waitUntil(clients.claim());\n});\nself.addEventListener('fetch', function(e){\n  var url = e.request.url.toLowerCase();\n  var blocked = AD_DOMAINS.some(function(d){ return url.indexOf(d) >= 0; });\n  if(blocked){\n    /* Return empty 200 response — the request never reaches the ad server */\n    e.respondWith(new Response('', {\n      status: 200,\n      headers: {'Content-Type':'text/plain'}\n    }));\n    return;\n  }\n  /* Let everything else through normally */\n  e.respondWith(fetch(e.request).catch(function(){\n    return new Response('', {status:200});\n  }));\n});\n";
-  var blob=new Blob([SW_CODE],{type:'application/javascript'});
-  var url=URL.createObjectURL(blob);
-  navigator.serviceWorker.register(url,{scope:'/'}).then(function(reg){
+  navigator.serviceWorker.register('/sw.js',{scope:'/'}).then(function(reg){
     console.log('FengWorld Shield active');
   }).catch(function(e){
-    /* SW blob registration blocked in some browsers — that's fine, 
-       the JS-layer blocker still runs */
-    console.log('SW fallback mode');
+    console.log('FengWorld Shield unavailable — JS-layer blocker still active');
   });
 }
 </script>
@@ -549,13 +495,6 @@ if('serviceWorker' in navigator){
 <!-- MORE OVERLAY -->
 <div id="more-overlay" onclick="closeMore()">
   <div id="more-panel" onclick="event.stopPropagation()">
-    <div class="mi mi-live" onclick="closeMore();openLiveTV()">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>Live TV
-    </div>
-    <div class="mi mi-live" onclick="closeMore();openLiveSports()">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l4.24 4.24m5.66 0l4.24-4.24M4.93 19.07l4.24-4.24m5.66 0l4.24 4.24"/></svg>Live Sports
-    </div>
-    <div class="mi-sep"></div>
     <div class="mi" onclick="closeMore();openIP('ip-4k')">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M8 15V9l4 3-4 3zm6 0V9h1.5m0 0h1.5m-1.5 3h1.5" stroke-linecap="round"/></svg>4K Content
     </div>
@@ -657,62 +596,6 @@ if('serviceWorker' in navigator){
   </div>
 </div>
 
-<!-- LIVE TV PAGE -->
-<div class="live-page" id="live-tv-page">
-  <div class="live-head">
-    <button class="back-btn" onclick="closeLiveTV()">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <h2>📺 Live TV</h2>
-    <div style="font-size:.65rem;color:var(--accent);font-weight:700;background:rgba(29,185,84,.15);
-      border:1px solid rgba(29,185,84,.3);border-radius:4px;padding:3px 8px;">LIVE</div>
-  </div>
-  <div class="live-cats" id="tv-cats"></div>
-  <div class="ch-grid" id="tv-grid">
-    <div class="spin-wrap" style="grid-column:1/-1"><div class="spin"></div></div>
-  </div>
-</div>
-
-<!-- LIVE SPORTS PAGE -->
-<div class="live-page" id="live-sports-page">
-  <div class="live-head">
-    <button class="back-btn" onclick="closeLiveSports()">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <h2>🏆 Live Sports</h2>
-    <div style="font-size:.65rem;color:#f6c90e;font-weight:700;background:rgba(246,201,14,.12);
-      border:1px solid rgba(246,201,14,.3);border-radius:4px;padding:3px 8px;">LIVE</div>
-  </div>
-  <div class="sport-day-pills" id="sport-days"></div>
-  <div id="sport-body">
-    <div class="spin-wrap"><div class="spin"></div></div>
-  </div>
-</div>
-
-<!-- LIVE PLAYER -->
-<div id="live-player">
-  <div id="lp-topbar">
-    <button class="pm-back" onclick="closeLivePlayer()">&#8592;</button>
-    <div class="pm-title" id="lp-title">Live</div>
-    <div style="font-size:.6rem;color:var(--accent);font-weight:800;background:rgba(29,185,84,.15);
-      border:1px solid rgba(29,185,84,.3);border-radius:4px;padding:2px 7px;flex-shrink:0;">● LIVE</div>
-  </div>
-  <div id="lp-iframe-wrap" style="flex:1;position:relative;overflow:hidden;background:#000;min-height:0;">
-    <!-- HLS video for M3U streams -->
-    <video id="lp-video" style="position:absolute;top:0;left:0;width:100%;height:100%;background:#000;display:none;" controls autoplay playsinline></video>
-    <!-- iframe fallback for non-HLS streams -->
-    <iframe id="lp-iframe" src="" allowfullscreen allow="autoplay;encrypted-media;picture-in-picture;fullscreen" loading="eager" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#000;display:none;"></iframe>
-  </div>
-  <div id="lp-bottombar">
-    <div class="lp-srv-row" id="lp-srv-row"></div>
-    <div class="pm-actions" style="margin-top:8px;">
-      <button class="pm-btn red" onclick="lpNextSrv()">&#9889; Next Player</button>
-      <button class="pm-btn" onclick="lpFs()">&#x26F6; Fullscreen</button>
-      <div class="pm-shield">&#128737; Shield ON</div>
-    </div>
-  </div>
-</div>
-
 <!-- 4K PAGE -->
 <div class="ip" id="ip-4k">
   <div class="ip-head">
@@ -801,6 +684,7 @@ if('serviceWorker' in navigator){
 </div>
 
 <div id="toast"></div>
+<div id="offline-banner">&#128245; No internet connection</div>
 
 <script>
 var KEY='ea593c3fa4d4942ece315977cd7e32c9';
@@ -830,20 +714,19 @@ try{WL=JSON.parse(localStorage.getItem('fw_wl2')||'[]');}catch(e){}
 try{HIST=JSON.parse(localStorage.getItem('fw_hist2')||'[]');}catch(e){}
 
 /* ── SERVERS ── */
-var SRVN=['VidLink','VidPlus'];
+var SRVN=['VidLink'];
 function getSrcs(type,id,s,e){
   if(type==='movie')return[
     'https://vidlink.pro/movie/'+id+'?autoplay=true&primaryColor=e50914',
-    'https://player.vidplus.to/embed/movie/'+id+'?autoplay=true&primarycolor=e50914',
   ];
   return[
     'https://vidlink.pro/tv/'+id+'/'+s+'/'+e+'?autoplay=true&primaryColor=e50914',
-    'https://player.vidplus.to/embed/tv/'+id+'/'+s+'/'+e+'?autoplay=true&primarycolor=e50914',
   ];
 }
 
 /* ── PAGES ── */
 var PAGES=['home','movies','series','anime','search'];
+var pageLoaded={movies:false,series:false,anime:false};
 function showPage(name){
   curPage=name;
   PAGES.forEach(function(p){
@@ -851,9 +734,9 @@ function showPage(name){
     var b=byId('bn-'+p);if(b)b.classList.toggle('active',p===name);
   });
   window.scrollTo(0,0);
-  if(name==='movies'&&!byId('mov-grid').querySelector('.gc'))loadMovies(1,true);
-  if(name==='series'&&!byId('ser-grid').querySelector('.gc'))loadSeries(1,true);
-  if(name==='anime'&&!byId('ani-grid').querySelector('.gc'))loadAnime(1,true);
+  if(name==='movies'&&!pageLoaded.movies)loadMovies(1,true);
+  if(name==='series'&&!pageLoaded.series)loadSeries(1,true);
+  if(name==='anime'&&!pageLoaded.anime)loadAnime(1,true);
 }
 
 /* ── MORE / IP ── */
@@ -881,290 +764,7 @@ function clearHistory(){
 }
 
 
-/* ══ LIVE TV ══ */
-var TV_CHANNELS=[
-  {n:'Kanali 7',l:'https://i.imgur.com/rL2v9pM.png',g:'Albania',u:'https://fe.tring.al/delta/105/out/u/1200_1.m3u8',hls:true},
-  {n:'A2 CNN Albania',l:'https://i.imgur.com/TgO3Lzi.png',g:'Albania',u:'https://tv.a2news.com/live/smil:a2cnnweb.stream.smil/playlist.m3u8',hls:true},
-  {n:'AlbKanale Music TV',l:'https://i.imgur.com/JdKxscs.png',g:'Albania',u:'https://albportal.net/albkanalemusic.m3u8',hls:true},
-  {n:'Alpo TV',l:'https://i.imgur.com/Pr4ixiA.png',g:'Albania',u:'https://5d00db0e0fcd5.streamlock.net/7236/7236/playlist.m3u8',hls:true},
-  {n:'CNA',l:'https://i.imgur.com/X3ukD5t.png',g:'Albania',u:'https://live1.mediadesk.al/cnatvlive.m3u8',hls:true},
-  {n:'News 24',l:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/News_24_%28Albania%29.svg/1024px-News_24_%28Albania%29.svg.png',g:'Albania',u:'https://tv.balkanweb.com/news24/livestream/playlist.m3u8',hls:true},
-  {n:'Ora News',l:'https://i.imgur.com/ILZY5bJ.png',g:'Albania',u:'https://live1.mediadesk.al/oranews.m3u8',hls:true},
-  {n:'Panorama TV',l:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Panorama_logo.svg/512px-Panorama_logo.svg.png',g:'Albania',u:'http://198.244.188.94/panorama/livestream/playlist.m3u8',hls:true},
-  {n:'Report TV',l:'https://i.imgur.com/yuRDJYY.png',g:'Albania',u:'https://deb10stream.duckdns.org/hls/stream.m3u8',hls:true},
-  {n:'Syri',l:'https://i.imgur.com/4zVyj1M.png',g:'Albania',u:'https://stream.syritv.al/SyriTV/index.m3u8',hls:true},
-  {n:'Tropoja',l:'https://i.imgur.com/D3hNOVS.png',g:'Albania',u:'https://live.prostream.al/al/smil:tropojatv.smil/playlist.m3u8',hls:true},
-  {n:'TV 7 Albania',l:'https://i.imgur.com/k9WqPLZ.png',g:'Albania',u:'https://5d00db0e0fcd5.streamlock.net/7064/7064/playlist.m3u8',hls:true},
-  {n:'TV Apollon',l:'https://i.imgur.com/gUz2AjM.png',g:'Albania',u:'https://live.apollon.tv/Apollon-WEB/video.m3u8?token=tnt3u76re30d2',hls:true},
-  {n:'Vizion Plus',l:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Vizion_Plus.svg/512px-Vizion_Plus.svg.png',g:'Albania',u:'https://fe.tring.al/delta/105/out/u/rdghfhsfhfshs.m3u8',hls:true},
-  {n:'Andorra TV',l:'https://upload.wikimedia.org/wikipedia/commons/3/32/Logo_Andorra_Televisi%C3%B3.png',g:'Andorra',u:'https://videos.rtva.ad/live/rtva/playlist.m3u8',hls:true},
-  {n:'Aunar',l:'http://tvabierta.weebly.com/uploads/5/1/3/4/51344345/aunar.png',g:'Argentina',u:'https://5fb24b460df87.streamlock.net/live-cont.ar/mirador/playlist.m3u8',hls:true},
-  {n:'Cine.AR',l:'https://i.imgur.com/RPLyrIC.png',g:'Argentina',u:'https://5fb24b460df87.streamlock.net/live-cont.ar/cinear/playlist.m3u8',hls:true},
-  {n:'Tec TV',l:'https://i.imgur.com/EGCq1wc.png',g:'Argentina',u:'https://tv.initium.net.ar:3939/live/tectvmainlive.m3u8',hls:true},
-  {n:'DeporTV',l:'https://i.imgur.com/iyYLNRt.png',g:'Argentina',u:'https://5fb24b460df87.streamlock.net/live-cont.ar/deportv/playlist.m3u8',hls:true},
-  {n:'Canal E',l:'https://i.ibb.co/y4pkxH3/Qtc8-M2-PG-400x400.jpg',g:'Argentina',u:'https://unlimited1-us.dps.live/perfiltv/perfiltv.smil/perfiltv/livestream2/chunks.m3u8',hls:true},
-  {n:'Telemax',l:'https://i.imgur.com/gfX0hdB.png',g:'Argentina',u:'https://live-edge01.telecentro.net.ar/live/smil:tlx.smil/playlist.m3u8',hls:true},
-  {n:'Net TV',l:'https://i.imgur.com/EWmshtx.png',g:'Argentina',u:'https://unlimited1-us.dps.live/nettv/nettv.smil/playlist.m3u8',hls:true},
-  {n:'TV Universidad',l:'https://i.imgur.com/tvLHiAT.png',g:'Argentina',u:'https://stratus.stream.cespi.unlp.edu.ar/hls/tvunlp.m3u8',hls:true},
-  {n:'Barricada TV',l:'https://www.barricadatv.org/?p=23082',g:'Argentina',u:'https://live-ak.vimeocdn.com/exp=1696402364~acl=%2F9f41e203-241b-4eb7-b0b5-b1839903408f%2F%2A~hmac=d4819f301510676a986bfe610b664765ee2b1a23e1e1ca3214398f949a0b2778/9f41e203-241b-4eb7-b0b5-b1839903408f/hls.m3u8?min_seconds=30',hls:true},
-  {n:'Urbana Tevé',l:'https://yt3.ggpht.com/ytc/AKedOLQLeFMWMeoumi-o24ohLPXSEdNL5-oJ9W5oP5KnnA=s900-c-k-c0x00ffffff-no-rj',g:'Argentina',u:'https://cdnhd.iblups.com/hls/DD3nXkAkWk.m3u8',hls:true},
-  {n:'Comarca TV',l:'http://directostv.teleame.com/wp-content/uploads/2020/10/Comarca-TV-en-vivo-Online.png',g:'Argentina',u:'https://video-weaver.ord56.hls.ttvnw.net/v1/playlist/Cq4FFLOPxq44Qy0kxjcr_wXuRRwjKU6gJ80Tc5eWRkaz5XdeNfeq7DzoNAstinu7BLtnw7jYDANX5yCDozdlS55_kYfuDyqQhwF0JpzU75lDUv5NOuUVWBwlP0m1Bh1JMn21v_OvA_teSCI7hcIFl2DoINrr8bHnpSS8EUvXNesfdX_LcfQH-clqftQ0sCreLIbTvxI5MyL6Wnm8jGh2yg48A2c_k9YHDH6TpM3tLo-pbRrrfByqMq-IoMQREf5DV_sTfHtAzinQQU3Np309s2ScJwcBlAjzz4VJ7svuJ1UbWBBylenSTnrXQW5Vws7OqG2kcoAHHpAQN6BQCpxaXO6dE7MLg7Nq6E7961fHEVSqFCRQg2Y5orbSsEwMo7_S4s5POZSQX1tn04QDuHfLixx-aBcbctSSFmI1CNZ3YDCEZVvWHOU6SyKQcsZeJCFLA1DsxqY3DeAn6n7xpPS4pdsizKqlqsT66liv_L-48h7jGujNZPDHge0fcgUs_7b7jlKJlKv-S_s1mGgLqPEUEQ8dhn5AugB0kfjAGgcTHIP_qLPRY0M7OikuBaMxh1pUpPkVG9AX4jCg1cwCgcfa64OP9ed4pwMjoiKm0dIfytTQ8hWjwXtkv16nJDfZ3kkqaMnM8ErZG6tRw-JVy3nRooKubY7Re0Fc1RHB85_eX2NYQD88N7r-UgaiO2ax0FQ-E_IdfuwSmp5oDy6Di6pT7r_zDRN3znbV64s4i-INUg-D2Leeq4xqYhe_Zhj-3AoxXDWCB0-DCc1kFEComkNpY01YA19zEm01TKLCbdaJwdC6bQpSEoJkOCoPAMnxm7oPNlqZRbhM4TVCJ34f4Y1guzaDomcEABl4Cii2UF-OhskRUZF-SUWjWdO6z62UqZagzG2QOTr6VBH-ItT_16fLsRUaDGTVKzgYHT8XcSqTkyABKgl1cy1lYXN0LTEwjQY.m3u8',hls:true},
-  {n:'El Trece',l:'https://i.imgur.com/ZK7AQFg.png',g:'Argentina',u:'https://live-01-02-eltrece.vodgc.net/eltrecetv/index.m3u8',hls:true},
-  {n:'El Nueve',l:'https://i.imgur.com/EtcVSm4.png',g:'Argentina',u:'https://octubre-live.cdn.vustreams.com/live/channel09/live.isml/live.m3u8',hls:true},
-  {n:'Telefe',l:'https://i.imgur.com/wrZfMXn.png',g:'Argentina',u:'https://telefe.com/Api/Videos/GetSourceUrl/694564/0/HLS?.m3u8',hls:true},
-  {n:'Armenia 1',l:'https://i.imgur.com/HIwJ4lc.png',g:'Armenia',u:'https://amtv1.livestreamingcdn.com/am2abr/index.m3u8',hls:true},
-  {n:'Kentron TV',l:'https://i.imgur.com/eCaxBFn.png',g:'Armenia',u:'https://gineu9.bozztv.com/gin-36bay2/gin-kentron/tracks-v1a1/mono.m3u8',hls:true},
-  {n:'Armenia TV',l:'https://i.imgur.com/UnoI5uM.png',g:'Armenia',u:'https://cdn.hayastantv.com:8088/armenia/tracks-v1a1/mono.m3u8',hls:true},
-  {n:'5TV',l:'https://i.imgur.com/jOGZZDo.png',g:'Armenia',u:'https://cdn.hayastantv.com:8088/5tv/tracks-v1a1/mono.m3u8',hls:true},
-  {n:'TVSN',l:'https://i.imgur.com/p3QCBOo.png',g:'Australia',u:'https://tvsn-i.akamaihd.net/hls/live/261837/tvsn/tvsn_750.m3u8',hls:true},
-  {n:'ABC News',l:'https://upload.wikimedia.org/wikipedia/en/thumb/d/df/ABC_News_Channel.svg/640px-ABC_News_Channel.svg.png',g:'Australia',u:'https://abc-iview-mediapackagestreams-2.akamaized.net/out/v1/6e1cc6d25ec0480ea099a5399d73bc4b/index.m3u8',hls:true},
-  {n:'M4TV',l:'https://i.imgur.com/HZohlNk.png',g:'Australia',u:'https://5a32c05065c79.streamlock.net/live/stream/playlist.m3u8',hls:true},
-  {n:'Racing.com',l:'https://i.imgur.com/pma0OCf.png',g:'Australia',u:'https://racingvic-i.akamaized.net/hls/live/598695/racingvic/1500.m3u8',hls:true},
-  {n:'9Go!',l:'https://i.imgur.com/1CFGu5O.png',g:'Australia',u:'https://9now-livestreams.akamaized.net/hls/live/2008312/go-syd/master.m3u8',hls:true},
-  {n:'9Life',l:'https://i.imgur.com/ZCUiqlL.png',g:'Australia',u:'https://9now-livestreams.akamaized.net/hls/live/2008313/life-syd/master.m3u8',hls:true},
-  {n:'9Rush',l:'https://upload.wikimedia.org/wikipedia/en/c/c2/Logo_of_9RUSH.png',g:'Australia',u:'https://9now-livestreams.akamaized.net/hls/live/2010626/rush-syd/master.m3u8',hls:true},
-  {n:'ORF 1',l:'https://i.imgur.com/ft2LuRl.jpg',g:'Austria',u:'https://orf1.mdn.ors.at/out/u/orf1/q8c/manifest.m3u8',hls:true},
-  {n:'ESPN',g:'Sports',dad:'1',hls:false},
-  {n:'ESPN2',g:'Sports',dad:'2',hls:false},
-  {n:'Fox Sports 1',g:'Sports',dad:'39',hls:false},
-  {n:'NBA TV',g:'Sports',dad:'596',hls:false},
-  {n:'BeIN Sports',g:'Sports',dad:'664',hls:false},
-  {n:'CNN',g:'News',dad:'323',hls:false},
-  {n:'Fox News',g:'News',dad:'347',hls:false},
-  {n:'BBC One',g:'UK',dad:'104',hls:false},
-  {n:'ITV',g:'UK',dad:'106',hls:false},
-  {n:'Sky Sports',g:'UK',dad:'108',hls:false},
-  {n:'Eurosport 1',g:'Sports',dad:'204',hls:false},
-  {n:'DAZN 1',g:'Sports',dad:'150',hls:false},
-];
-
-var tvCurCat='All';
-function openLiveTV(){
-  byId('live-tv-page').classList.add('open');
-  document.body.style.overflow='hidden';
-  buildTVCats();
-  renderTVChannels('All');
-}
-function closeLiveTV(){
-  byId('live-tv-page').classList.remove('open');
-  document.body.style.overflow='';
-}
-function buildTVCats(){
-  var cats=['All', 'Albania', 'Andorra', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Sports', 'News', 'UK'];
-  var c=byId('tv-cats');c.innerHTML='';
-  cats.forEach(function(cat){
-    var b=document.createElement('button');b.className='lcat'+(cat==='All'?' on':'');
-    b.textContent=cat;
-    b.addEventListener('click',function(){
-      c.querySelectorAll('.lcat').forEach(function(x){x.classList.remove('on');});
-      b.classList.add('on');tvCurCat=cat;renderTVChannels(cat);
-    });
-    c.appendChild(b);
-  });
-}
-function renderTVChannels(cat){
-  var g=byId('tv-grid');g.innerHTML='';
-  var items=cat==='All'?TV_CHANNELS:TV_CHANNELS.filter(function(c){return c.g===cat;});
-  if(!items.length){g.innerHTML='<div class="ip-empty" style="grid-column:1/-1"><p>No channels in this category</p></div>';return;}
-  items.forEach(function(ch){
-    var div=document.createElement('div');div.className='ch-card';
-    var logoHtml=ch.l?'<img src="'+ch.l+'" style="width:48px;height:48px;object-fit:contain;border-radius:6px;margin-bottom:6px;" onerror="this.style.display=\'none\'">':'<div style="font-size:1.8rem;margin-bottom:6px;">📺</div>';
-    div.innerHTML=logoHtml+'<div class="ch-name">'+ch.n+'</div>';
-    div.addEventListener('click',function(){ if(ch.hls&&ch.u){playLiveChannel(ch.n,ch.n,true,ch.u,'');}else if(ch.dad){playLiveChannel(ch.n,ch.n,false,'',ch.dad);} });
-    g.appendChild(div);
-  });
-}
-
-/* ══ LIVE SPORTS ══ */
-var sportsSchedule={};
-var sportCurDay=0;
-
-function openLiveSports(){
-  byId('live-sports-page').classList.add('open');
-  document.body.style.overflow='hidden';
-  loadSportsSchedule();
-}
-function closeLiveSports(){
-  byId('live-sports-page').classList.remove('open');
-  document.body.style.overflow='';
-}
-function loadSportsSchedule(){
-  var body=byId('sport-body');
-  body.innerHTML='<div class="spin-wrap"><div class="spin"></div></div>';
-  // Fetch DaddyLive schedule JSON
-  fetch('https://daddylive.pw/schedule/schedule-generated.json')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      sportsSchedule=data;
-      buildSportDays(data);
-    })
-    .catch(function(){
-      // Fallback: show static popular sports channels
-      body.innerHTML='';
-      buildSportDays(null);
-    });
-}
-
-function buildSportDays(data){
-  var daysRow=byId('sport-days');
-  daysRow.innerHTML='';
-  var today=new Date();
-  var days=[];
-  for(var i=0;i<7;i++){
-    var d=new Date(today);d.setDate(today.getDate()+i);
-    days.push(d);
-  }
-  days.forEach(function(d,i){
-    var isToday=i===0;
-    var label=isToday?'Today':['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
-    var b=document.createElement('button');b.className='dpill'+(i===0?' on':'');
-    b.innerHTML=label+'<br><span style="font-size:.55rem;opacity:.7;">'+d.getDate()+'</span>';
-    b.addEventListener('click',function(){
-      daysRow.querySelectorAll('.dpill').forEach(function(x){x.classList.remove('on');});
-      b.classList.add('on');sportCurDay=i;renderSportsDay(data,i);
-    });
-    daysRow.appendChild(b);
-  });
-  renderSportsDay(data,0);
-}
-
-function renderSportsDay(data,dayIdx){
-  var body=byId('sport-body');body.innerHTML='';
-  // Try to get schedule data for this day
-  var dayKeys=data?Object.keys(data):[];
-  var dayData=dayIdx<dayKeys.length?data[dayKeys[dayIdx]]:null;
-  if(dayData&&Object.keys(dayData).length){
-    Object.keys(dayData).forEach(function(cat){
-      var events=dayData[cat];
-      if(!events||!events.length)return;
-      var sec=document.createElement('div');
-      sec.innerHTML='<div class="sport-sec-title">'+cat+'</div>';
-      events.forEach(function(ev){
-        var chs=ev.channels||[];
-        var div=document.createElement('div');div.className='sport-event';
-        div.innerHTML='<div class="sport-time">'+(ev.time||'LIVE')+'</div>'
-          +'<div class="sport-info">'
-          +'<div class="sport-cat">'+cat+'</div>'
-          +'<div class="sport-name">'+ev.event+'</div>'
-          +(chs.length?'<div class="sport-chs">'+chs.slice(0,3).map(function(c){return '<span class="sport-ch-badge">'+c.channel_name+'</span>';}).join('')+'</div>':'')
-          +'</div>'
-          +'<div class="sport-arrow">▶</div>';
-        div.addEventListener('click',function(){
-          if(chs.length){
-            playLiveChannel(ev.event,ev.event,false,'',chs[0].channel_id);
-          } else {
-            toast('No stream available for this event');
-          }
-        });
-        sec.appendChild(div);
-      });
-      body.appendChild(sec);
-    });
-    if(!body.children.length)renderFallbackSports(body);
-  } else {
-    renderFallbackSports(body);
-  }
-}
-
-function renderFallbackSports(body){
-  // Show popular sports channels as fallback
-  var sportChannels=TV_CHANNELS.filter(function(c){return c.g==='Sports';});
-  body.innerHTML='<div style="padding:14px 14px 4px;font-size:.75rem;color:var(--muted);">Popular Sports Channels</div>';
-  var grid=document.createElement('div');grid.className='ch-grid';
-  sportChannels.forEach(function(ch){
-    var div=document.createElement('div');div.className='ch-card';
-    var sLogo=ch.l?'<img src="'+ch.l+'" style="width:48px;height:48px;object-fit:contain;border-radius:6px;margin-bottom:6px;" onerror="this.style.display=\'none\'">':'<div style="font-size:1.8rem;margin-bottom:6px;">🏆</div>';
-    div.innerHTML=sLogo+'<div class="ch-name">'+ch.n+'</div>';
-    div.addEventListener('click',function(){
-      if(ch.hls&&ch.u) playLiveChannel(ch.n,ch.n,true,ch.u,'');
-      else if(ch.dad) playLiveChannel(ch.n,ch.n,false,'',ch.dad);
-    });
-    grid.appendChild(div);
-  });
-  body.appendChild(grid);
-}
-
-/* ══ LIVE PLAYER ══ */
-var lpCurId=null,lpCurPlayer=1;
-var LP_PLAYERS=[1,2,3,4,5,6,7,8];
-
-var _hlsInstance=null;
-function playLiveChannel(channelId,name,isHls,hlsUrl,dadId){
-  lpCurId=channelId;lpCurPlayer=1;
-  byId('lp-title').textContent=name||'Live';
-  byId('live-player').classList.add('open');
-  document.body.style.overflow='hidden';
-  try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(function(){});}catch(e){}
-  installAB();
-
-  var vid=byId('lp-video');
-  var ifr=byId('lp-iframe');
-
-  if(isHls&&hlsUrl){
-    /* Real HLS stream — use video tag + HLS.js */
-    ifr.style.display='none'; ifr.src='';
-    vid.style.display='block';
-    if(_hlsInstance){_hlsInstance.destroy();_hlsInstance=null;}
-    if(Hls.isSupported()){
-      _hlsInstance=new Hls({enableWorker:true,lowLatencyMode:true});
-      _hlsInstance.loadSource(hlsUrl);
-      _hlsInstance.attachMedia(vid);
-      _hlsInstance.on(Hls.Events.MANIFEST_PARSED,function(){vid.play().catch(function(){});});
-      _hlsInstance.on(Hls.Events.ERROR,function(e,d){
-        if(d.fatal){toast('Stream unavailable — try another channel');closeLivePlayer();}
-      });
-    } else if(vid.canPlayType('application/vnd.apple.mpegurl')){
-      /* Safari native HLS */
-      vid.src=hlsUrl;
-      vid.play().catch(function(){});
-    }
-    byId('lp-srv-row').innerHTML='<span style="font-size:.72rem;color:var(--accent);font-weight:700;padding:6px 12px;">● LIVE STREAM</span>';
-  } else if(dadId){
-    /* DaddyLive embed */
-    vid.style.display='none'; vid.src='';
-    ifr.style.display='block';
-    ifr.src='https://daddylive.pw/embed/stream.php?id='+dadId+'&player=1&source=tv';
-    byId('lp-srv-row').innerHTML=LP_PLAYERS.map(function(p){
-      return '<button class="lp-srv'+(p===1?' on':'')+'" onclick="lpSwitchDad('+dadId+','+p+')">P'+p+'</button>';
-    }).join('');
-  } else {
-    vid.style.display='none';
-    ifr.style.display='block';
-    ifr.src='https://daddylive.pw/embed/stream.php?id='+channelId+'&player=1&source=tv';
-    byId('lp-srv-row').innerHTML=LP_PLAYERS.map(function(p){
-      return '<button class="lp-srv'+(p===1?' on':'')+'" onclick="lpSwitchDad('+channelId+','+p+')">P'+p+'</button>';
-    }).join('');
-  }
-}
-function lpSwitchDad(id,p){
-  lpCurPlayer=p;
-  byId('lp-iframe').src='https://daddylive.pw/embed/stream.php?id='+id+'&player='+p+'&source=tv';
-  byId('lp-srv-row').querySelectorAll('.lp-srv').forEach(function(b,i){b.classList.toggle('on',LP_PLAYERS[i]===p);});
-  toast('Player '+p+' loading...');
-}
-function closeLivePlayer(){
-  var vid=byId('lp-video');
-  var ifr=byId('lp-iframe');
-  if(_hlsInstance){_hlsInstance.destroy();_hlsInstance=null;}
-  if(vid){vid.pause();vid.src='';vid.style.display='none';}
-  if(ifr){ifr.src='';ifr.style.display='none';}
-  byId('live-player').classList.remove('open');
-  document.body.style.overflow='';
-  try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();}catch(e){}
-}
-function lpSwitch(p){
-  lpCurPlayer=p;
-  byId('lp-iframe').src='https://daddylive.pw/embed/stream.php?id='+lpCurId+'&player='+p+'&source=tv';
-  byId('lp-srv-row').querySelectorAll('.lp-srv').forEach(function(b,i){b.classList.toggle('on',LP_PLAYERS[i]===p);});
-  toast('Player '+p+' loading...');
-}
-function lpNextSrv(){lpSwitch(lpCurPlayer<8?lpCurPlayer+1:1);}
-function lpFs(){
-  var el=byId('live-player');
-  if(el.requestFullscreen)el.requestFullscreen();
-  else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();
-  try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(function(){});}catch(e){}
-}
+/* ══ LIVE PLAYER (removed) ══ */
 
 /* ══ 4K + COLLECTION ══ */
 function load4K(){
@@ -1204,6 +804,23 @@ function toast(msg){
   var t=byId('toast');t.textContent=msg;t.classList.add('show');
   clearTimeout(toastTmr);toastTmr=setTimeout(function(){t.classList.remove('show');},2500);
 }
+
+/* ── CONNECTION STATUS ── */
+function updateConnStatus(){
+  var b=byId('offline-banner');
+  if(!navigator.onLine){
+    b.classList.add('show');
+  } else {
+    if(b.classList.contains('show')){
+      b.classList.remove('show');
+      toast('Back online');
+    }
+  }
+}
+window.addEventListener('online',updateConnStatus);
+window.addEventListener('offline',updateConnStatus);
+/* Check immediately in case the page loads while already offline */
+updateConnStatus();
 
 /* ── SAVE ── */
 function saveWL(){try{localStorage.setItem('fw_wl2',JSON.stringify(WL));}catch(e){}}
@@ -1346,8 +963,15 @@ function buildHome(){
 function updateHero(){
   var d=heroItems[heroIdx];if(!d)return;
   var img=byId('h-img');if(!img)return;
+  img.classList.remove('show');
+  img.style.animation='none';
+  void img.offsetWidth; /* force reflow to restart CSS animation */
   img.src=iurl(d.backdrop_path,'w1280');
   img.onerror=function(){img.src=iurl(d.poster_path,'w780');};
+  img.onload=function(){
+    img.classList.add('show');
+    img.style.animation='heroZoom 7s ease-out forwards';
+  };
   byId('h-type').textContent=(d.media_type==='movie'?'MOVIE':'TV SERIES');
   byId('h-title').textContent=d.title||d.name||'';
   var yr=(d.release_date||d.first_air_date||'').slice(0,4);
@@ -1355,7 +979,14 @@ function updateHero(){
     (yr?'<span>'+yr+'</span><span style="opacity:.3">·</span>':'')+
     '<span>'+(d.media_type==='movie'?'Movie':'Series')+'</span>';
   byId('h-syn').textContent=d.overview||'';
-  /* dots */
+  /* Re-trigger text entrance animations */
+  ['h-type','h-title','h-meta','h-syn'].forEach(function(id){
+    var el=byId(id);if(!el)return;
+    el.style.animation='none';void el.offsetWidth;el.style.animation='';
+  });
+  var btns=document.querySelector('.hero-btns');
+  if(btns){btns.style.animation='none';void btns.offsetWidth;btns.style.animation='';}
+  /* dots with animated progress bar */
   var dots=byId('h-dots');
   if(dots){dots.innerHTML=heroItems.map(function(_,i){
     return '<div class="hdot'+(i===heroIdx?' on':'')+'" onclick="heroGo('+i+')"></div>';
@@ -1476,6 +1107,7 @@ function loadMovies(page,reset){
   var params={sort_by:'popularity.desc',page:page};
   if(movFilter)params.with_genres=movFilter;
   tmdb('/discover/movie',params).then(function(d){
+    pageLoaded.movies=true;
     if(reset)g.innerHTML='';else{var lm=g.querySelector('.load-more-wrap');if(lm)lm.remove();}
     (d.results||[]).forEach(function(item){g.appendChild(gcCard(item,'movie'));});
     if(d.page<d.total_pages&&d.page<8){
@@ -1485,7 +1117,11 @@ function loadMovies(page,reset){
       btn.addEventListener('click',function(){movPage++;loadMovies(movPage,false);});
       wrap.appendChild(btn);g.appendChild(wrap);
     }
-  }).catch(function(){g.innerHTML='<div class="empty" style="grid-column:1/-1"><p>Failed to load</p></div>';});
+  }).catch(function(){
+    pageLoaded.movies=false;
+    g.innerHTML='<div class="empty" style="grid-column:1/-1"><p>Failed to load</p>'
+      +'<button class="load-more-btn" style="margin-top:10px" onclick="loadMovies(1,true)">Retry</button></div>';
+  });
 }
 function loadSeries(page,reset){
   var g=byId('ser-grid');
@@ -1493,6 +1129,7 @@ function loadSeries(page,reset){
   var params={sort_by:'popularity.desc',page:page};
   if(serFilter)params.with_genres=serFilter;
   tmdb('/discover/tv',params).then(function(d){
+    pageLoaded.series=true;
     if(reset)g.innerHTML='';else{var lm=g.querySelector('.load-more-wrap');if(lm)lm.remove();}
     (d.results||[]).forEach(function(item){g.appendChild(gcCard(item,'tv'));});
     if(d.page<d.total_pages&&d.page<8){
@@ -1502,13 +1139,18 @@ function loadSeries(page,reset){
       btn.addEventListener('click',function(){serPage++;loadSeries(serPage,false);});
       wrap.appendChild(btn);g.appendChild(wrap);
     }
-  }).catch(function(){g.innerHTML='<div class="empty" style="grid-column:1/-1"><p>Failed to load</p></div>';});
+  }).catch(function(){
+    pageLoaded.series=false;
+    g.innerHTML='<div class="empty" style="grid-column:1/-1"><p>Failed to load</p>'
+      +'<button class="load-more-btn" style="margin-top:10px" onclick="loadSeries(1,true)">Retry</button></div>';
+  });
 }
 function loadAnime(page,reset){
   var g=byId('ani-grid');
   if(reset){g.innerHTML='<div class="spin-wrap" style="grid-column:1/-1"><div class="spin"></div></div>';}
   var params={with_genres:'16',with_keywords:'210024|287501',sort_by:'popularity.desc',page:page};
   tmdb('/discover/tv',params).then(function(d){
+    pageLoaded.anime=true;
     if(reset)g.innerHTML='';else{var lm=g.querySelector('.load-more-wrap');if(lm)lm.remove();}
     (d.results||[]).forEach(function(item){g.appendChild(gcCard(item,'tv'));});
     if(d.page<d.total_pages&&d.page<8){
@@ -1518,7 +1160,11 @@ function loadAnime(page,reset){
       btn.addEventListener('click',function(){aniPage++;loadAnime(aniPage,false);});
       wrap.appendChild(btn);g.appendChild(wrap);
     }
-  }).catch(function(){g.innerHTML='<div class="empty" style="grid-column:1/-1"><p>Failed to load</p></div>';});
+  }).catch(function(){
+    pageLoaded.anime=false;
+    g.innerHTML='<div class="empty" style="grid-column:1/-1"><p>Failed to load</p>'
+      +'<button class="load-more-btn" style="margin-top:10px" onclick="loadAnime(1,true)">Retry</button></div>';
+  });
 }
 
 /* ── SEARCH ── */
@@ -1788,10 +1434,8 @@ function pmLoadSeas(s,btn){
 
 function anyPlayerOpen(){
   var pm=byId('player-modal');
-  var lp=byId('live-player');
   var dl=byId('dl-iframe-wrap');
   return (pm&&pm.classList.contains('open'))
-      || (lp&&lp.classList.contains('open'))
       || (dl&&dl.classList.contains('open'));
 }
 
@@ -1827,6 +1471,7 @@ function installAB(){
   /* 4. visibilitychange — NO delay, fires before browser loads ad */
   document.addEventListener('visibilitychange',function(){
     if(document.hidden&&anyPlayerOpen()){
+      window.focus();
       history.back();
     }
   });
@@ -1836,18 +1481,15 @@ function installAB(){
     if(anyPlayerOpen()){history.back();}
   },true);
 
-  /* 5b. blur — extra early signal some browsers fire before visibilitychange
-     when a popup steals focus or a new tab opens */
-  var _lastBlur=0;
+  /* 5b. blur — fires the instant focus leaves the page (popup opening,
+     new tab stealing focus). No delay — act on the same tick. */
   window.addEventListener('blur',function(){
     if(!anyPlayerOpen())return;
-    _lastBlur=Date.now();
-    setTimeout(function(){
-      if(document.hidden&&Date.now()-_lastBlur<600){history.back();}
-    },80);
+    window.focus();
+    if(document.hidden){history.back();}
   });
 
-  /* 6. Block ALL external anchor clicks */
+  /* 6. Block ALL external anchor clicks (real or programmatic) */
   document.addEventListener('click',function(e){
     var a=e.target.closest('a[href]');if(!a)return;
     var h=String(a.href||'');
@@ -1860,8 +1502,43 @@ function installAB(){
     }
   },true);
 
+  /* 6b. Catch HTMLAnchorElement.click() called programmatically by ad scripts
+     (bypasses the click event listener above since no real click event fires) */
+  try{
+    var _aClick=HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click=function(){
+      var h=String(this.href||'');
+      if(anyPlayerOpen()&&h&&h.indexOf('http')===0&&h.indexOf(location.hostname)<0&&h.indexOf('vidvault')<0){
+        return; /* silently swallow */
+      }
+      return _aClick.apply(this,arguments);
+    };
+  }catch(e){}
+
+  /* 6c. Block target=_blank / target=_top / target=_parent forced navigation
+     by stripping the attribute on any anchor as soon as it appears */
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[target]');if(!a)return;
+    var t=a.getAttribute('target');
+    if(t==='_blank'||t==='_top'||t==='_parent'){
+      a.removeAttribute('target');
+    }
+  },true);
+
+  /* 6d. Block meta refresh redirects injected into <head> by ad scripts */
+  new MutationObserver(function(muts){
+    muts.forEach(function(m){
+      m.addedNodes.forEach(function(n){
+        if(n.nodeType!==1)return;
+        if(n.tagName==='META'&&/refresh/i.test(n.getAttribute('http-equiv')||'')){
+          n.remove();
+        }
+      });
+    });
+  }).observe(document.head,{childList:true});
+
   /* 7. MutationObserver — kills injected iframes instantly */
-  var SAFE=['pm-iframe','lp-iframe','lp-video','dl-iframe'];
+  var SAFE=['pm-iframe','dl-iframe'];
   new MutationObserver(function(muts){
     muts.forEach(function(m){
       m.addedNodes.forEach(function(n){
@@ -1940,21 +1617,37 @@ function closeDlPage(){
 }
 function openVidVault(){
   if(!pId)return;
-  /* VidVault is a single-page app: it only works by typing/pasting
-     a TMDb ID into ITS OWN search box. Deep-link URLs like
-     /movie/12345 return a blank page — that's the real bug.
-     Fix: load the real homepage + auto-copy the ID so the user
-     just has to paste it in. */
+  /* VidVault is a single-page app: it only reads from its own internal
+     search box state, not from URL query params. ?autofill=ID does
+     nothing on their end — that's a VidVault limitation, not ours.
+     Best we can do: copy the ID to clipboard and tell the user clearly
+     to paste it, with a visible fallback if clipboard copy fails. */
   byId('dl-ifr-title').textContent=pTitle||'Download';
-  byId('dl-id-banner').innerHTML=
-    'TMDb ID <b style="color:var(--accent)">'+pId+'</b> copied — paste it into the search box below';
-  try{
-    navigator.clipboard.writeText(String(pId));
-  }catch(e){}
-  byId('dl-iframe').src='https://vidvault.ru/?autofill='+pId;
+  byId('dl-iframe').src='https://vidvault.ru/';
   byId('dl-iframe-wrap').classList.add('open');
   document.body.style.overflow='hidden';
-  toast('TMDb ID copied: '+pId);
+
+  var banner=byId('dl-id-banner');
+  var copyOk=false;
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(String(pId)).then(function(){
+        copyOk=true;
+        banner.innerHTML='&#10003; TMDb ID <b style="color:var(--accent)">'+pId+'</b> copied — paste it into the search box below';
+        toast('TMDb ID copied: '+pId);
+      }).catch(function(){
+        showManualCopy();
+      });
+    }else{
+      showManualCopy();
+    }
+  }catch(e){
+    showManualCopy();
+  }
+  function showManualCopy(){
+    banner.innerHTML='Copy this TMDb ID and paste it below: '+
+      '<b style="color:var(--accent);user-select:all;cursor:text;" id="dl-id-manual">'+pId+'</b>';
+  }
 }
 function closeVidVault(){
   byId('dl-iframe').src='';
@@ -1989,4 +1682,3 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 </body>
 </html>
- 
