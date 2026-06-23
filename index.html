@@ -7,12 +7,11 @@
   default-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data:
     https://api.themoviedb.org https://image.tmdb.org
     https://fonts.googleapis.com https://fonts.gstatic.com
-    https://daddylive.pw;
-  frame-src
-    https://vidlink.pro https://player.vidpro.top
-    https://www.youtube.com https://youtube.com
-    https://daddylive.pw
-    https://vidvault.ru;
+    https://daddylive.pw https://cdn.jsdelivr.net
+    https://api.anthropic.com;
+  connect-src *;
+  frame-src *;
+  img-src * data: blob:;
   navigate-to 'self' https://daddylive.pw;
 ">
 <meta name="referrer" content="no-referrer">
@@ -450,123 +449,107 @@ button{font-family:'Inter',sans-serif;}
 .dl-ifr-body{flex:1;position:relative;overflow:hidden;background:#111;}
 .dl-ifr-body iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
 
-/* ── AI CHAT ── */
-#ai-btn{position:fixed;bottom:calc(var(--bot-h)+14px);right:14px;z-index:8000;
-  width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;
-  background:linear-gradient(135deg,#1db954,#0e8a3a);
-  box-shadow:0 4px 20px rgba(29,185,84,.45);
-  display:flex;align-items:center;justify-content:center;
-  transition:transform .2s,box-shadow .2s;}
-#ai-btn:active{transform:scale(.93);}
-#ai-btn svg{width:24px;height:24px;color:#fff;}
-#ai-btn .ai-pulse{position:absolute;inset:-4px;border-radius:50%;
-  border:2px solid rgba(29,185,84,.4);animation:aipulse 2s ease-out infinite;}
-@keyframes aipulse{0%{transform:scale(1);opacity:.8;}100%{transform:scale(1.35);opacity:0;}}
+/* ── AI CHAT BUTTON ── */
+#ai-btn{position:fixed;bottom:calc(var(--bot-h)+16px);right:16px;z-index:8000;
+  width:54px;height:54px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(135deg,#1db954,#0a7a32);
+  box-shadow:0 4px 22px rgba(29,185,84,.5);
+  display:flex;align-items:center;justify-content:center;transition:transform .18s;}
+#ai-btn:active{transform:scale(.91);}
+#ai-btn svg{width:24px;height:24px;color:#fff;position:relative;z-index:1;}
+.ai-pulse{position:absolute;inset:-5px;border-radius:50%;
+  border:2.5px solid rgba(29,185,84,.45);animation:aipulse 2.2s ease-out infinite;pointer-events:none;}
+@keyframes aipulse{0%{transform:scale(1);opacity:.9;}100%{transform:scale(1.4);opacity:0;}}
 
+/* ── AI OVERLAY ── */
 #ai-overlay{display:none;position:fixed;inset:0;z-index:8100;
-  background:rgba(0,0,0,.7);backdrop-filter:blur(4px);}
-#ai-overlay.open{display:block;}
-#ai-panel{position:absolute;bottom:var(--bot-h);left:0;right:0;
-  height:78vh;background:#111;border-radius:20px 20px 0 0;
+  background:rgba(0,0,0,.72);backdrop-filter:blur(3px);}
+#ai-overlay.open{display:flex;align-items:flex-end;}
+#ai-panel{width:100%;height:80vh;background:#111;border-radius:22px 22px 0 0;
   display:flex;flex-direction:column;overflow:hidden;
-  animation:aislide .25s ease;}
+  animation:aislide .28s cubic-bezier(.32,.72,0,1);}
 @keyframes aislide{from{transform:translateY(100%);}to{transform:translateY(0);}}
-#ai-header{flex-shrink:0;padding:14px 16px 12px;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:10px;background:#111;}
-.ai-logo{width:34px;height:34px;border-radius:50%;
-  background:linear-gradient(135deg,#1db954,#0e8a3a);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.ai-logo svg{width:18px;height:18px;color:#fff;}
-#ai-header h3{flex:1;font-size:.9rem;font-weight:700;}
-.ai-status{font-size:.62rem;color:var(--accent);font-weight:600;
-  display:flex;align-items:center;gap:4px;}
-.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);
-  animation:blink 1.4s infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
-#ai-close{background:rgba(255,255,255,.1);border:none;color:#fff;
-  width:30px;height:30px;border-radius:50%;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-#ai-messages{flex:1;overflow-y:auto;padding:14px 14px 8px;
-  display:flex;flex-direction:column;gap:12px;}
-.ai-msg{max-width:88%;animation:msgpop .2s ease;}
-@keyframes msgpop{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
-.ai-msg.user{align-self:flex-end;}
-.ai-msg.bot{align-self:flex-start;}
-.ai-bubble{padding:10px 13px;border-radius:14px;font-size:.8rem;line-height:1.6;}
-.ai-msg.user .ai-bubble{background:var(--accent);color:#fff;border-bottom-right-radius:4px;}
-.ai-msg.bot .ai-bubble{background:#1e1e1e;color:#fff;border:1px solid var(--border);border-bottom-left-radius:4px;}
-.ai-bubble a{color:var(--accent);text-decoration:none;}
-.ai-typing .ai-bubble{display:flex;align-items:center;gap:4px;padding:12px 16px;}
-.ai-typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);
-  animation:typedot .9s infinite;}
-.ai-typing span:nth-child(2){animation-delay:.15s;}
-.ai-typing span:nth-child(3){animation-delay:.3s;}
-@keyframes typedot{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-5px);}}
-.ai-chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px 6px;flex-shrink:0;}
-.ai-chip{padding:6px 13px;border-radius:20px;font-size:.7rem;font-weight:600;
-  background:rgba(29,185,84,.12);border:1px solid rgba(29,185,84,.3);
-  color:var(--accent);cursor:pointer;transition:all .15s;font-family:inherit;}
+#ai-hdr{flex-shrink:0;padding:14px 16px 11px;border-bottom:1px solid #222;
+  display:flex;align-items:center;gap:11px;}
+.ai-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#1db954,#0a7a32);
+  display:flex;align-items:center;justify-content:center;}
+.ai-av svg{width:19px;height:19px;color:#fff;}
+#ai-hdr .ai-name{font-weight:800;font-size:.88rem;line-height:1.2;}
+#ai-hdr .ai-sub{font-size:.6rem;color:var(--accent);font-weight:600;display:flex;align-items:center;gap:3px;margin-top:2px;}
+.ai-live-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+#ai-x{margin-left:auto;background:rgba(255,255,255,.1);border:none;color:var(--muted);
+  width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;}
+#ai-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;}
+.am{max-width:86%;display:flex;flex-direction:column;animation:msgpop .22s ease;}
+@keyframes msgpop{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.am.u{align-self:flex-end;}
+.am.b{align-self:flex-start;}
+.am-bubble{padding:10px 13px;border-radius:16px;font-size:.8rem;line-height:1.65;word-break:break-word;}
+.am.u .am-bubble{background:var(--accent);color:#fff;border-bottom-right-radius:4px;}
+.am.b .am-bubble{background:#1c1c1c;color:#f0f0f0;border:1px solid #2a2a2a;border-bottom-left-radius:4px;}
+.am-typing{display:flex;align-items:center;gap:5px;padding:12px 16px;}
+.am-typing span{width:7px;height:7px;border-radius:50%;background:#555;
+  animation:tdot 1s infinite;}
+.am-typing span:nth-child(2){animation-delay:.16s;}
+.am-typing span:nth-child(3){animation-delay:.32s;}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+.ai-chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px 4px;flex-shrink:0;}
+.ai-chip{padding:7px 14px;border-radius:20px;font-size:.7rem;font-weight:600;
+  background:rgba(29,185,84,.1);border:1px solid rgba(29,185,84,.28);
+  color:var(--accent);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
 .ai-chip:active{background:var(--accent);color:#fff;}
-#ai-input-row{flex-shrink:0;display:flex;gap:8px;padding:10px 14px 14px;
-  border-top:1px solid var(--border);background:#111;}
-#ai-input{flex:1;background:var(--card);border:1px solid var(--border);
-  border-radius:22px;padding:10px 15px;color:#fff;font-size:.82rem;
-  font-family:inherit;outline:none;resize:none;max-height:80px;min-height:40px;}
-#ai-input::placeholder{color:var(--muted2);}
-#ai-send{width:40px;height:40px;border-radius:50%;background:var(--accent);
-  border:none;color:#fff;cursor:pointer;display:flex;align-items:center;
-  justify-content:center;flex-shrink:0;transition:opacity .2s;}
-#ai-send:active{opacity:.75;}
-#ai-send svg{width:18px;height:18px;}
+#ai-foot{flex-shrink:0;display:flex;gap:9px;padding:10px 14px 16px;border-top:1px solid #1e1e1e;}
+#ai-inp{flex:1;background:#1a1a1a;border:1.5px solid #2a2a2a;border-radius:22px;
+  padding:10px 15px;color:#fff;font-size:.82rem;font-family:inherit;outline:none;resize:none;
+  max-height:80px;min-height:42px;line-height:1.4;}
+#ai-inp:focus{border-color:rgba(29,185,84,.4);}
+#ai-inp::placeholder{color:#555;}
+#ai-go{width:42px;height:42px;border-radius:50%;background:var(--accent);border:none;
+  color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+#ai-go:active{opacity:.75;}
+#ai-go svg{width:19px;height:19px;}
 
-/* ── CHANNELS PAGE ── */
-#ch-page{display:none;position:fixed;inset:0;z-index:8300;
-  background:var(--bg);overflow-y:auto;padding-bottom:var(--bot-h);}
-#ch-page.open{display:block;}
-.ch-page-head{position:sticky;top:0;background:var(--bg);z-index:2;
-  border-bottom:1px solid var(--border);
-  height:var(--nav-h);display:flex;align-items:center;gap:10px;padding:0 14px;}
-.ch-page-head h2{flex:1;font-size:.95rem;font-weight:700;}
-
-/* provider grid on home */
-.prov-grid-sec .hrow{gap:10px;padding:0 14px;}
-.prov-card{flex-shrink:0;width:80px;height:80px;border-radius:14px;overflow:hidden;
-  cursor:pointer;border:2px solid var(--border);transition:border-color .2s,transform .15s;
-  background:var(--card);}
-.prov-card:active{border-color:var(--accent);transform:scale(.94);}
-.prov-card img{width:100%;height:100%;object-fit:cover;}
-.prov-card-name{font-size:.52rem;font-weight:700;text-align:center;
-  padding:3px 4px;color:var(--muted);}
-
-/* Channel browse page content */
-#ch-browse{display:none;position:fixed;inset:0;z-index:8400;
+/* ── CHANNEL BROWSE ── */
+#ch-browse{display:none;position:fixed;inset:0;z-index:8300;
   background:var(--bg);overflow-y:auto;padding-bottom:var(--bot-h);}
 #ch-browse.open{display:block;}
-.ch-browse-head{position:sticky;top:0;background:var(--bg);z-index:3;
-  border-bottom:1px solid var(--border);}
-.ch-browse-top{height:var(--nav-h);display:flex;align-items:center;
-  gap:10px;padding:0 14px;}
-.ch-browse-top h2{flex:1;font-size:.9rem;font-weight:700;overflow:hidden;
-  white-space:nowrap;text-overflow:ellipsis;}
-.ch-browse-logo{width:36px;height:36px;border-radius:8px;overflow:hidden;
-  flex-shrink:0;background:var(--card);}
-.ch-browse-logo img{width:100%;height:100%;object-fit:cover;}
-.ch-filter-row{display:flex;gap:8px;overflow-x:auto;
-  padding:10px 14px 10px;scrollbar-width:none;}
-.ch-filter-row::-webkit-scrollbar{display:none;}
-.ch-filt{flex-shrink:0;padding:7px 16px;border-radius:20px;
-  font-size:.73rem;font-weight:600;cursor:pointer;border:none;
-  font-family:inherit;transition:all .2s;}
-.ch-filt.on{background:var(--accent);color:#fff;}
-.ch-filt:not(.on){background:var(--card);color:var(--muted);border:1px solid var(--border);}
-.ch-type-row{display:flex;gap:8px;padding:0 14px 10px;}
-.ch-type-btn{flex:1;padding:8px;border-radius:8px;font-size:.74rem;
-  font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s;}
-.ch-type-btn.on{background:var(--accent);color:#fff;}
-.ch-type-btn:not(.on){background:var(--card);color:var(--muted);border:1px solid var(--border);}
-#ch-browse-grid{display:grid;grid-template-columns:repeat(3,1fr);
-  gap:10px;padding:10px 14px 24px;}
+.chb-head{position:sticky;top:0;z-index:3;background:var(--bg);border-bottom:1px solid var(--border);}
+.chb-top{height:var(--nav-h);display:flex;align-items:center;gap:10px;padding:0 14px;}
+.chb-logo{width:38px;height:38px;border-radius:9px;overflow:hidden;flex-shrink:0;background:var(--card);}
+.chb-logo img{width:100%;height:100%;object-fit:cover;}
+.chb-top h2{flex:1;font-size:.9rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chb-types{display:flex;gap:8px;padding:8px 14px 0;}
+.chb-type{flex:1;padding:9px;border-radius:9px;font-size:.75rem;font-weight:700;
+  cursor:pointer;border:none;font-family:inherit;transition:all .18s;}
+.chb-type.on{background:var(--accent);color:#fff;}
+.chb-type:not(.on){background:var(--card);color:var(--muted);border:1px solid var(--border);}
+.chb-pills{display:flex;gap:7px;overflow-x:auto;padding:9px 14px 10px;scrollbar-width:none;}
+.chb-pills::-webkit-scrollbar{display:none;}
+.chb-pill{flex-shrink:0;padding:6px 15px;border-radius:20px;font-size:.72rem;font-weight:600;
+  cursor:pointer;border:none;font-family:inherit;transition:all .18s;}
+.chb-pill.on{background:var(--accent);color:#fff;}
+.chb-pill:not(.on){background:var(--card);color:var(--muted);border:1px solid var(--border);}
+#chb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px 14px 24px;}
+
+/* ── PROV CARD UPDATES ── */
+.prov-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;}
+.prov-card{width:76px;height:76px;border-radius:13px;overflow:hidden;cursor:pointer;
+  border:2px solid var(--border);transition:border-color .18s,transform .15s;background:var(--card);}
+.prov-card:active{border-color:var(--accent);transform:scale(.93);}
+.prov-card img{width:100%;height:100%;object-fit:cover;}
+.prov-lbl{font-size:.54rem;font-weight:600;color:var(--muted);text-align:center;max-width:76px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* ── YEAR FILTER (pills row) ── */
+.yr-pills{display:flex;gap:7px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none;}
+.yr-pills::-webkit-scrollbar{display:none;}
+.yp{flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:.7rem;font-weight:700;
+  cursor:pointer;border:none;font-family:inherit;transition:all .18s;}
+.yp.on{background:rgba(246,201,14,.9);color:#000;}
+.yp:not(.on){background:var(--card);color:var(--muted);border:1px solid var(--border);}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
@@ -629,12 +612,14 @@ if('serviceWorker' in navigator){
 <!-- MOVIES PAGE -->
 <div class="page" id="page-movies">
   <div class="fpills" id="mov-pills"></div>
+  <div class="yr-pills" id="mov-yr-pills"></div>
   <div class="grid3" id="mov-grid"><div class="spin-wrap"><div class="spin"></div></div></div>
 </div>
 
 <!-- SERIES PAGE -->
 <div class="page" id="page-series">
   <div class="fpills" id="ser-pills"></div>
+  <div class="yr-pills" id="ser-yr-pills"></div>
   <div class="grid3" id="ser-grid"><div class="spin-wrap"><div class="spin"></div></div></div>
 </div>
 
@@ -918,71 +903,73 @@ if('serviceWorker' in navigator){
   </div>
 </div>
 
-<div id="toast"></div>
-
 <!-- AI CHAT BUTTON -->
 <button id="ai-btn" onclick="openAI()" title="Ask FengAI">
   <div class="ai-pulse"></div>
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-    <path d="M12 2a8 8 0 0 1 8 8c0 3-1.6 5.6-4 7.1V20l-4-2-4 2v-2.9C5.6 15.6 4 13 4 10a8 8 0 0 1 8-8z"/>
-    <circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="12" cy="10" r="1" fill="currentColor" stroke="none"/>
-    <circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    <circle cx="9" cy="10" r=".8" fill="currentColor" stroke="none"/>
+    <circle cx="12" cy="10" r=".8" fill="currentColor" stroke="none"/>
+    <circle cx="15" cy="10" r=".8" fill="currentColor" stroke="none"/>
   </svg>
 </button>
 
 <!-- AI CHAT OVERLAY -->
-<div id="ai-overlay" onclick="closeAI()">
-  <div id="ai-panel" onclick="event.stopPropagation()">
-    <div id="ai-header">
-      <div class="ai-logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 2a8 8 0 0 1 8 8c0 3-1.6 5.6-4 7.1V20l-4-2-4 2v-2.9C5.6 15.6 4 13 4 10a8 8 0 0 1 8-8z"/>
+<div id="ai-overlay" onclick="if(event.target===this)closeAI()">
+  <div id="ai-panel">
+    <div id="ai-hdr">
+      <div class="ai-av">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
       </div>
-      <div style="flex:1">
-        <h3>FengAI Assistant</h3>
-        <div class="ai-status"><div class="ai-dot"></div>Online · Powered by Claude</div>
+      <div>
+        <div class="ai-name">FengAI</div>
+        <div class="ai-sub"><div class="ai-live-dot"></div>Your Movie &amp; TV Guide</div>
       </div>
-      <button id="ai-close" onclick="closeAI()">✕</button>
+      <button id="ai-x" onclick="closeAI()">✕</button>
     </div>
-    <div id="ai-messages"></div>
+    <div id="ai-msgs"></div>
     <div class="ai-chips" id="ai-chips">
       <button class="ai-chip" onclick="aiChip(this)">🔥 What's trending?</button>
       <button class="ai-chip" onclick="aiChip(this)">⭐ Best movies 2025</button>
       <button class="ai-chip" onclick="aiChip(this)">🎬 Recommend a thriller</button>
-      <button class="ai-chip" onclick="aiChip(this)">📺 Top TV shows right now</button>
-      <button class="ai-chip" onclick="aiChip(this)">🎌 Best anime to watch</button>
-      <button class="ai-chip" onclick="aiChip(this)">🏆 Highest rated of all time</button>
+      <button class="ai-chip" onclick="aiChip(this)">📺 Best shows right now</button>
+      <button class="ai-chip" onclick="aiChip(this)">🎌 Top anime picks</button>
+      <button class="ai-chip" onclick="aiChip(this)">🏆 All-time classics</button>
+      <button class="ai-chip" onclick="aiChip(this)">💡 Hidden gems</button>
     </div>
-    <div id="ai-input-row">
-      <textarea id="ai-input" placeholder="Ask about movies, shows, ratings, recommendations..." rows="1"
+    <div id="ai-foot">
+      <textarea id="ai-inp" placeholder="Ask about movies, shows, ratings..." rows="1"
         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAI();}"></textarea>
-      <button id="ai-send" onclick="sendAI()">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+      <button id="ai-go" onclick="sendAI()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
       </button>
     </div>
   </div>
 </div>
 
-<!-- CHANNEL BROWSE PAGE (individual channel) -->
+<!-- CHANNEL BROWSE PAGE -->
 <div id="ch-browse">
-  <div class="ch-browse-head">
-    <div class="ch-browse-top">
+  <div class="chb-head">
+    <div class="chb-top">
       <button class="back-btn" onclick="closeChBrowse()">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <div class="ch-browse-logo"><img id="ch-browse-logo-img" src="" alt=""/></div>
-      <h2 id="ch-browse-title">Channel</h2>
+      <div class="chb-logo"><img id="chb-logo-img" src="" alt=""/></div>
+      <h2 id="chb-title">Channel</h2>
     </div>
-    <div class="ch-type-row">
-      <button class="ch-type-btn on" id="ch-type-movies" onclick="setChType('movie',this)">🎬 Movies</button>
-      <button class="ch-type-btn" id="ch-type-tv" onclick="setChType('tv',this)">📺 TV Shows</button>
+    <div class="chb-types">
+      <button class="chb-type on" id="chb-t-mov" onclick="setChType('movie',this)">🎬 Movies</button>
+      <button class="chb-type" id="chb-t-tv" onclick="setChType('tv',this)">📺 TV Shows</button>
     </div>
-    <div class="ch-filter-row" id="ch-filter-row"></div>
+    <div class="chb-pills" id="chb-genre-pills"></div>
+    <div class="chb-pills" id="chb-yr-pills"></div>
   </div>
-  <div id="ch-browse-grid"><div class="spin-wrap" style="grid-column:1/-1"><div class="spin"></div></div></div>
+  <div id="chb-grid"><div class="spin-wrap" style="grid-column:1/-1"><div class="spin"></div></div></div>
 </div>
+
+<div id="toast"></div>
 
 <script>
 var KEY='ea593c3fa4d4942ece315977cd7e32c9';
@@ -1006,6 +993,7 @@ var curPage='home';
 var sCatF='all';
 var movPage=1,serPage=1,aniPage=1;
 var movFilter='all',serFilter='all';
+var movYear='',serYear='';
 var heroItems=[],heroIdx=0,heroTmr=null;
 
 try{WL=JSON.parse(localStorage.getItem('fw_wl2')||'[]');}catch(e){}
@@ -1578,102 +1566,48 @@ function closeVA(){byId('va-page').classList.remove('open');document.body.style.
 
 /* ── PROVIDERS ROW ── */
 function addProvSec(parent,providers){
-  var sec=document.createElement('div');sec.className='sec prov-grid-sec';
+  var sec=document.createElement('div');sec.className='sec';
   var head=document.createElement('div');head.className='sec-head';
   head.innerHTML='<span class="sec-title">📡 Streaming Channels</span>'
-    +'<button class="sec-link" onclick="openAllChannels()">View All →</button>';
+    +'<button class="sec-link" onclick="toast(\'Tap a channel logo to browse its content!\')">View All →</button>';
   var row=document.createElement('div');row.className='hrow';
-  providers.slice(0,15).forEach(function(p){
+  providers.slice(0,18).forEach(function(p){
     var logo=iurl(p.logo_path,'w92');
-    var wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;';
-    var div=document.createElement('div');div.className='prov-card';
-    if(logo){var img=new Image();img.src=logo;img.alt=p.provider_name;img.loading='lazy';div.appendChild(img);}
-    else{div.style.cssText='background:var(--card);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;';div.textContent=p.provider_name.slice(0,2);}
-    div.addEventListener('click',function(){openChBrowse(p);});
-    var nm=document.createElement('div');nm.className='prov-card-name';
-    nm.textContent=p.provider_name.length>10?p.provider_name.slice(0,9)+'…':p.provider_name;
-    wrap.appendChild(div);wrap.appendChild(nm);
+    var wrap=document.createElement('div');wrap.className='prov-wrap';
+    var card=document.createElement('div');card.className='prov-card';
+    if(logo){
+      var img=new Image();img.src=logo;img.alt=p.provider_name;img.loading='lazy';
+      card.appendChild(img);
+    } else {
+      card.style.cssText='display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.75rem;';
+      card.textContent=p.provider_name.slice(0,2);
+    }
+    card.addEventListener('click',function(){openChBrowse(p);});
+    var lbl=document.createElement('div');lbl.className='prov-lbl';
+    lbl.textContent=p.provider_name.length>11?p.provider_name.slice(0,10)+'…':p.provider_name;
+    wrap.appendChild(card);wrap.appendChild(lbl);
     row.appendChild(wrap);
   });
   sec.appendChild(head);sec.appendChild(row);parent.appendChild(sec);
 }
 
-/* ── CHANNEL BROWSE ── */
-var chCurProvider=null,chCurType='movie',chCurGenre='';
-var CH_GENRES_MOVIE=[
-  {id:'',n:'All'},{id:'28',n:'Action'},{id:'35',n:'Comedy'},{id:'18',n:'Drama'},
-  {id:'27',n:'Horror'},{id:'10749',n:'Romance'},{id:'878',n:'Sci-Fi'},
-  {id:'53',n:'Thriller'},{id:'80',n:'Crime'},{id:'12',n:'Adventure'},
-  {id:'10751',n:'Family'},{id:'16',n:'Animation'},{id:'99',n:'Documentary'}
-];
-var CH_GENRES_TV=[
-  {id:'',n:'All'},{id:'10759',n:'Action'},{id:'35',n:'Comedy'},{id:'18',n:'Drama'},
-  {id:'9648',n:'Mystery'},{id:'10765',n:'Sci-Fi'},{id:'10762',n:'Kids'},
-  {id:'10768',n:'War'},{id:'10767',n:'Talk'},{id:'10763',n:'News'},{id:'99',n:'Documentary'}
-];
-
-function openAllChannels(){
-  toast('Tap any channel logo to browse its content');
-}
-
-function openChBrowse(provider){
-  chCurProvider=provider;
-  chCurType='movie';
-  chCurGenre='';
-  var logo=iurl(provider.logo_path,'w92');
-  byId('ch-browse-logo-img').src=logo;
-  byId('ch-browse-title').textContent=provider.provider_name;
-  /* reset type buttons */
-  byId('ch-type-movies').classList.add('on');
-  byId('ch-type-tv').classList.remove('on');
-  buildChFilters('movie');
-  loadChContent();
-  byId('ch-browse').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeChBrowse(){
-  byId('ch-browse').classList.remove('open');
-  document.body.style.overflow='';
-}
-function setChType(type,btn){
-  chCurType=type;chCurGenre='';
-  document.querySelectorAll('.ch-type-btn').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on');
-  buildChFilters(type);
-  loadChContent();
-}
-function buildChFilters(type){
-  var genres=type==='movie'?CH_GENRES_MOVIE:CH_GENRES_TV;
-  var row=byId('ch-filter-row');row.innerHTML='';
-  genres.forEach(function(g,i){
-    var b=document.createElement('button');b.className='ch-filt'+(i===0?' on':'');
-    b.textContent=g.n;
+/* ── YEAR HELPERS ── */
+function buildYearPills(containerId, curYear, onSelect){
+  var c=byId(containerId); if(!c)return;
+  c.innerHTML='';
+  var now=new Date().getFullYear();
+  var years=[{v:'',l:'Any Year'}];
+  for(var y=now;y>=1980;y--)years.push({v:String(y),l:String(y)});
+  years.forEach(function(yr){
+    var b=document.createElement('button');
+    b.className='yp'+(yr.v===curYear?' on':'');
+    b.textContent=yr.l;
     b.addEventListener('click',function(){
-      row.querySelectorAll('.ch-filt').forEach(function(x){x.classList.remove('on');});
-      b.classList.add('on');chCurGenre=g.id;loadChContent();
+      c.querySelectorAll('.yp').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      onSelect(yr.v);
     });
-    row.appendChild(b);
-  });
-}
-function loadChContent(){
-  if(!chCurProvider)return;
-  var grid=byId('ch-browse-grid');
-  grid.innerHTML='<div class="spin-wrap" style="grid-column:1/-1"><div class="spin"></div></div>';
-  var params={sort_by:'popularity.desc',page:1,
-    with_watch_providers:chCurProvider.provider_id,
-    watch_region:'US'};
-  if(chCurGenre)params.with_genres=chCurGenre;
-  var endpoint=chCurType==='movie'?'/discover/movie':'/discover/tv';
-  tmdb(endpoint,params).then(function(d){
-    grid.innerHTML='';
-    var items=d.results||[];
-    if(!items.length){
-      grid.innerHTML='<div class="ip-empty" style="grid-column:1/-1"><p>No results found for this filter</p></div>';
-      return;
-    }
-    items.forEach(function(item){grid.appendChild(gcCard(item,chCurType));});
-  }).catch(function(){
-    grid.innerHTML='<div class="ip-empty" style="grid-column:1/-1"><p>Failed to load content</p></div>';
+    c.appendChild(b);
   });
 }
 
@@ -1681,11 +1615,13 @@ function loadChContent(){
 var movGenres=[
   {id:'',n:'All'},{id:'28',n:'Action'},{id:'35',n:'Comedy'},{id:'18',n:'Drama'},
   {id:'27',n:'Horror'},{id:'10749',n:'Romance'},{id:'878',n:'Sci-Fi'},
-  {id:'53',n:'Thriller'},{id:'16',n:'Animation'},{id:'80',n:'Crime'},{id:'12',n:'Adventure'}
+  {id:'53',n:'Thriller'},{id:'16',n:'Animation'},{id:'80',n:'Crime'},{id:'12',n:'Adventure'},
+  {id:'10751',n:'Family'},{id:'36',n:'History'},{id:'99',n:'Documentary'}
 ];
 var serGenres=[
   {id:'',n:'All'},{id:'10759',n:'Action'},{id:'35',n:'Comedy'},{id:'18',n:'Drama'},
-  {id:'9648',n:'Mystery'},{id:'10765',n:'Sci-Fi'},{id:'10762',n:'Kids'},{id:'10763',n:'News'}
+  {id:'9648',n:'Mystery'},{id:'10765',n:'Sci-Fi'},{id:'10762',n:'Kids'},
+  {id:'10764',n:'Reality'},{id:'10767',n:'Talk'},{id:'10763',n:'News'},{id:'99',n:'Documentary'}
 ];
 
 function buildMovPills(){
@@ -1699,6 +1635,7 @@ function buildMovPills(){
     });
     c.appendChild(b);
   });
+  buildYearPills('mov-yr-pills', movYear, function(y){movYear=y;movPage=1;loadMovies(1,true);});
 }
 function buildSerPills(){
   var c=byId('ser-pills');c.innerHTML='';
@@ -1711,6 +1648,7 @@ function buildSerPills(){
     });
     c.appendChild(b);
   });
+  buildYearPills('ser-yr-pills', serYear, function(y){serYear=y;serPage=1;loadSeries(1,true);});
 }
 
 function loadMovies(page,reset){
@@ -1718,6 +1656,7 @@ function loadMovies(page,reset){
   if(reset){g.innerHTML='<div class="spin-wrap" style="grid-column:1/-1"><div class="spin"></div></div>';}
   var params={sort_by:'popularity.desc',page:page};
   if(movFilter)params.with_genres=movFilter;
+  if(movYear){params['primary_release_year']=movYear;}
   tmdb('/discover/movie',params).then(function(d){
     if(reset)g.innerHTML='';else{var lm=g.querySelector('.load-more-wrap');if(lm)lm.remove();}
     (d.results||[]).forEach(function(item){g.appendChild(gcCard(item,'movie'));});
@@ -1735,6 +1674,7 @@ function loadSeries(page,reset){
   if(reset){g.innerHTML='<div class="spin-wrap" style="grid-column:1/-1"><div class="spin"></div></div>';}
   var params={sort_by:'popularity.desc',page:page};
   if(serFilter)params.with_genres=serFilter;
+  if(serYear){params['first_air_date_year']=serYear;}
   tmdb('/discover/tv',params).then(function(d){
     if(reset)g.innerHTML='';else{var lm=g.querySelector('.load-more-wrap');if(lm)lm.remove();}
     (d.results||[]).forEach(function(item){g.appendChild(gcCard(item,'tv'));});
@@ -1888,7 +1828,7 @@ function loadDetEps(season,btn){
   });
 }
 
-* ── ACTOR DETAIL ── */
+/* ── ACTOR DETAIL ── */
 function openActorDet(actorId,actorName){
   var ol=document.createElement('div');
   ol.style.cssText='position:fixed;inset:0;z-index:8500;background:var(--bg);overflow-y:auto;padding-bottom:var(--bot-h);display:flex;flex-direction:column;';
@@ -2212,94 +2152,168 @@ function shareItem(){
   else{try{navigator.clipboard.writeText(u);}catch(e){}toast('Link copied!');}
 }
 
-/* ── AI CHAT ── */
-var aiHistory=[];
-var aiTyping=false;
+/* ── CHANNEL BROWSE ── */
+var chProv=null, chType='movie', chGenre='', chYear='';
+var CH_G_MOV=[
+  {id:'',n:'All'},{id:'28',n:'Action'},{id:'35',n:'Comedy'},{id:'18',n:'Drama'},
+  {id:'27',n:'Horror'},{id:'10749',n:'Romance'},{id:'878',n:'Sci-Fi'},
+  {id:'53',n:'Thriller'},{id:'16',n:'Animation'},{id:'80',n:'Crime'},
+  {id:'12',n:'Adventure'},{id:'10751',n:'Family'},{id:'99',n:'Documentary'}
+];
+var CH_G_TV=[
+  {id:'',n:'All'},{id:'10759',n:'Action'},{id:'35',n:'Comedy'},{id:'18',n:'Drama'},
+  {id:'9648',n:'Mystery'},{id:'10765',n:'Sci-Fi'},{id:'10762',n:'Kids'},
+  {id:'10764',n:'Reality'},{id:'99',n:'Documentary'}
+];
 
-var AI_SYSTEM=`You are FengAI, the smart movie & TV assistant for FengWorld — a free streaming app.
-You help users discover movies, TV shows, anime, live TV, and streaming channels.
-You know about ratings (TMDB/IMDb), trending content, genres, cast, directors, streaming availability, 
-release years, plot summaries, and can give enthusiastic recommendations.
-Keep answers concise (2-4 sentences max for most replies), friendly, and mobile-friendly.
-Use emojis sparingly to add personality. When recommending, give 2-3 specific titles with a brief reason.
-You can also answer questions about FengWorld features: it has Movies, Series, Anime, Live TV, 
-Live Sports (DaddyLive), Streaming Channels (browse by provider), Watchlist, History, and Downloads.
-Never mention your API or that you're powered by Claude/Anthropic — just say you're FengAI.`;
+function openChBrowse(provider){
+  chProv=provider; chType='movie'; chGenre=''; chYear='';
+  var logo=iurl(provider.logo_path,'w92');
+  byId('chb-logo-img').src=logo||'';
+  byId('chb-title').textContent=provider.provider_name;
+  byId('chb-t-mov').classList.add('on');
+  byId('chb-t-tv').classList.remove('on');
+  buildChGenres('movie');
+  buildChYears();
+  loadChContent();
+  byId('ch-browse').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeChBrowse(){
+  byId('ch-browse').classList.remove('open');
+  document.body.style.overflow='';
+}
+function setChType(type,btn){
+  chType=type; chGenre=''; chYear='';
+  document.querySelectorAll('.chb-type').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  buildChGenres(type);
+  buildChYears();
+  loadChContent();
+}
+function buildChGenres(type){
+  var genres=type==='movie'?CH_G_MOV:CH_G_TV;
+  var row=byId('chb-genre-pills'); row.innerHTML='';
+  genres.forEach(function(g,i){
+    var b=document.createElement('button');b.className='chb-pill'+(i===0?' on':'');
+    b.textContent=g.n;
+    b.addEventListener('click',function(){
+      row.querySelectorAll('.chb-pill').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); chGenre=g.id; loadChContent();
+    });
+    row.appendChild(b);
+  });
+}
+function buildChYears(){
+  var row=byId('chb-yr-pills'); row.innerHTML='';
+  var now=new Date().getFullYear();
+  var years=[{v:'',l:'Any Year'}];
+  for(var y=now;y>=1970;y--)years.push({v:String(y),l:String(y)});
+  years.forEach(function(yr){
+    var b=document.createElement('button');b.className='chb-pill'+(yr.v===chYear?' on':'');
+    b.textContent=yr.l;
+    b.addEventListener('click',function(){
+      row.querySelectorAll('.chb-pill').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); chYear=yr.v; loadChContent();
+    });
+    row.appendChild(b);
+  });
+}
+function loadChContent(){
+  if(!chProv)return;
+  var grid=byId('chb-grid');
+  grid.innerHTML='<div class="spin-wrap" style="grid-column:1/-1"><div class="spin"></div></div>';
+  var params={sort_by:'popularity.desc',page:1,
+    with_watch_providers:chProv.provider_id,watch_region:'US'};
+  if(chGenre)params.with_genres=chGenre;
+  if(chYear){
+    if(chType==='movie')params['primary_release_year']=chYear;
+    else params['first_air_date_year']=chYear;
+  }
+  var ep=chType==='movie'?'/discover/movie':'/discover/tv';
+  tmdb(ep,params).then(function(d){
+    grid.innerHTML='';
+    var items=d.results||[];
+    if(!items.length){
+      grid.innerHTML='<div class="ip-empty" style="grid-column:1/-1"><p>No results — try different filters</p></div>';
+      return;
+    }
+    items.forEach(function(item){grid.appendChild(gcCard(item,chType));});
+  }).catch(function(){
+    grid.innerHTML='<div class="ip-empty" style="grid-column:1/-1"><p>Failed to load</p></div>';
+  });
+}
+
+/* ── AI CHAT ── */
+var aiHistory=[], aibusy=false;
+var AI_SYS='You are FengAI, the smart movie and TV guide for FengWorld — a free streaming app. '
+  +'Help users discover movies, shows, anime, ratings, trending content, streaming tips. '
+  +'Keep answers short (2–4 sentences), friendly, mobile-readable. Use occasional emojis. '
+  +'When recommending, give 2–3 specific titles with a brief reason. '
+  +'Never say you are Claude or made by Anthropic — just say you are FengAI.';
 
 function openAI(){
   byId('ai-overlay').classList.add('open');
   document.body.style.overflow='hidden';
-  var msgs=byId('ai-messages');
-  if(!msgs.children.length){
-    appendAIMsg('bot','👋 Hey! I\'m **FengAI** — your personal movie & TV guide.\n\nAsk me anything: recommendations, ratings, what\'s trending, or info about any show or movie! 🎬');
+  var box=byId('ai-msgs');
+  if(!box.children.length){
+    aiAddMsg('b','👋 Hey! I\'m <b>FengAI</b> — ask me anything about movies, shows, ratings, or what to watch next! 🎬');
   }
-  setTimeout(function(){byId('ai-input').focus();},300);
+  setTimeout(function(){byId('ai-inp').focus();},300);
 }
 function closeAI(){
   byId('ai-overlay').classList.remove('open');
   document.body.style.overflow='';
 }
 function aiChip(btn){
-  byId('ai-input').value=btn.textContent.replace(/^[^\w\s]+\s*/,'');
-  btn.closest('.ai-chips').style.display='none';
+  var text=btn.textContent.replace(/^[\p{Emoji}\s]+/u,'').trim();
+  byId('ai-inp').value=text;
+  byId('ai-chips').style.display='none';
   sendAI();
 }
-function appendAIMsg(role,text){
-  var msgs=byId('ai-messages');
-  var wrap=document.createElement('div');wrap.className='ai-msg '+role;
-  var bubble=document.createElement('div');bubble.className='ai-bubble';
-  /* Simple markdown: **bold**, newlines */
-  var html=text
-    .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
-    .replace(/\n/g,'<br>');
-  bubble.innerHTML=html;
-  wrap.appendChild(bubble);
-  msgs.appendChild(wrap);
-  msgs.scrollTop=msgs.scrollHeight;
+function aiAddMsg(role,html){
+  var box=byId('ai-msgs');
+  var wrap=document.createElement('div');wrap.className='am '+role;
+  var bub=document.createElement('div');bub.className='am-bubble';
+  bub.innerHTML=html.replace(/\n/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+  wrap.appendChild(bub);
+  box.appendChild(wrap);
+  box.scrollTop=box.scrollHeight;
   return wrap;
 }
-function showTyping(){
-  var msgs=byId('ai-messages');
-  var wrap=document.createElement('div');wrap.className='ai-msg bot ai-typing';
-  wrap.id='ai-typing-indicator';
-  wrap.innerHTML='<div class="ai-bubble"><span></span><span></span><span></span></div>';
-  msgs.appendChild(wrap);
-  msgs.scrollTop=msgs.scrollHeight;
+function aiShowTyping(){
+  var box=byId('ai-msgs');
+  var wrap=document.createElement('div');wrap.className='am b';wrap.id='ai-typing';
+  wrap.innerHTML='<div class="am-bubble am-typing"><span></span><span></span><span></span></div>';
+  box.appendChild(wrap);box.scrollTop=box.scrollHeight;
 }
-function hideTyping(){
-  var t=byId('ai-typing-indicator');if(t)t.remove();
-}
+function aiHideTyping(){var t=byId('ai-typing');if(t)t.remove();}
+
 async function sendAI(){
-  var input=byId('ai-input');
-  var q=input.value.trim();
-  if(!q||aiTyping)return;
-  input.value='';input.style.height='';
-  aiTyping=true;
+  var inp=byId('ai-inp');
+  var q=inp.value.trim();
+  if(!q||aibusy)return;
+  inp.value=''; aibusy=true;
   byId('ai-chips').style.display='none';
-  appendAIMsg('user',q);
+  aiAddMsg('u',q);
   aiHistory.push({role:'user',content:q});
-  showTyping();
+  aiShowTyping();
   try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1000,
-        system:AI_SYSTEM,
-        messages:aiHistory.slice(-10)
-      })
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:AI_SYS,messages:aiHistory.slice(-12)})
     });
-    var data=await resp.json();
-    hideTyping();
-    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Sorry, I couldn\'t get a response. Please try again.';
+    var data=await r.json();
+    aiHideTyping();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Sorry, I had trouble responding. Try again!';
     aiHistory.push({role:'assistant',content:reply});
-    appendAIMsg('bot',reply);
+    aiAddMsg('b',reply);
   }catch(e){
-    hideTyping();
-    appendAIMsg('bot','⚠️ Connection error. Please check your internet and try again.');
+    aiHideTyping();
+    aiAddMsg('b','⚠️ Could not connect. Check your internet and try again.');
   }
-  aiTyping=false;
+  aibusy=false;
 }
 
 /* ── NAV SCROLL ── */
@@ -2322,4 +2336,3 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 </body>
 </html>
-    
